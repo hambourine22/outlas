@@ -623,7 +623,7 @@ function Providers() {
       {providers.map((p) => (
         <div
           key={p.key}
-          className={`${toneBg[p.tone]} ${toneInk[p.tone]} flex min-h-56 flex-col justify-between p-10`}
+          className={`${toneBg[p.tone]} ${toneInk[p.tone]} flex min-h-40 flex-col justify-between p-6`}
         >
           <span className="label opacity-80">{p.key}</span>
           <h3 className="font-display text-title">{p.label}</h3>
