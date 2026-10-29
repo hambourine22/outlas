@@ -2,24 +2,63 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ORIGINAL BOILERPLATE CSS
+/* -------------------------------------------------------------------------
+ * Oütlas design tokens
+ * Mirrors app/lib/design-system.ts. Both files must stay in sync.
+ * ---------------------------------------------------------------------- */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}*/
+  /* Brand palette — rgb triplets so Tailwind can apply alpha with /50 etc. */
+  --brand-sand:    255 246 195; /* #FFF6C3 */
+  --brand-carbon:   30  30  30; /* #1E1E1E */
+  --brand-snow:    255 255 255; /* #FFFFFF */
+  --brand-rust:    176  75  80; /* #B04B50 */
+  --brand-pine:     47  83  73; /* #2F5349 */
+  --brand-glacier: 173 207 211; /* #ADCFD3 */
 
-#root {
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
+  /* Legacy aliases retained for the Mapbox sidebar. */
+  --background: rgb(var(--brand-snow));
+  --foreground: rgb(var(--brand-carbon));
+
+  /* Semantic ink/surface defaults. */
+  --surface:         rgb(var(--brand-snow));
+  --surface-muted:   rgb(var(--brand-sand));
+  --ink:             rgb(var(--brand-carbon));
+  --ink-muted:       rgb(var(--brand-carbon) / 0.65);
+  --accent:          rgb(var(--brand-pine));
+  --accent-contrast: rgb(var(--brand-snow));
+  --rule:            rgb(var(--brand-carbon) / 0.12);
 }
+
+/* Brand surfaces — bind a tree to one UX moment with `data-surface=…`. */
+[data-surface="rental"]  { --surface: rgb(var(--brand-sand));    --accent: rgb(var(--brand-pine)); --ink: rgb(var(--brand-carbon)); }
+[data-surface="repair"]  { --surface: rgb(var(--brand-rust));    --accent: rgb(var(--brand-snow)); --ink: rgb(var(--brand-snow)); }
+[data-surface="story"]   { --surface: rgb(var(--brand-glacier)); --accent: rgb(var(--brand-pine)); --ink: rgb(var(--brand-carbon)); }
+[data-surface="manifest"]{ --surface: rgb(var(--brand-sand));    --accent: rgb(var(--brand-pine)); --ink: rgb(var(--brand-pine)); }
+[data-surface="carbon"]  { --surface: rgb(var(--brand-carbon));  --accent: rgb(var(--brand-sand)); --ink: rgb(var(--brand-snow)); }
+
+/* Base typography — serif editorial by default; UI label util for Archivo. */
+body {
+  background: var(--surface);
+  color: var(--ink);
+  font-family: var(--font-vollkorn), ui-serif, Georgia, serif;
+  font-feature-settings: "ss01", "liga", "kern";
+  text-rendering: optimizeLegibility;
+}
+
+.font-ui    { font-family: var(--font-archivo), ui-sans-serif, system-ui, sans-serif; }
+.label      { font-family: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+              font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+.micro      { font-family: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+              font-weight: 500; font-size: 0.6875rem; letter-spacing: 0.10em; text-transform: uppercase; }
+
+/* -------------------------------------------------------------------------
+ * Legacy Mapbox styles (kept so existing /ui/mapbox still renders).
+ * ---------------------------------------------------------------------- */
+#root { position: absolute; top: 0; right: 0; bottom: 0; left: 0; }
 
 #map-container {
   height: 100vh;
   width: 100%;
-  /* temporarily set the background color so we can tell where the map container is positioned */
   background-color: lightgrey;
 }
 
@@ -45,24 +84,3 @@
   border-radius: 10px;
   cursor: pointer;
 }
-
-/* ORIGINAL BOILERPLATE CSS
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
-body {
-  color: var(--foreground);
-  background: var(--background);  
-  font-family: Arial, Helvetica, sans-serif;
-}
-
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
-}
-*/
