@@ -23,28 +23,30 @@ export const surfaces = {
 
 // -------------------------------------------------------------------------
 // THEMES — light, dark, and system (honours prefers-color-scheme).
-// Each theme is a semantic palette that CSS variables resolve against.
+// Both themes are built strictly from the six brand colours. Nothing new,
+// nothing picked by eye. Semantic separation (card vs background) comes from
+// hairline rules, not from a third shade — this matches the editorial system.
 // Toggle via <html data-theme="light|dark"> (absent = system).
 // Keep this in sync with the :root blocks in globals.css.
 // -------------------------------------------------------------------------
 export const themes = {
   light: {
-    canvas:        "#F2F1EC",             // warm paper, grey-neutral
-    canvasRaised:  colors.snow.hex,       // elevated panels sit flat on canvas
-    ink:           colors.carbon.hex,
-    inkMuted:      "rgb(30 30 30 / 0.6)",
-    inkFaint:      "rgb(30 30 30 / 0.35)",
-    rule:          "rgb(30 30 30 / 0.15)",
-    accent:        colors.pine.hex,
+    canvas:        colors.snow.hex,       // #FFFFFF
+    canvasRaised:  colors.snow.hex,       // same; separate with rules
+    ink:           colors.carbon.hex,     // #1E1E1E
+    inkMuted:      "rgb(30 30 30 / 0.6)",   // carbon @ 60%
+    inkFaint:      "rgb(30 30 30 / 0.35)",  // carbon @ 35%
+    rule:          "rgb(30 30 30 / 0.15)",  // carbon @ 15%
+    accent:        colors.pine.hex,       // #2F5349
   },
   dark: {
-    canvas:        "#141414",             // deeper than carbon so cards can be #1E1E1E
-    canvasRaised:  colors.carbon.hex,
-    ink:           "#F2F1EC",             // mirror of warm paper
-    inkMuted:      "rgb(242 241 236 / 0.6)",
-    inkFaint:      "rgb(242 241 236 / 0.35)",
-    rule:          "rgb(242 241 236 / 0.15)",
-    accent:        "#C4D9D1",             // lifted glacier/pine mix for contrast
+    canvas:        colors.carbon.hex,     // #1E1E1E — never full black
+    canvasRaised:  colors.carbon.hex,     // same; separate with rules
+    ink:           colors.snow.hex,       // #FFFFFF
+    inkMuted:      "rgb(255 255 255 / 0.6)",   // snow @ 60%
+    inkFaint:      "rgb(255 255 255 / 0.35)",  // snow @ 35%
+    rule:          "rgb(255 255 255 / 0.15)",  // snow @ 15%
+    accent:        colors.glacier.hex,    // #ADCFD3 (pine is too dark on carbon)
   },
 } as const;
 
@@ -237,13 +239,17 @@ export const principles = [
 // default — pick in sequence; the fifth series is for comparisons only.
 // -------------------------------------------------------------------------
 export const dataviz = {
-  // Series colour cycle. Pine first (home side), rust second (comparator), glacier third.
+  // Series colour cycle — strictly brand. Picked for cross-theme legibility:
+  // pine and rust read well on snow; glacier and sand read well on carbon;
+  // rust and glacier work in both. The sixth brand colour (snow / carbon
+  // itself) is reserved — never a series. Cap at three categories where
+  // possible; split a fourth onto a second chart rather than reach for #4.
   series: [
-    { key: "pine",    stroke: colors.pine.hex,    dot: colors.pine.hex },
-    { key: "rust",    stroke: colors.rust.hex,    dot: colors.rust.hex },
-    { key: "glacier", stroke: "#4C8A95",          dot: "#4C8A95"       },
-    { key: "sand",    stroke: "#C5A24A",          dot: "#C5A24A"       },
-    { key: "carbon",  stroke: colors.carbon.hex,  dot: colors.carbon.hex },
+    { key: "pine",    stroke: colors.pine.hex,    dot: colors.pine.hex    },
+    { key: "rust",    stroke: colors.rust.hex,    dot: colors.rust.hex    },
+    { key: "glacier", stroke: colors.glacier.hex, dot: colors.glacier.hex },
+    { key: "sand",    stroke: colors.sand.hex,    dot: colors.sand.hex    },
+    { key: "carbon",  stroke: colors.carbon.hex,  dot: colors.carbon.hex  },
   ] as const,
   axis:  { stroke: "var(--ink)",      width: 1 },
   grid:  { stroke: "var(--rule)",     width: 1, dash: "2 4" },

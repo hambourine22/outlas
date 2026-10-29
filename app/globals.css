@@ -21,44 +21,44 @@
   --brand-pine:     47  83  73; /* #2F5349 */
   --brand-glacier: 173 207 211; /* #ADCFD3 */
 
-  /* Semantic — light mode defaults. */
-  --canvas:        #F2F1EC;
-  --canvas-raised: #FFFFFF;
-  --ink:           #1E1E1E;
-  --ink-muted:     rgb(30 30 30 / 0.6);
-  --ink-faint:     rgb(30 30 30 / 0.35);
-  --rule:          rgb(30 30 30 / 0.15);
-  --rule-strong:   rgb(30 30 30 / 0.4);
-  --accent:        #2F5349;
+  /* Semantic — light mode defaults. Strictly brand colours. */
+  --canvas:        #FFFFFF;              /* snow */
+  --canvas-raised: #FFFFFF;              /* snow — separate with rules */
+  --ink:           #1E1E1E;              /* carbon */
+  --ink-muted:     rgb(30 30 30 / 0.6);  /* carbon @ 60% */
+  --ink-faint:     rgb(30 30 30 / 0.35); /* carbon @ 35% */
+  --rule:          rgb(30 30 30 / 0.15); /* carbon @ 15% */
+  --rule-strong:   rgb(30 30 30 / 0.4);  /* carbon @ 40% */
+  --accent:        #2F5349;              /* pine */
 
   /* Legacy aliases retained for the Mapbox sidebar. */
   --background: var(--canvas);
   --foreground: var(--ink);
 }
 
-/* Explicit dark mode (via toggle) */
+/* Explicit dark mode (via toggle). Strictly brand colours. */
 :root[data-theme="dark"] {
-  --canvas:        #141414;
-  --canvas-raised: #1E1E1E;
-  --ink:           #F2F1EC;
-  --ink-muted:     rgb(242 241 236 / 0.6);
-  --ink-faint:     rgb(242 241 236 / 0.35);
-  --rule:          rgb(242 241 236 / 0.15);
-  --rule-strong:   rgb(242 241 236 / 0.4);
-  --accent:        #C4D9D1;
+  --canvas:        #1E1E1E;              /* carbon — never full black */
+  --canvas-raised: #1E1E1E;              /* carbon — separate with rules */
+  --ink:           #FFFFFF;              /* snow */
+  --ink-muted:     rgb(255 255 255 / 0.6);
+  --ink-faint:     rgb(255 255 255 / 0.35);
+  --rule:          rgb(255 255 255 / 0.15);
+  --rule-strong:   rgb(255 255 255 / 0.4);
+  --accent:        #ADCFD3;              /* glacier (pine is too dark on carbon) */
 }
 
 /* System dark mode — honours OS preference unless the user forced light. */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --canvas:        #141414;
+    --canvas:        #1E1E1E;
     --canvas-raised: #1E1E1E;
-    --ink:           #F2F1EC;
-    --ink-muted:     rgb(242 241 236 / 0.6);
-    --ink-faint:     rgb(242 241 236 / 0.35);
-    --rule:          rgb(242 241 236 / 0.15);
-    --rule-strong:   rgb(242 241 236 / 0.4);
-    --accent:        #C4D9D1;
+    --ink:           #FFFFFF;
+    --ink-muted:     rgb(255 255 255 / 0.6);
+    --ink-faint:     rgb(255 255 255 / 0.35);
+    --rule:          rgb(255 255 255 / 0.15);
+    --rule-strong:   rgb(255 255 255 / 0.4);
+    --accent:        #ADCFD3;
   }
 }
 

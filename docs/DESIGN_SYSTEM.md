@@ -120,8 +120,10 @@ Breakpoints (`grid.breakpoints`):
 Three modes:
 
 - **System** (default). `prefers-color-scheme` decides. No `data-theme` on `<html>`.
-- **Light**. Forced via `<html data-theme="light">`. Canvas `#F2F1EC`, ink `#1E1E1E`.
-- **Dark**. Forced via `<html data-theme="dark">`. Canvas `#141414`, ink `#F2F1EC`.
+- **Light**. Forced via `<html data-theme="light">`. Canvas `snow #FFFFFF`, ink `carbon #1E1E1E`, accent `pine #2F5349`.
+- **Dark**. Forced via `<html data-theme="dark">`. Canvas `carbon #1E1E1E` (never full black), ink `snow #FFFFFF`, accent `glacier #ADCFD3` (pine goes too dark on carbon).
+
+Both themes are built strictly from the six brand colours. Nothing new, nothing picked by eye. Cards don't change fill from canvas — depth and separation come from hairline rules (`carbon @ 15%` on light, `snow @ 15%` on dark).
 
 A blocking inline script in `app/layout.tsx` applies the stored preference before paint to avoid a flash of the wrong mode. The `ThemeSwitcher` component in `app/design-system/ThemeSwitcher.tsx` persists the choice to `localStorage` under the key `outlas:theme`.
 

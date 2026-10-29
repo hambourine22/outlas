@@ -322,17 +322,29 @@ function Themes() {
                 Semantic tokens flip; brand surfaces stay intentional.
               </p>
             </div>
-            <div className="grid grid-cols-5 gap-0.5">
-              {[t.canvas, t.canvasRaised, t.ink, t.accent, t.rule].map((c, i) => (
+            <div className="grid grid-cols-4 gap-0.5">
+              {([
+                { role: "canvas", c: t.canvas },
+                { role: "ink",    c: t.ink },
+                { role: "accent", c: t.accent },
+                { role: "rule",   c: t.rule },
+              ]).map(({ role, c }) => (
                 <div
-                  key={i}
-                  className="h-8"
+                  key={role}
+                  className="relative h-10"
                   style={{
                     background: c,
-                    border: c.includes("0.") ? `1px solid ${t.rule}` : undefined,
+                    border: `1px solid ${t.rule}`,
                   }}
-                  title={c}
-                />
+                  title={`${role} ${c}`}
+                >
+                  <span
+                    className="micro absolute bottom-1 left-1"
+                    style={{ color: t.inkMuted }}
+                  >
+                    {role}
+                  </span>
+                </div>
               ))}
             </div>
           </div>
