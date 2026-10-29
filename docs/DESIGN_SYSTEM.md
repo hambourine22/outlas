@@ -89,9 +89,43 @@ Type scale lives in `typography.scale` and in Tailwind `fontSize`:
 
 A single ladder each. New components reach for an existing rung before adding one.
 
-- **Spacing**: 0 · 2 · 4 · 8 · 12 · 16 · 24 · 32 · 40 · 48 · 64 · 80 · 96 · 128 (px).
-- **Radii**: `none` · `sm 4` · `md 8` · `lg 16` · `card 20` · `pill ∞`.
-- **Shadow**: `resting` (1-dot card lift) · `lifted` (hover / detail panel) · `modal` (sheet / dialog).
+- **Spacing**: 0 · 4 · 8 · 12 · 16 · 24 · 32 · 40 · 48 · 64 · 80 · 96 · 128 (px). Every rung is a multiple of **4**.
+- **Radii**: `none 0` · `hairline 2` · `sm 4` · `md 6` · `chip ∞` · `pill ∞`. Oütlas is editorial, not web-app — rectangles stay rectangular. Only status chips and score pills curve.
+- **Outlines**: `hairline` (0.12 carbon) · `rule` (0.2 carbon) · `strong` (0.6 carbon) · `inverse` (0.3 snow).
+  Oütlas prefers hairline outlines over drop shadows — depth comes from surface tone, not elevation. Drop shadow is reserved for `modal` only (sheets, popovers, dialogs).
+
+## Grid & layout — Power of 4
+
+A **4×4 structure** forms a 12-column grid. The grid scales down to 6, 4, 3 or 2 columns at narrower viewports. Every length rounds to the nearest multiple of 4px.
+
+| Token | Value | What it means |
+|---|---|---|
+| Columns | 12 (4×4) | Base at desktop. Collapses to 6, 4, 3, 2. |
+| Margins | 4% of shortest side | Rounded to nearest 4px. |
+| Gutter | 2 × 4% = 8% | Twice the margin — uniform both sides. |
+| Base unit | 4px | Spacing, type, radii all land on a multiple of 4. |
+
+Breakpoints (`grid.breakpoints`):
+
+| Rung | Min width | Columns | Use |
+|---|---|---|---|
+| base | 0 | 2 | Phone — stack sections, ladder content. |
+| sm | 640 | 4 | Large phone / small tablet. |
+| md | 768 | 6 | Tablet — two editorial columns. |
+| lg | 1024 | 8 | Small laptop — chapter headers split 5/7. |
+| xl | 1280 | 12 | Desktop — full 4×4 grid. |
+
+## Themes — light, dark, system
+
+Three modes:
+
+- **System** (default). `prefers-color-scheme` decides. No `data-theme` on `<html>`.
+- **Light**. Forced via `<html data-theme="light">`. Canvas `#F2F1EC`, ink `#1E1E1E`.
+- **Dark**. Forced via `<html data-theme="dark">`. Canvas `#141414`, ink `#F2F1EC`.
+
+A blocking inline script in `app/layout.tsx` applies the stored preference before paint to avoid a flash of the wrong mode. The `ThemeSwitcher` component in `app/design-system/ThemeSwitcher.tsx` persists the choice to `localStorage` under the key `outlas:theme`.
+
+Brand surfaces (`data-surface=…`) are theme-independent — rental is always sand, repair is always rust. The UX moment should feel the same in either mode.
 
 ## Principles
 

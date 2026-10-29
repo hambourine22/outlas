@@ -36,13 +36,25 @@ export const metadata: Metadata = {
     "We connect riders to low carbon methods, in the protection of natural habitats, harnessing the power of the outdoor community.",
 };
 
+// Blocking script that applies the stored theme before paint. Lives inline
+// so it runs synchronously and prevents a flash of the wrong mode.
+const THEME_BOOTSTRAP = `
+try {
+  var m = localStorage.getItem('outlas:theme');
+  if (m === 'light' || m === 'dark') document.documentElement.setAttribute('data-theme', m);
+} catch (e) {}
+`;
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: THEME_BOOTSTRAP }} />
+      </head>
       <body
         className={`${vollkorn.variable} ${archivo.variable} ${geistMono.variable} antialiased`}
       >

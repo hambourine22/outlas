@@ -3,11 +3,17 @@
 @tailwind utilities;
 
 /* -------------------------------------------------------------------------
- * Oütlas design tokens
+ * Oütlas design tokens — v2 (editorial flat).
  * Mirrors app/lib/design-system.ts. Both files must stay in sync.
+ *
+ * Themes are selected by <html data-theme="light|dark">; absent = system.
+ * The flow is: brand rgb triplets stay constant; semantic tokens
+ * (--canvas, --ink, --rule, --accent) flip per theme. Components only
+ * reach for the semantic tokens, never the raw brand rgb triplets.
  * ---------------------------------------------------------------------- */
+
 :root {
-  /* Brand palette — rgb triplets so Tailwind can apply alpha with /50 etc. */
+  /* Brand palette — rgb triplets. Theme-independent. */
   --brand-sand:    255 246 195; /* #FFF6C3 */
   --brand-carbon:   30  30  30; /* #1E1E1E */
   --brand-snow:    255 255 255; /* #FFFFFF */
@@ -15,44 +21,97 @@
   --brand-pine:     47  83  73; /* #2F5349 */
   --brand-glacier: 173 207 211; /* #ADCFD3 */
 
-  /* Legacy aliases retained for the Mapbox sidebar. */
-  --background: rgb(var(--brand-snow));
-  --foreground: rgb(var(--brand-carbon));
+  /* Semantic — light mode defaults. */
+  --canvas:        #F2F1EC;
+  --canvas-raised: #FFFFFF;
+  --ink:           #1E1E1E;
+  --ink-muted:     rgb(30 30 30 / 0.6);
+  --ink-faint:     rgb(30 30 30 / 0.35);
+  --rule:          rgb(30 30 30 / 0.15);
+  --rule-strong:   rgb(30 30 30 / 0.4);
+  --accent:        #2F5349;
 
-  /* Semantic ink/surface defaults. */
-  --surface:         rgb(var(--brand-snow));
-  --surface-muted:   rgb(var(--brand-sand));
-  --ink:             rgb(var(--brand-carbon));
-  --ink-muted:       rgb(var(--brand-carbon) / 0.65);
-  --accent:          rgb(var(--brand-pine));
-  --accent-contrast: rgb(var(--brand-snow));
-  --rule:            rgb(var(--brand-carbon) / 0.12);
+  /* Legacy aliases retained for the Mapbox sidebar. */
+  --background: var(--canvas);
+  --foreground: var(--ink);
 }
 
-/* Brand surfaces — bind a tree to one UX moment with `data-surface=…`. */
-[data-surface="rental"]  { --surface: rgb(var(--brand-sand));    --accent: rgb(var(--brand-pine)); --ink: rgb(var(--brand-carbon)); }
-[data-surface="repair"]  { --surface: rgb(var(--brand-rust));    --accent: rgb(var(--brand-snow)); --ink: rgb(var(--brand-snow)); }
-[data-surface="story"]   { --surface: rgb(var(--brand-glacier)); --accent: rgb(var(--brand-pine)); --ink: rgb(var(--brand-carbon)); }
-[data-surface="manifest"]{ --surface: rgb(var(--brand-sand));    --accent: rgb(var(--brand-pine)); --ink: rgb(var(--brand-pine)); }
-[data-surface="carbon"]  { --surface: rgb(var(--brand-carbon));  --accent: rgb(var(--brand-sand)); --ink: rgb(var(--brand-snow)); }
+/* Explicit dark mode (via toggle) */
+:root[data-theme="dark"] {
+  --canvas:        #141414;
+  --canvas-raised: #1E1E1E;
+  --ink:           #F2F1EC;
+  --ink-muted:     rgb(242 241 236 / 0.6);
+  --ink-faint:     rgb(242 241 236 / 0.35);
+  --rule:          rgb(242 241 236 / 0.15);
+  --rule-strong:   rgb(242 241 236 / 0.4);
+  --accent:        #C4D9D1;
+}
 
-/* Base typography — serif editorial by default; UI label util for Archivo. */
-body {
-  background: var(--surface);
+/* System dark mode — honours OS preference unless the user forced light. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --canvas:        #141414;
+    --canvas-raised: #1E1E1E;
+    --ink:           #F2F1EC;
+    --ink-muted:     rgb(242 241 236 / 0.6);
+    --ink-faint:     rgb(242 241 236 / 0.35);
+    --rule:          rgb(242 241 236 / 0.15);
+    --rule-strong:   rgb(242 241 236 / 0.4);
+    --accent:        #C4D9D1;
+  }
+}
+
+/* Brand surfaces — bind a tree to one UX moment. These override --canvas / --ink
+ * directly so they look the same in light and dark mode (brand moments are
+ * intentional). Nest inside dark mode and the surface still carries its tone. */
+[data-surface="rental"]  { --canvas: rgb(var(--brand-sand));    --accent: rgb(var(--brand-pine)); --ink: rgb(var(--brand-carbon)); }
+[data-surface="repair"]  { --canvas: rgb(var(--brand-rust));    --accent: rgb(var(--brand-snow)); --ink: rgb(var(--brand-snow));   }
+[data-surface="story"]   { --canvas: rgb(var(--brand-glacier)); --accent: rgb(var(--brand-pine)); --ink: rgb(var(--brand-carbon)); }
+[data-surface="manifest"]{ --canvas: rgb(var(--brand-sand));    --accent: rgb(var(--brand-pine)); --ink: rgb(var(--brand-pine));   }
+[data-surface="carbon"]  { --canvas: rgb(var(--brand-carbon));  --accent: rgb(var(--brand-sand)); --ink: rgb(var(--brand-snow));   }
+
+html, body {
+  background: var(--canvas);
   color: var(--ink);
+}
+
+body {
   font-family: var(--font-vollkorn), ui-serif, Georgia, serif;
   font-feature-settings: "ss01", "liga", "kern";
   text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
+/* UI type utilities — Archivo Narrow, all-caps for labels. Tracking per tokens. */
 .font-ui    { font-family: var(--font-archivo), ui-sans-serif, system-ui, sans-serif; }
 .label      { font-family: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
-              font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+              font-weight: 700; letter-spacing: 0.02em; text-transform: uppercase; }
 .micro      { font-family: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
-              font-weight: 500; font-size: 0.6875rem; letter-spacing: 0.10em; text-transform: uppercase; }
+              font-weight: 500; font-size: 0.6875rem; letter-spacing: 0.04em; text-transform: uppercase; }
+
+/* Status chip — Pentagram/TwelveLabs-style outlined meta tag. */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.25rem 0.625rem;
+  font-family: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+  font-weight: 500;
+  font-size: 0.6875rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  border: 1px solid var(--rule);
+  border-radius: 9999px;
+  color: var(--ink);
+  background: transparent;
+}
+
+.hairline-rule { border-color: var(--rule); }
 
 /* -------------------------------------------------------------------------
- * Legacy Mapbox styles (kept so existing /ui/mapbox still renders).
+ * Legacy Mapbox styles — kept so existing /ui/mapbox still renders.
  * ---------------------------------------------------------------------- */
 #root { position: absolute; top: 0; right: 0; bottom: 0; left: 0; }
 
