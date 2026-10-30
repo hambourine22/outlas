@@ -805,15 +805,20 @@ function NavBarPreview({ anchor, open }: { anchor: "top" | "bottom"; open: boole
 }
 
 function SidebarDrawerPreview({ anchor }: { anchor: "top" | "bottom" }) {
+  // One group expanded (Foundations, holding the current chapter) and the
+  // other two collapsed — mirrors the real TwelveLabs-style disclosure.
   const groups = [
-    { label: "Foundations", items: [
-      { n: "01", t: "Voice",   active: false },
-      { n: "02", t: "Logo",    active: true  },
-      { n: "03", t: "Palette", active: false },
-    ]},
-    { label: "Components", items: [
-      { n: "10", t: "Navigation", active: false },
-    ]},
+    {
+      label: "Foundations",
+      open: true,
+      items: [
+        { n: "01", t: "Voice",   active: false },
+        { n: "02", t: "Logo",    active: true  },
+        { n: "03", t: "Palette", active: false },
+      ],
+    },
+    { label: "Components", open: false, items: [] },
+    { label: "Data",       open: false, items: [] },
   ];
   return (
     <div
@@ -822,32 +827,47 @@ function SidebarDrawerPreview({ anchor }: { anchor: "top" | "bottom" }) {
         anchor === "top" ? "top-10 bottom-0" : "top-0 bottom-10",
       ].join(" ")}
     >
-      <div className="space-y-3 px-2 py-3">
+      <div className="space-y-1 px-2 py-3">
         {groups.map((g) => (
           <div key={g.label}>
             <div
-              className="label text-ink-faint"
+              className={[
+                "label flex items-center justify-between rounded-sm px-1.5 py-1",
+                g.open ? "text-ink" : "text-ink-faint",
+              ].join(" ")}
               style={{ fontSize: "0.5rem", letterSpacing: "0.06em" }}
             >
-              {g.label}
+              <span>{g.label}</span>
+              <svg
+                width="8"
+                height="8"
+                viewBox="0 0 24 24"
+                fill="none"
+                aria-hidden
+                style={{ transform: g.open ? "rotate(180deg)" : undefined }}
+              >
+                <path d="M6 9l6 6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
             </div>
-            <ul className="mt-1 space-y-0.5">
-              {g.items.map((i) => (
-                <li
-                  key={i.n}
-                  className={[
-                    "flex items-center gap-1.5 rounded-sm px-1.5 py-1 font-ui",
-                    i.active ? "bg-[var(--row-active)] text-ink" : "text-ink-muted",
-                  ].join(" ")}
-                  style={{ fontSize: "0.55rem" }}
-                >
-                  <span className="font-mono text-ink-faint" style={{ fontSize: "0.5rem" }}>
-                    {i.n}
-                  </span>
-                  <span>{i.t}</span>
-                </li>
-              ))}
-            </ul>
+            {g.open && (
+              <ul className="mt-0.5 space-y-0.5">
+                {g.items.map((i) => (
+                  <li
+                    key={i.n}
+                    className={[
+                      "flex items-center gap-1.5 rounded-sm px-1.5 py-1 font-ui",
+                      i.active ? "bg-[var(--row-active)] text-ink" : "text-ink-muted",
+                    ].join(" ")}
+                    style={{ fontSize: "0.55rem" }}
+                  >
+                    <span className="font-mono text-ink-faint" style={{ fontSize: "0.5rem" }}>
+                      {i.n}
+                    </span>
+                    <span>{i.t}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
         ))}
       </div>

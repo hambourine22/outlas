@@ -216,25 +216,96 @@ export function Sidebar() {
           drawerOpen ? "translate-x-0" : "-translate-x-full",
         ].join(" ")}
       >
-        <nav className="space-y-10 px-4 py-8">
+        <nav className="space-y-2 px-3 py-6">
           {GROUPS.map((g) => (
-            <section key={g.key}>
-              <h3 className="label text-ink-faint">{g.label}</h3>
-              <ul className="mt-3 space-y-1">
-                {CHAPTERS.filter((c) => c.group === g.key).map((c) => (
-                  <SidebarItem
-                    key={c.slug}
-                    chapter={c}
-                    active={c.slug === activeSlug}
-                    onNavigate={closeDrawer}
-                  />
-                ))}
-              </ul>
-            </section>
+            <SidebarGroup
+              key={g.key}
+              group={g}
+              chapters={CHAPTERS.filter((c) => c.group === g.key)}
+              activeSlug={activeSlug}
+              onNavigate={closeDrawer}
+            />
           ))}
         </nav>
       </aside>
     </>
+  );
+}
+
+/* -------------------------------------------------------------------------
+ * SidebarGroup — collapsible section à la TwelveLabs docs. The group that
+ * contains the current chapter auto-expands as the scroll-spy picks it up;
+ * the user can toggle any group open or shut at will.
+ * ---------------------------------------------------------------------- */
+function SidebarGroup({
+  group,
+  chapters,
+  activeSlug,
+  onNavigate,
+}: {
+  group: { key: Chapter["group"]; label: string };
+  chapters: Chapter[];
+  activeSlug: string | undefined;
+  onNavigate: () => void;
+}) {
+  const containsActive = !!activeSlug && chapters.some((c) => c.slug === activeSlug);
+  const [open, setOpen] = useState(containsActive);
+
+  // Follow scroll-spy: when a chapter in this group becomes current, pop
+  // the group open. We never auto-close — once the user opens a group,
+  // leave it that way.
+  useEffect(() => {
+    if (containsActive) setOpen(true);
+  }, [containsActive]);
+
+  const panelId = `sidebar-group-${group.key}`;
+  return (
+    <section>
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        aria-expanded={open}
+        aria-controls={panelId}
+        className={[
+          "label flex w-full items-center justify-between rounded-sm px-3 py-2 transition-colors",
+          "text-ink-faint hover:bg-[var(--row-hover)] hover:text-ink",
+          containsActive ? "text-ink" : "",
+        ].join(" ")}
+      >
+        <span>{group.label}</span>
+        <ChevronIcon open={open} />
+      </button>
+      {open && (
+        <ul id={panelId} className="mt-1 space-y-0.5">
+          {chapters.map((c) => (
+            <SidebarItem
+              key={c.slug}
+              chapter={c}
+              active={c.slug === activeSlug}
+              onNavigate={onNavigate}
+            />
+          ))}
+        </ul>
+      )}
+    </section>
+  );
+}
+
+function ChevronIcon({ open }: { open: boolean }) {
+  return (
+    <svg
+      width="12"
+      height="12"
+      viewBox="0 0 24 24"
+      fill="none"
+      aria-hidden
+      className={[
+        "shrink-0 transition-transform duration-150",
+        open ? "rotate-180" : "rotate-0",
+      ].join(" ")}
+    >
+      <path d="M6 9l6 6 6-6" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
   );
 }
 
