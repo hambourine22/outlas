@@ -58,8 +58,10 @@ export default function Map(
     const [screenWidth, setScreenWidth] = useState(0);
     const [sidebarContent, setSidebarContent] = useState<Rentals | Repairs | Resorts | Guides | undefined>();
 
-    //fetches mapbox access token from .env
-    mapboxgl.accessToken=process.env.NEXT_PUBLIC_MAPBOX_TOKEN || '';  
+    //fetches mapbox access token from .env — if absent, Map renders a brand
+    //placeholder below instead of initialising mapbox-gl (which would throw).
+    const mapboxToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN || '';
+    mapboxgl.accessToken = mapboxToken;
     
     //combines all the rentals, resorts, repairs and guides data into a single array. Spread syntax is used to enable
     //objects of very different types to be combined. This makes it easier to recover the details associated with a
@@ -106,12 +108,15 @@ export default function Map(
     
     //very important function, on first load and rerender this automatically renders the map
     useEffect(() => {
-           
-        //escapes function if mapContainerRef.current is undefined
+
+        //escapes function if mapContainerRef.current is undefined or there is no mapbox token
         if (!mapContainerRef.current){
           return;
         }
-        
+        if (!mapboxToken){
+          return;
+        }
+
         //creates a new instance of Map, centered and zoomed as per the current state values
         mapRef.current = new mapboxgl.Map({
           container: mapContainerRef.current,
@@ -241,6 +246,22 @@ export default function Map(
         return setSidebar(!sidebar);
       }
 
+  // Token-less fallback — brand-aligned shell with pin counts and legend
+  // so the home route still looks finished when NEXT_PUBLIC_MAPBOX_TOKEN
+  // is unset (e.g. preview deploys without the env var).
+  if (!mapboxToken) {
+    return (
+      <MapPlaceholder
+        counts={{
+          resorts: resorts.length,
+          rentals: rentals.length,
+          repairs: repairs.length,
+          guides:  guides.length,
+        }}
+      />
+    );
+  }
+
   return (
     <div className="relative">
       <div id='map-container' ref={mapContainerRef}/>
@@ -262,6 +283,66 @@ export default function Map(
         closeNav={handleCloseClick}
         screenWidth={screenWidth}
       />
+    </div>
+  );
+}
+
+function MapPlaceholder({
+  counts,
+}: {
+  counts: Record<"resorts" | "rentals" | "repairs" | "guides", number>;
+}) {
+  const total = counts.resorts + counts.rentals + counts.repairs + counts.guides;
+  return (
+    <div
+      style={{ minHeight: "calc(100dvh - 56px)" }}
+      className="flex items-center justify-center bg-canvas px-6 py-16"
+    >
+      <div className="mx-auto grid w-full max-w-5xl grid-cols-1 gap-10 md:grid-cols-[2fr_1fr]">
+        <div className="space-y-6">
+          <span className="label text-ink-faint">Scotland basemap</span>
+          <h1 className="font-display text-display-2 leading-tight">
+            The map is standing by — add your Mapbox token to light up the
+            {" "}{total} pins already in the content layer.
+          </h1>
+          <p className="max-w-xl font-ui text-base leading-relaxed text-ink-muted">
+            Set <code className="font-mono text-sm text-ink">NEXT_PUBLIC_MAPBOX_TOKEN</code>{" "}
+            in your Vercel project environment and this route will render
+            the full Scotland basemap with pins drawn from{" "}
+            <code className="font-mono text-sm">app/content/map</code>.
+            Everything else — the sidebar, the Stories, Rentals, Repairs and
+            Guides indexes — is already wired up and reading from the same
+            typed source of truth.
+          </p>
+          <div className="flex flex-wrap gap-3">
+            <a href="/stories"  className="chip">Stories →</a>
+            <a href="/rentals"  className="chip">Rentals →</a>
+            <a href="/repairs"  className="chip">Repairs →</a>
+            <a href="/guides"   className="chip">Guides →</a>
+          </div>
+        </div>
+        <div className="border border-rule bg-canvas-raised p-6">
+          <div className="label text-ink-faint">In the content layer</div>
+          <ul className="mt-4 space-y-3 font-ui text-sm">
+            {(["resorts", "rentals", "repairs", "guides"] as const).map((c) => (
+              <li key={c} className="flex items-center justify-between gap-4">
+                <span className="flex items-center gap-3 text-ink">
+                  <span
+                    className="inline-block h-3 w-3 rounded-full border"
+                    style={{
+                      backgroundColor: CATEGORY_COLOUR[c],
+                      borderColor: "rgba(30,30,30,0.4)",
+                    }}
+                    aria-hidden
+                  />
+                  {CATEGORY_LABEL[c]}
+                </span>
+                <span className="font-mono text-ink-muted">{counts[c]}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
     </div>
   );
 }
