@@ -16,7 +16,7 @@ import {
   grid,
   dataviz,
 } from "@/app/lib/design-system";
-import { TopBar, Sidebar, OnThisPage } from "./Nav";
+import { TopBar, Sidebar, OnThisPage, NavProvider } from "./Nav";
 import { CHAPTERS } from "./nav-data";
 import { LineChart, ChartLegend, BarChart, RadarChart } from "./Chart";
 
@@ -33,6 +33,7 @@ const TOTAL = CHAPTERS.length;
 
 export default function DesignSystemPage() {
   return (
+    <NavProvider>
     <div className="min-h-screen bg-canvas text-ink">
       <TopBar />
       <div className="flex">
@@ -86,6 +87,7 @@ export default function DesignSystemPage() {
         <OnThisPage />
       </div>
     </div>
+    </NavProvider>
   );
 }
 
@@ -675,7 +677,8 @@ function NavSpec() {
           <div className="bg-canvas-raised p-8">
             <h3 className="font-display text-title">Anatomy</h3>
             <ul className="mt-6 space-y-3 font-ui text-sm text-ink-muted">
-              <li>· 240px fixed width at lg+; collapses below.</li>
+              <li>· 240px inline rail at lg+; drawer with backdrop below.</li>
+              <li>· Hamburger in <code className="font-mono text-xs">TopBar</code> toggles the drawer. Escape, backdrop click, and item click all close it; body scroll locks while open.</li>
               <li>· Group heading uses the <code className="font-mono text-xs">.label</code> utility in <code className="font-mono text-xs">ink-faint</code>.</li>
               <li>· Item left-border is 1px <code className="font-mono text-xs">accent</code> when active; transparent otherwise.</li>
               <li>· Chapter numeral is <code className="font-mono text-xs">font-mono text-xs</code> in <code className="font-mono text-xs">ink-faint</code>.</li>
@@ -734,10 +737,10 @@ function NavSpec() {
           </thead>
           <tbody>
             {[
-              { bp: "base",   top: "logo + theme only",      side: "hidden (hamburger)", otp: "hidden" },
-              { bp: "md",     top: "+ search + chips",       side: "hidden (hamburger)", otp: "hidden" },
-              { bp: "lg",     top: "full",                   side: "shown (240px)",      otp: "hidden" },
-              { bp: "xl",     top: "full",                   side: "shown (240px)",      otp: "shown (224px)" },
+              { bp: "base",   top: "menu + logo + theme",  side: "drawer (288px, backdrop)", otp: "hidden" },
+              { bp: "md",     top: "+ search + chips",     side: "drawer (288px, backdrop)", otp: "hidden" },
+              { bp: "lg",     top: "full",                 side: "inline rail (240px)",      otp: "hidden" },
+              { bp: "xl",     top: "full",                 side: "inline rail (240px)",      otp: "shown (224px)" },
             ].map((r) => (
               <tr key={r.bp}>
                 <td className="label border-b border-rule py-3 pr-4">{r.bp}</td>

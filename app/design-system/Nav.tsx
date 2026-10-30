@@ -1,22 +1,80 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ThemeSwitcher } from "./ThemeSwitcher";
 import { CHAPTERS, GROUPS, type Chapter } from "./nav-data";
 
 /* -------------------------------------------------------------------------
+ * NavProvider — shared drawer open/close state between TopBar and Sidebar.
+ * Wrap the page in <NavProvider> so the hamburger can toggle the sidebar.
+ * ---------------------------------------------------------------------- */
+type NavState = {
+  drawerOpen: boolean;
+  setDrawerOpen: (open: boolean) => void;
+  toggleDrawer: () => void;
+  closeDrawer: () => void;
+};
+
+const NavCtx = createContext<NavState | null>(null);
+
+export function NavProvider({ children }: { children: React.ReactNode }) {
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const toggleDrawer = useCallback(() => setDrawerOpen((v) => !v), []);
+  const closeDrawer = useCallback(() => setDrawerOpen(false), []);
+
+  // Dismiss on Escape and lock body scroll while open.
+  useEffect(() => {
+    if (!drawerOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setDrawerOpen(false);
+    };
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", onKey);
+    return () => {
+      document.body.style.overflow = prevOverflow;
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [drawerOpen]);
+
+  return (
+    <NavCtx.Provider value={{ drawerOpen, setDrawerOpen, toggleDrawer, closeDrawer }}>
+      {children}
+    </NavCtx.Provider>
+  );
+}
+
+function useNav() {
+  const ctx = useContext(NavCtx);
+  if (!ctx) throw new Error("useNav must be used inside <NavProvider>");
+  return ctx;
+}
+
+/* -------------------------------------------------------------------------
  * TopBar — brand mark, product chip, utility links, theme switcher.
- * TwelveLabs-style docs chrome, Oütlas-skinned.
+ * On narrow viewports a hamburger replaces the search field and toggles
+ * the sidebar drawer.
  * ---------------------------------------------------------------------- */
 export function TopBar() {
+  const { drawerOpen, toggleDrawer } = useNav();
   return (
     <header
-      className="sticky top-0 z-40 flex items-center justify-between gap-6 border-b border-rule bg-canvas/90 px-4 py-3 backdrop-blur-sm md:px-6"
+      className="sticky top-0 z-40 flex items-center justify-between gap-3 border-b border-rule bg-canvas/90 px-3 py-3 backdrop-blur-sm md:gap-6 md:px-6"
       role="banner"
     >
       <div className="flex items-center gap-3">
+        <button
+          type="button"
+          aria-label={drawerOpen ? "Close navigation" : "Open navigation"}
+          aria-expanded={drawerOpen}
+          aria-controls="design-system-sidebar"
+          onClick={toggleDrawer}
+          className="flex h-9 w-9 items-center justify-center border border-rule text-ink lg:hidden"
+        >
+          {drawerOpen ? <CloseIcon /> : <MenuIcon />}
+        </button>
         <Link href="/" className="flex items-center gap-2">
           <Image
             src="/brand/mark/U_green.png"
@@ -36,7 +94,7 @@ export function TopBar() {
           />
           <span className="font-display text-sm text-ink">Oütlas</span>
         </Link>
-        <span className="chip">v2</span>
+        <span className="chip hidden sm:inline-flex">v2</span>
       </div>
 
       <div className="hidden flex-1 justify-center md:flex">
@@ -90,40 +148,94 @@ function SearchIcon() {
   );
 }
 
-/* -------------------------------------------------------------------------
- * Sidebar — grouped primary navigation. Groups are flat sections with a
- * micro label; items are text + optional caret for an expandable child
- * group. Active state driven by scroll-spy on the chapter anchor IDs.
- * ---------------------------------------------------------------------- */
-export function Sidebar() {
-  const activeSlug = useActiveSection(CHAPTERS.map((c) => c.slug));
-
+function MenuIcon() {
   return (
-    <aside
-      className="hidden h-[calc(100dvh-57px)] shrink-0 overflow-y-auto border-r border-rule bg-canvas lg:block lg:w-64"
-      aria-label="Design system navigation"
-    >
-      <nav className="space-y-10 px-4 py-8">
-        {GROUPS.map((g) => (
-          <section key={g.key}>
-            <h3 className="label text-ink-faint">{g.label}</h3>
-            <ul className="mt-3 space-y-1">
-              {CHAPTERS.filter((c) => c.group === g.key).map((c) => (
-                <SidebarItem key={c.slug} chapter={c} active={c.slug === activeSlug} />
-              ))}
-            </ul>
-          </section>
-        ))}
-      </nav>
-    </aside>
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden>
+      <path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+    </svg>
   );
 }
 
-function SidebarItem({ chapter, active }: { chapter: Chapter; active: boolean }) {
+function CloseIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden>
+      <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+/* -------------------------------------------------------------------------
+ * Sidebar — grouped primary navigation.
+ * - At lg+: static inline rail, 240px wide.
+ * - Below lg: fixed drawer that slides in from the left, with a
+ *   backdrop. Dismisses on Escape, on backdrop click, and on item click.
+ * ---------------------------------------------------------------------- */
+export function Sidebar() {
+  const { drawerOpen, closeDrawer } = useNav();
+  const activeSlug = useActiveSection(CHAPTERS.map((c) => c.slug));
+
+  return (
+    <>
+      {/* Backdrop — only renders when the drawer is open, below lg. */}
+      <div
+        onClick={closeDrawer}
+        aria-hidden
+        className={[
+          "fixed inset-0 z-30 bg-ink/40 backdrop-blur-sm transition-opacity lg:hidden",
+          drawerOpen ? "opacity-100" : "pointer-events-none opacity-0",
+        ].join(" ")}
+      />
+
+      <aside
+        id="design-system-sidebar"
+        aria-label="Design system navigation"
+        aria-hidden={!drawerOpen}
+        className={[
+          // Shared
+          "overflow-y-auto border-r border-rule bg-canvas",
+          // Below lg: fixed drawer
+          "fixed inset-y-0 left-0 z-30 w-72 pt-16 transition-transform duration-200 ease-out",
+          drawerOpen ? "translate-x-0" : "-translate-x-full",
+          // lg+: static inline rail
+          "lg:sticky lg:top-14 lg:z-0 lg:h-[calc(100dvh-57px)] lg:w-64 lg:translate-x-0 lg:pt-0",
+        ].join(" ")}
+      >
+        <nav className="space-y-10 px-4 py-8">
+          {GROUPS.map((g) => (
+            <section key={g.key}>
+              <h3 className="label text-ink-faint">{g.label}</h3>
+              <ul className="mt-3 space-y-1">
+                {CHAPTERS.filter((c) => c.group === g.key).map((c) => (
+                  <SidebarItem
+                    key={c.slug}
+                    chapter={c}
+                    active={c.slug === activeSlug}
+                    onNavigate={closeDrawer}
+                  />
+                ))}
+              </ul>
+            </section>
+          ))}
+        </nav>
+      </aside>
+    </>
+  );
+}
+
+function SidebarItem({
+  chapter,
+  active,
+  onNavigate,
+}: {
+  chapter: Chapter;
+  active: boolean;
+  onNavigate: () => void;
+}) {
   return (
     <li>
       <a
         href={`#${chapter.slug}`}
+        onClick={onNavigate}
         aria-current={active ? "location" : undefined}
         className={[
           "flex items-center gap-3 border-l px-3 py-2 font-ui text-sm transition-colors",
@@ -147,7 +259,7 @@ export function OnThisPage() {
 
   return (
     <aside
-      className="sticky top-[57px] hidden h-[calc(100dvh-57px)] w-56 shrink-0 overflow-y-auto border-l border-rule bg-canvas xl:block"
+      className="sticky top-14 hidden h-[calc(100dvh-57px)] w-56 shrink-0 overflow-y-auto border-l border-rule bg-canvas xl:block"
       aria-label="On this page"
     >
       <nav className="px-6 py-8">

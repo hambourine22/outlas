@@ -84,31 +84,36 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* UI type utilities — Archivo Narrow, all-caps for labels. Tracking per tokens. */
-.font-ui    { font-family: var(--font-archivo), ui-sans-serif, system-ui, sans-serif; }
-.label      { font-family: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
-              font-weight: 700; letter-spacing: 0.02em; text-transform: uppercase; }
-.micro      { font-family: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
-              font-weight: 500; font-size: 0.6875rem; letter-spacing: 0.04em; text-transform: uppercase; }
+/* UI type utilities — Archivo Narrow, all-caps for labels. Tracking per tokens.
+ * Wrapped in @layer components so Tailwind utilities (hidden, md:inline-flex,
+ * text-sm, etc.) can override them. */
+@layer components {
+  .font-ui    { font-family: var(--font-archivo), ui-sans-serif, system-ui, sans-serif; }
+  .label      { font-family: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+                font-weight: 700; letter-spacing: 0.02em; text-transform: uppercase; }
+  .micro      { font-family: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+                font-weight: 500; font-size: 0.6875rem; letter-spacing: 0.04em; text-transform: uppercase; }
 
-/* Status chip — Pentagram/TwelveLabs-style outlined meta tag. */
-.chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.375rem;
-  padding: 0.25rem 0.625rem;
-  font-family: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
-  font-weight: 500;
-  font-size: 0.6875rem;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  border: 1px solid var(--rule);
-  border-radius: 9999px;
-  color: var(--ink);
-  background: transparent;
+  /* Status chip — Pentagram/TwelveLabs-style outlined meta tag. */
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.25rem 0.625rem;
+    font-family: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+    font-weight: 500;
+    font-size: 0.6875rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    border: 1px solid var(--rule);
+    border-radius: 9999px;
+    color: var(--ink);
+    background: transparent;
+    white-space: nowrap;
+  }
+
+  .hairline-rule { border-color: var(--rule); }
 }
-
-.hairline-rule { border-color: var(--rule); }
 
 /* -------------------------------------------------------------------------
  * Legacy Mapbox styles — kept so existing /ui/mapbox still renders.
