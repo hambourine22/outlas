@@ -31,6 +31,12 @@
   --rule-strong:   rgb(30 30 30 / 0.4);  /* carbon @ 40% */
   --accent:        #2F5349;              /* pine */
 
+  /* Row-tint tokens — picked up by sidebar hover/active and anywhere
+   * else a quiet "selected" wash is needed. Theme-aware so the tint is
+   * always the same shade as the ink (carbon on snow, snow on carbon). */
+  --row-hover:  rgb(30 30 30 / 0.07);
+  --row-active: rgb(30 30 30 / 0.10);
+
   /* Legacy aliases retained for the Mapbox sidebar. */
   --background: var(--canvas);
   --foreground: var(--ink);
@@ -46,6 +52,8 @@
   --rule:          rgb(255 255 255 / 0.15);
   --rule-strong:   rgb(255 255 255 / 0.4);
   --accent:        #ADCFD3;              /* glacier (pine is too dark on carbon) */
+  --row-hover:     rgb(255 255 255 / 0.08);
+  --row-active:    rgb(255 255 255 / 0.12);
 }
 
 /* System dark mode — honours OS preference unless the user forced light. */
@@ -59,6 +67,8 @@
     --rule:          rgb(255 255 255 / 0.15);
     --rule-strong:   rgb(255 255 255 / 0.4);
     --accent:        #ADCFD3;
+    --row-hover:     rgb(255 255 255 / 0.08);
+    --row-active:    rgb(255 255 255 / 0.12);
   }
 }
 

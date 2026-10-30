@@ -837,7 +837,7 @@ function SidebarDrawerPreview({ anchor }: { anchor: "top" | "bottom" }) {
                   key={i.n}
                   className={[
                     "flex items-center gap-1.5 rounded-sm px-1.5 py-1 font-ui",
-                    i.active ? "bg-ink/[0.07] text-ink" : "text-ink-muted",
+                    i.active ? "bg-[var(--row-active)] text-ink" : "text-ink-muted",
                   ].join(" ")}
                   style={{ fontSize: "0.55rem" }}
                 >
