@@ -254,10 +254,13 @@ function SidebarItem({
         onClick={onNavigate}
         aria-current={active ? "location" : undefined}
         className={[
-          "flex items-center gap-3 border-l px-3 py-2 font-ui text-sm transition-colors",
+          // Light-tint block treatment, à la TwelveLabs docs: no left bar,
+          // just a subtle wash on hover and a slightly stronger wash when
+          // the chapter is current. Ink opacity scales 0 → 5% → 7%.
+          "flex items-center gap-3 rounded-sm px-3 py-2 font-ui text-sm transition-colors",
           active
-            ? "border-accent text-ink"
-            : "border-transparent text-ink-muted hover:border-rule hover:text-ink",
+            ? "bg-ink/[0.07] text-ink"
+            : "text-ink-muted hover:bg-ink/[0.05] hover:text-ink",
         ].join(" ")}
       >
         <span className="font-mono text-xs text-ink-faint">{chapter.n}</span>
