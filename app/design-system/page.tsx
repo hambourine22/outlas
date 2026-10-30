@@ -745,7 +745,7 @@ function NavBarPreview({ anchor, open }: { anchor: "top" | "bottom"; open: boole
           aria-hidden
           width={2213}
           height={478}
-          className="block h-3 w-auto dark:hidden"
+          className="theme-light-only h-3 w-auto"
         />
         <Image
           src="/brand/logotype/logotype_white.png"
@@ -753,7 +753,7 @@ function NavBarPreview({ anchor, open }: { anchor: "top" | "bottom"; open: boole
           aria-hidden
           width={2213}
           height={478}
-          className="hidden h-3 w-auto dark:block"
+          className="theme-dark-only h-3 w-auto"
         />
         <span className="chip hidden md:inline-flex" style={{ fontSize: "0.5rem", padding: "0.15rem 0.4rem" }}>
           v2
@@ -767,21 +767,22 @@ function NavBarPreview({ anchor, open }: { anchor: "top" | "bottom"; open: boole
           anchor === "top" ? "top-full -translate-y-1/2" : "bottom-full translate-y-1/2",
         ].join(" ")}
       >
+        {/* Rule: the medallion Ü must always match the typemark colour. */}
         <Image
           src="/brand/mark/U_green.png"
           alt=""
           aria-hidden
           width={904}
           height={1314}
-          className="block h-6 w-auto dark:hidden"
+          className="theme-light-only h-6 w-auto"
         />
         <Image
-          src="/brand/mark/U_blue.png"
+          src="/brand/mark/U_white.png"
           alt=""
           aria-hidden
           width={904}
           height={1314}
-          className="hidden h-6 w-auto dark:block"
+          className="theme-dark-only h-6 w-auto"
         />
       </span>
 

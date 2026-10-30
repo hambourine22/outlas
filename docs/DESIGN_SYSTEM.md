@@ -133,6 +133,15 @@ A blocking inline script in `app/layout.tsx` applies the stored preference befor
 
 Brand surfaces (`data-surface=…`) are theme-independent — rental is always sand, repair is always rust. The UX moment should feel the same in either mode.
 
+### Nav mark rule — typemark and medallion colours must match
+
+The Ü medallion in the TopBar always carries the same brand colour as the Oütlas typemark next to it. One signature, one tone — the mark and the wordmark are a single lockup, split across the bar.
+
+- Light theme → both pine (`#2F5349`).
+- Dark theme → both snow (`#FFFFFF`).
+
+Anywhere else the medallion appears (specimens, documentation, mockups), the same rule holds. Never swap one asset for a different brand colour than the other.
+
 ## Principles
 
 1. **Decluttered components** — chrome stays minimal; story and product visuals lead the eye.

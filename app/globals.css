@@ -81,6 +81,13 @@
 [data-surface="manifest"]{ --canvas: rgb(var(--brand-sand));    --accent: rgb(var(--brand-pine)); --ink: rgb(var(--brand-pine));   }
 [data-surface="carbon"]  { --canvas: rgb(var(--brand-carbon));  --accent: rgb(var(--brand-sand)); --ink: rgb(var(--brand-snow));   }
 
+html {
+  /* Account for the 56px sticky TopBar when the browser scrolls to an
+   * anchor or applies focus() scroll — prevents chapter headings from
+   * sitting behind the chrome. */
+  scroll-padding-top: 56px;
+}
+
 html, body {
   background: var(--canvas);
   color: var(--ink);
@@ -123,6 +130,22 @@ body {
   }
 
   .hairline-rule { border-color: var(--rule); }
+
+  /* Theme-match utilities — show / hide an element against the EFFECTIVE
+   * theme (data-theme, falling back to prefers-color-scheme). Tailwind's
+   * `dark:` modifier is attribute-only in this project, so these fill the
+   * gap for System mode on a dark OS. Pair the two classes on sibling
+   * assets (e.g. light + dark brand marks). */
+  .theme-light-only { display: initial; }
+  .theme-dark-only  { display: none; }
+}
+
+:root[data-theme="dark"] .theme-light-only { display: none; }
+:root[data-theme="dark"] .theme-dark-only  { display: initial; }
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .theme-light-only { display: none; }
+  :root:not([data-theme="light"]) .theme-dark-only  { display: initial; }
 }
 
 /* -------------------------------------------------------------------------

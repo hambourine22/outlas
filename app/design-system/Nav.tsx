@@ -3,8 +3,9 @@
 import { createContext, useCallback, useContext, useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { ThemeSwitcher } from "./ThemeSwitcher";
-import { CHAPTERS, GROUPS, type Chapter } from "./nav-data";
+import { CHAPTERS, GROUPS, type Chapter, type Group } from "./nav-data";
 
 /* -------------------------------------------------------------------------
  * NavProvider — shared drawer open/close state between TopBar and Sidebar.
@@ -59,6 +60,10 @@ function useNav() {
  * ---------------------------------------------------------------------- */
 export function TopBar() {
   const { drawerOpen, toggleDrawer } = useNav();
+  const pathname = usePathname();
+  // Only the Design System route carries its "v2 · Design System" chip —
+  // on app routes it would read awkwardly.
+  const isDesignSystem = pathname?.startsWith("/design-system") ?? false;
   return (
     <header
       className="sticky top-0 z-40 border-b border-rule bg-canvas/90 backdrop-blur-sm"
@@ -78,15 +83,15 @@ export function TopBar() {
             {drawerOpen ? <CloseIcon /> : <MenuIcon />}
           </button>
           <Link href="/" aria-label="Oütlas home" className="flex items-center">
-            {/* Pine typemark reads on snow in light mode; swapped to snow on
-              * carbon in dark mode. One Image is hidden per theme. */}
+            {/* Pine typemark on snow in light; snow typemark on carbon in
+              * dark. Theme-match utilities handle System mode too. */}
             <Image
               src="/brand/logotype/logotype_green.png"
               alt="Oütlas"
               width={2213}
               height={478}
               priority
-              className="block h-5 w-auto dark:hidden"
+              className="theme-light-only h-5 w-auto"
             />
             <Image
               src="/brand/logotype/logotype_white.png"
@@ -95,10 +100,12 @@ export function TopBar() {
               width={2213}
               height={478}
               priority
-              className="hidden h-5 w-auto dark:block"
+              className="theme-dark-only h-5 w-auto"
             />
           </Link>
-          <span className="chip hidden sm:inline-flex">v2 · Design System</span>
+          {isDesignSystem && (
+            <span className="chip hidden sm:inline-flex">v2 · Design System</span>
+          )}
         </div>
 
         {/* Center medallion — absolute-positioned Ü in a white circle that
@@ -139,9 +146,10 @@ function LogoMedallion() {
       aria-label="Oütlas home"
       className="pointer-events-auto absolute left-1/2 top-full z-10 -translate-x-1/2 -translate-y-1/2"
     >
-      {/* The medallion fill tracks the TopBar canvas so the semi-circle reads
-        * as a continuous extension of the nav background: snow in light,
-        * carbon in dark. The Ü mark swaps accent (pine → glacier) to match. */}
+      {/* Rule: the medallion Ü ALWAYS matches the typemark colour.
+       * Pine on pine (light), snow on snow (dark). The medallion fill
+       * meanwhile tracks --canvas so the semi-circle reads as a
+       * continuous extension of the nav background. */}
       <span
         className="flex h-14 w-14 items-center justify-center rounded-full border border-rule bg-canvas"
         aria-hidden
@@ -152,16 +160,16 @@ function LogoMedallion() {
           width={904}
           height={1314}
           priority
-          className="block h-8 w-auto dark:hidden"
+          className="theme-light-only h-8 w-auto"
         />
         <Image
-          src="/brand/mark/U_blue.png"
+          src="/brand/mark/U_white.png"
           alt=""
           aria-hidden
           width={904}
           height={1314}
           priority
-          className="hidden h-8 w-auto dark:block"
+          className="theme-dark-only h-8 w-auto"
         />
       </span>
     </Link>
@@ -190,9 +198,21 @@ function CloseIcon() {
  * the left, driven by the single TopBar toggle. Dismisses on Escape, on
  * backdrop click, and on item click.
  * ---------------------------------------------------------------------- */
-export function Sidebar() {
+export function Sidebar({
+  chapters = CHAPTERS,
+  groups = GROUPS,
+}: {
+  chapters?: Chapter[];
+  groups?: Group[];
+} = {}) {
   const { drawerOpen, closeDrawer } = useNav();
-  const activeSlug = useActiveSection(CHAPTERS.map((c) => c.slug));
+  const pathname = usePathname();
+  // Anchor-mode chapters feed scroll-spy; route-mode fall back to pathname.
+  const anchorSlugs = chapters.filter((c) => !c.href).map((c) => c.slug);
+  const spiedSlug = useActiveSection(anchorSlugs);
+  const activeSlug =
+    spiedSlug ??
+    chapters.find((c) => c.href && c.href === pathname)?.slug;
 
   return (
     <>
@@ -217,11 +237,11 @@ export function Sidebar() {
         ].join(" ")}
       >
         <nav className="space-y-2 px-3 py-6">
-          {GROUPS.map((g) => (
+          {groups.map((g) => (
             <SidebarGroup
               key={g.key}
               group={g}
-              chapters={CHAPTERS.filter((c) => c.group === g.key)}
+              chapters={chapters.filter((c) => c.group === g.key)}
               activeSlug={activeSlug}
               onNavigate={closeDrawer}
             />
@@ -243,7 +263,7 @@ function SidebarGroup({
   activeSlug,
   onNavigate,
 }: {
-  group: { key: Chapter["group"]; label: string };
+  group: Group;
   chapters: Chapter[];
   activeSlug: string | undefined;
   onNavigate: () => void;
@@ -318,27 +338,44 @@ function SidebarItem({
   active: boolean;
   onNavigate: () => void;
 }) {
+  const className = [
+    // Light-tint block treatment, à la TwelveLabs docs: no left bar,
+    // just a subtle wash on hover and a slightly stronger wash when
+    // the chapter is current. The row-tint tokens flip ink colour
+    // per theme (carbon on snow, snow on carbon) so one class works
+    // in light, dark and system modes.
+    "flex items-center gap-3 rounded-sm px-3 py-2 font-ui text-sm transition-colors",
+    active
+      ? "bg-[var(--row-active)] text-ink"
+      : "text-ink-muted hover:bg-[var(--row-hover)] hover:text-ink",
+  ].join(" ");
+  const children = (
+    <>
+      <span className="font-mono text-xs text-ink-faint">{chapter.n}</span>
+      <span>{chapter.title}</span>
+    </>
+  );
   return (
     <li>
-      <a
-        href={`#${chapter.slug}`}
-        onClick={onNavigate}
-        aria-current={active ? "location" : undefined}
-        className={[
-          // Light-tint block treatment, à la TwelveLabs docs: no left bar,
-          // just a subtle wash on hover and a slightly stronger wash when
-          // the chapter is current. The row-tint tokens flip ink colour
-          // per theme (carbon on snow, snow on carbon) so one class works
-          // in light, dark and system modes.
-          "flex items-center gap-3 rounded-sm px-3 py-2 font-ui text-sm transition-colors",
-          active
-            ? "bg-[var(--row-active)] text-ink"
-            : "text-ink-muted hover:bg-[var(--row-hover)] hover:text-ink",
-        ].join(" ")}
-      >
-        <span className="font-mono text-xs text-ink-faint">{chapter.n}</span>
-        <span>{chapter.title}</span>
-      </a>
+      {chapter.href ? (
+        <Link
+          href={chapter.href}
+          onClick={onNavigate}
+          aria-current={active ? "page" : undefined}
+          className={className}
+        >
+          {children}
+        </Link>
+      ) : (
+        <a
+          href={`#${chapter.slug}`}
+          onClick={onNavigate}
+          aria-current={active ? "location" : undefined}
+          className={className}
+        >
+          {children}
+        </a>
+      )}
     </li>
   );
 }
@@ -346,8 +383,12 @@ function SidebarItem({
 /* -------------------------------------------------------------------------
  * OnThisPage — right rail outline for the current page.
  * ---------------------------------------------------------------------- */
-export function OnThisPage() {
-  const activeSlug = useActiveSection(CHAPTERS.map((c) => c.slug));
+export function OnThisPage({ chapters = CHAPTERS }: { chapters?: Chapter[] } = {}) {
+  // Only chapters without href participate in scroll-spy; route-level
+  // chapters shouldn't appear in an "on this page" rail at all, so filter.
+  const anchorChapters = chapters.filter((c) => !c.href);
+  const activeSlug = useActiveSection(anchorChapters.map((c) => c.slug));
+  if (anchorChapters.length === 0) return null;
 
   return (
     <aside
@@ -357,7 +398,7 @@ export function OnThisPage() {
       <nav className="px-6 py-8">
         <h3 className="label text-ink-faint">On this page</h3>
         <ul className="mt-3 space-y-1">
-          {CHAPTERS.map((c) => (
+          {anchorChapters.map((c) => (
             <li key={c.slug}>
               <a
                 href={`#${c.slug}`}
