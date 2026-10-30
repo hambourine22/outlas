@@ -61,90 +61,86 @@ export function TopBar() {
   const { drawerOpen, toggleDrawer } = useNav();
   return (
     <header
-      className="sticky top-0 z-40 flex items-center justify-between gap-3 border-b border-rule bg-canvas/90 px-3 py-3 backdrop-blur-sm md:gap-6 md:px-6"
+      className="sticky top-0 z-40 border-b border-rule bg-canvas/90 backdrop-blur-sm"
       role="banner"
     >
-      <div className="flex items-center gap-3">
-        <button
-          type="button"
-          aria-label={drawerOpen ? "Close navigation" : "Open navigation"}
-          aria-expanded={drawerOpen}
-          aria-controls="design-system-sidebar"
-          onClick={toggleDrawer}
-          className="flex h-9 w-9 items-center justify-center border border-rule text-ink lg:hidden"
-        >
-          {drawerOpen ? <CloseIcon /> : <MenuIcon />}
-        </button>
-        <Link href="/" className="flex items-center gap-2">
-          <Image
-            src="/brand/mark/U_green.png"
-            alt="Oütlas"
-            width={904}
-            height={1314}
-            priority
-            className="h-6 w-auto dark:hidden"
-          />
-          <Image
-            src="/brand/mark/U_white.png"
-            alt="Oütlas"
-            width={904}
-            height={1314}
-            priority
-            className="hidden h-6 w-auto dark:block"
-          />
-          <span className="font-display text-sm text-ink">Oütlas</span>
-        </Link>
-        <span className="chip hidden sm:inline-flex">v2</span>
-      </div>
+      <div className="relative flex h-14 items-center justify-between gap-3 px-3 md:gap-6 md:px-6">
+        {/* Left: hamburger (below lg) + wordmark + version chip */}
+        <div className="flex items-center gap-3">
+          <button
+            type="button"
+            aria-label={drawerOpen ? "Close navigation" : "Open navigation"}
+            aria-expanded={drawerOpen}
+            aria-controls="design-system-sidebar"
+            onClick={toggleDrawer}
+            className="flex h-9 w-9 items-center justify-center border border-rule text-ink lg:hidden"
+          >
+            {drawerOpen ? <CloseIcon /> : <MenuIcon />}
+          </button>
+          <Link
+            href="/"
+            className="font-display text-sm text-ink"
+            aria-label="Oütlas home"
+          >
+            Oütlas
+          </Link>
+          <span className="chip hidden sm:inline-flex">v2 · Design System</span>
+        </div>
 
-      <div className="hidden flex-1 justify-center md:flex">
-        <SearchStub />
-      </div>
+        {/* Center medallion — absolute-positioned Ü in a white circle that
+          * straddles the bottom border, 50% above / 50% below the nav line.
+          * The circle's own fill acts as the semi-circular extension of the
+          * nav background. */}
+        <LogoMedallion />
 
-      <nav className="flex items-center gap-2">
-        <a
-          href="https://github.com/hambourine22/outlas"
-          target="_blank"
-          rel="noreferrer"
-          className="chip hidden md:inline-flex"
-        >
-          GitHub →
-        </a>
-        <a
-          href="https://outlas.vercel.app"
-          target="_blank"
-          rel="noreferrer"
-          className="chip hidden md:inline-flex"
-        >
-          Live site →
-        </a>
-        <ThemeSwitcher />
-      </nav>
+        {/* Right: utility chips (md+) + theme switcher */}
+        <nav className="flex items-center gap-2">
+          <a
+            href="https://github.com/hambourine22/outlas"
+            target="_blank"
+            rel="noreferrer"
+            className="chip hidden md:inline-flex"
+          >
+            GitHub →
+          </a>
+          <a
+            href="https://outlas.vercel.app"
+            target="_blank"
+            rel="noreferrer"
+            className="chip hidden md:inline-flex"
+          >
+            Live site →
+          </a>
+          <ThemeSwitcher />
+        </nav>
+      </div>
     </header>
   );
 }
 
-function SearchStub() {
+function LogoMedallion() {
   return (
-    <label className="flex w-full max-w-md items-center gap-2 border border-rule bg-canvas-raised px-3 py-1.5 text-ink-muted">
-      <SearchIcon />
-      <input
-        type="search"
-        placeholder="Search the system"
-        aria-label="Search"
-        className="w-full bg-transparent font-ui text-sm outline-none placeholder:text-ink-faint"
-      />
-      <span className="chip">/</span>
-    </label>
-  );
-}
-
-function SearchIcon() {
-  return (
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden>
-      <circle cx="11" cy="11" r="7" stroke="currentColor" strokeWidth="1.6" />
-      <path d="m20 20-3.5-3.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
-    </svg>
+    <Link
+      href="/"
+      aria-label="Oütlas home"
+      className="pointer-events-auto absolute left-1/2 top-full z-10 -translate-x-1/2 -translate-y-1/2"
+    >
+      <span
+        className="flex h-14 w-14 items-center justify-center rounded-full border border-rule bg-snow"
+        aria-hidden
+      >
+        {/* Ü mark is always pine so it reads on the snow medallion in either
+          * theme. No dark-mode swap needed. */}
+        <Image
+          src="/brand/mark/U_green.png"
+          alt=""
+          width={904}
+          height={1314}
+          priority
+          className="h-8 w-auto"
+        />
+      </span>
+    </Link>
   );
 }
 
