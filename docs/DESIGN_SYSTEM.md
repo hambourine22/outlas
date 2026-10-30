@@ -8,9 +8,13 @@ Routes: visit `/design-system` on a running dev server for the rendered referenc
 
 | File | Role |
 |---|---|
-| `app/lib/design-system.ts` | Canonical TS tokens — colours, type scale, spacing, radii, shadows, score dimensions, map legend, principles. |
-| `app/globals.css` | CSS variables that mirror the TS tokens, plus `[data-surface=…]` surface rules. |
+| `app/lib/design-system.ts` | Canonical TS tokens — colours, type scale, spacing, radii, shadows, score dimensions, map legend, principles, grid, dataviz. |
+| `app/globals.css` | CSS variables that mirror the TS tokens, plus `[data-surface=…]` surface rules and `[data-theme=…]` theme flips. |
 | `tailwind.config.ts` | Tailwind extends — colour aliases, font families, type scale, radii, shadows. |
+| `app/design-system/Nav.tsx` | `TopBar`, `Sidebar`, `OnThisPage` navigation primitives with built-in scroll-spy. |
+| `app/design-system/nav-data.ts` | Single source for the chapter list and the three groups (Foundations / Components / Data). |
+| `app/design-system/ThemeSwitcher.tsx` | Three-way Light / System / Dark toggle. |
+| `app/design-system/Chart.tsx` | SVG `LineChart`, `BarChart`, `RadarChart` + `ChartLegend` primitives. |
 | `public/brand/` | Logotype and Ü-mark PNGs in all six brand colours. |
 | `app/fonts/` | Vollkorn and Archivo Narrow TTFs loaded via `next/font/local`. |
 

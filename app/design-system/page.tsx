@@ -16,7 +16,8 @@ import {
   grid,
   dataviz,
 } from "@/app/lib/design-system";
-import { ThemeSwitcher } from "./ThemeSwitcher";
+import { TopBar, Sidebar, OnThisPage } from "./Nav";
+import { CHAPTERS } from "./nav-data";
 import { LineChart, ChartLegend, BarChart, RadarChart } from "./Chart";
 
 export const metadata = {
@@ -28,87 +29,83 @@ export const metadata = {
 const colorOrder = ["sand", "carbon", "snow", "rust", "pine", "glacier"] as const;
 const surfaceOrder = ["rental", "repair", "story", "manifest", "default"] as const;
 
-const CHAPTERS = [
-  { n: "01", slug: "voice",      title: "Voice" },
-  { n: "02", slug: "logo",       title: "Logo" },
-  { n: "03", slug: "palette",    title: "Palette" },
-  { n: "04", slug: "themes",     title: "Themes" },
-  { n: "05", slug: "grid",       title: "Grid & Layout" },
-  { n: "06", slug: "surfaces",   title: "Surfaces" },
-  { n: "07", slug: "type",       title: "Type" },
-  { n: "08", slug: "space",      title: "Space & Outline" },
-  { n: "09", slug: "principles", title: "Principles" },
-  { n: "10", slug: "providers",  title: "Providers" },
-  { n: "11", slug: "score",      title: "Score Pills" },
-  { n: "12", slug: "map",        title: "Map Legend" },
-  { n: "13", slug: "dataviz",    title: "Data Viz" },
-];
-
 const TOTAL = CHAPTERS.length;
 
 export default function DesignSystemPage() {
   return (
-    <main className="min-h-screen bg-canvas text-ink">
-      <Masthead />
-      <Chapter n="01" title="Voice" intro="Three lines, read in order. The manifesto expands the ladder; the tagline compresses it.">
-        <Voice />
-      </Chapter>
-      <Chapter n="02" title="Logo" intro="The Ü logomark is the signature; the wordmark anchors long-form surfaces. One brand colour per surface — never recolour outside the palette.">
-        <Logos />
-      </Chapter>
-      <Chapter n="03" title="Palette" intro="Six brand colours, each with a named role. Every value exists in the token file; nothing is picked by eye.">
-        <Palette />
-      </Chapter>
-      <Chapter n="04" title="Themes" intro="Light, dark, and system modes. Semantic tokens flip; brand surfaces stay intentional in either theme.">
-        <Themes />
-      </Chapter>
-      <Chapter n="05" title="Grid & Layout" intro="A 4×4 structure forms a 12-column grid. Margins and gutters are a percentage of the viewport. Everything rounds to the nearest 4px.">
-        <GridLayout />
-      </Chapter>
-      <Chapter n="06" title="Surfaces" intro="Each UX moment binds to a surface via data-surface. CSS variables carry background, accent and ink down the tree.">
-        <Surfaces />
-      </Chapter>
-      <Chapter n="07" title="Type" intro="Vollkorn for editorial display and body — it carries the storytelling. Archivo Narrow for UI labels, meta, and navigation chrome.">
-        <TypeScale />
-      </Chapter>
-      <Chapter n="08" title="Space & Outline" intro="One ladder each. Every rung is a multiple of 4px. Depth comes from outline weight, never drop shadow.">
-        <SpaceRadiiOutline />
-      </Chapter>
-      <Chapter n="09" title="Principles" intro="Four load-bearing rules behind every surface.">
-        <Principles />
-      </Chapter>
-      <Chapter n="10" title="Providers" intro="The three-circle taxonomy. Every supplier maps to exactly one; service-provider carries the Ü mark.">
-        <Providers />
-      </Chapter>
-      <Chapter n="11" title="Score Pills" intro="Resort pillars are rendered as pills — a 0–5 band drives colour; the number is secondary.">
-        <ScorePills />
-      </Chapter>
-      <Chapter n="12" title="Map Legend" intro="Shared across the Scotland map and every regional map that follows.">
-        <MapLegend />
-      </Chapter>
-      <Chapter n="13" title="Data Viz" intro="Oütlas dataviz builds on the brand palette with solid Carbon axes, hairline dashed grids, and chip-tagged series. Transparent on canvas by default.">
-        <Dataviz />
-      </Chapter>
-      <Footer />
-    </main>
+    <div className="min-h-screen bg-canvas text-ink">
+      <TopBar />
+      <div className="flex">
+        <Sidebar />
+        <main className="min-w-0 flex-1">
+          <Masthead />
+          <Chapter slug="voice" n="01" title="Voice" intro="Three lines, read in order. The manifesto expands the ladder; the tagline compresses it.">
+            <Voice />
+          </Chapter>
+          <Chapter slug="logo" n="02" title="Logo" intro="The Ü logomark is the signature; the wordmark anchors long-form surfaces. One brand colour per surface — never recolour outside the palette.">
+            <Logos />
+          </Chapter>
+          <Chapter slug="palette" n="03" title="Palette" intro="Six brand colours, each with a named role. Every value exists in the token file; nothing is picked by eye.">
+            <Palette />
+          </Chapter>
+          <Chapter slug="themes" n="04" title="Themes" intro="Light, dark, and system modes. Semantic tokens flip; brand surfaces stay intentional in either theme.">
+            <Themes />
+          </Chapter>
+          <Chapter slug="grid" n="05" title="Grid & Layout" intro="A 4×4 structure forms a 12-column grid. Margins and gutters are a percentage of the viewport. Everything rounds to the nearest 4px.">
+            <GridLayout />
+          </Chapter>
+          <Chapter slug="surfaces" n="06" title="Surfaces" intro="Each UX moment binds to a surface via data-surface. CSS variables carry background, accent and ink down the tree.">
+            <Surfaces />
+          </Chapter>
+          <Chapter slug="type" n="07" title="Type" intro="Vollkorn for editorial display and body — it carries the storytelling. Archivo Narrow for UI labels, meta, and navigation chrome.">
+            <TypeScale />
+          </Chapter>
+          <Chapter slug="space" n="08" title="Space & Outline" intro="One ladder each. Every rung is a multiple of 4px. Depth comes from outline weight, never drop shadow.">
+            <SpaceRadiiOutline />
+          </Chapter>
+          <Chapter slug="principles" n="09" title="Principles" intro="Four load-bearing rules behind every surface.">
+            <Principles />
+          </Chapter>
+          <Chapter slug="nav" n="10" title="Navigation" intro="Top bar, left sidebar, and on-this-page rail — the same editorial chrome used around this document, documented as reusable components.">
+            <NavSpec />
+          </Chapter>
+          <Chapter slug="providers" n="11" title="Providers" intro="The three-circle taxonomy. Every supplier maps to exactly one; service-provider carries the Ü mark.">
+            <Providers />
+          </Chapter>
+          <Chapter slug="score" n="12" title="Score Pills" intro="Resort pillars are rendered as pills — a 0–5 band drives colour; the number is secondary.">
+            <ScorePills />
+          </Chapter>
+          <Chapter slug="map" n="13" title="Map Legend" intro="Shared across the Scotland map and every regional map that follows.">
+            <MapLegend />
+          </Chapter>
+          <Chapter slug="dataviz" n="14" title="Data Viz" intro="Oütlas dataviz builds on the brand palette with solid Carbon axes, hairline dashed grids, and chip-tagged series. Transparent on canvas by default.">
+            <Dataviz />
+          </Chapter>
+          <Footer />
+        </main>
+        <OnThisPage />
+      </div>
+    </div>
   );
 }
 
 /* ---------- layout primitives ---------- */
 
 function Chapter({
+  slug,
   n,
   title,
   intro,
   children,
 }: {
+  slug: string;
   n: string;
   title: string;
   intro: string;
   children: React.ReactNode;
 }) {
   return (
-    <section className="border-t border-rule">
+    <section id={slug} className="scroll-mt-16 border-t border-rule">
       {/* Chapter header: left narration, vertical rule, right huge numeral + page mark. */}
       <header className="grid grid-cols-12 gap-0">
         <div className="col-span-12 border-b border-rule px-6 py-12 md:col-span-5 md:border-b-0 md:border-r md:px-10 md:py-16 lg:px-14 lg:py-20">
@@ -133,29 +130,6 @@ function Chapter({
 function Masthead() {
   return (
     <header className="bg-canvas text-ink">
-      <div className="flex items-start justify-between px-6 pt-6 md:px-10 md:pt-10 lg:px-14 lg:pt-14">
-        <div className="flex items-center gap-3">
-          <Image
-            src="/brand/mark/U_green.png"
-            alt="Oütlas Ü logomark"
-            width={904}
-            height={1314}
-            priority
-            className="h-10 w-auto dark:hidden"
-          />
-          <Image
-            src="/brand/mark/U_white.png"
-            alt="Oütlas Ü logomark"
-            width={904}
-            height={1314}
-            priority
-            className="hidden h-10 w-auto dark:block"
-          />
-          <span className="chip">v2 · Oütlas Design System</span>
-        </div>
-        <ThemeSwitcher />
-      </div>
-
       <div className="grid grid-cols-12 gap-0 px-6 pb-20 pt-16 md:px-10 md:pb-28 md:pt-24 lg:px-14 lg:pb-36 lg:pt-32">
         <div className="col-span-12 md:col-span-7">
           <span className="label text-ink-muted">Share · Buy · Ride</span>
@@ -612,6 +586,170 @@ function Principles() {
         </li>
       ))}
     </ol>
+  );
+}
+
+function NavSpec() {
+  const components = [
+    {
+      key: "TopBar",
+      body: "Sticky brand bar across the top of every long document. Carries the Ü mark, product chip, search field, utility links to external resources, and the theme switcher.",
+      slots: ["brand", "version chip", "search", "external chips", "theme switcher"],
+    },
+    {
+      key: "Sidebar",
+      body: "Primary navigation on the left. Items grouped by section label; each item has its chapter numeral plus title and a 1px accent border when active.",
+      slots: ["group label", "numbered item", "active indicator (accent border)"],
+    },
+    {
+      key: "OnThisPage",
+      body: "Right-rail outline that mirrors the current page's structure. Appears only at xl+ viewports; collapses below.",
+      slots: ["section micro label", "chapter list", "active row (ink)"],
+    },
+  ];
+  return (
+    <div className="space-y-16">
+      {/* Component cards */}
+      <div className="grid grid-cols-1 gap-px bg-rule md:grid-cols-3">
+        {components.map((c) => (
+          <div key={c.key} className="bg-canvas-raised p-8">
+            <span className="chip">{c.key}</span>
+            <p className="mt-6 font-ui text-sm leading-relaxed text-ink-muted">
+              {c.body}
+            </p>
+            <h4 className="mt-6 label text-ink-faint">Slots</h4>
+            <ul className="mt-2 space-y-1 font-ui text-xs text-ink-muted">
+              {c.slots.map((s) => (
+                <li key={s}>· {s}</li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+
+      {/* Sidebar specimen — a static preview of the component */}
+      <div>
+        <div className="mb-6 flex items-center gap-3">
+          <span className="chip">Specimen</span>
+          <span className="micro text-ink-faint">Sidebar · grouped primary nav</span>
+        </div>
+        <div className="grid grid-cols-1 gap-px bg-rule md:grid-cols-[240px_1fr]">
+          {/* static replica of the sidebar's rendered shape */}
+          <div className="bg-canvas p-6">
+            <section className="space-y-6">
+              {[
+                { label: "Foundations", items: [
+                  { n: "01", t: "Voice",       active: false },
+                  { n: "02", t: "Logo",        active: false },
+                  { n: "03", t: "Palette",     active: true  },
+                  { n: "04", t: "Themes",      active: false },
+                ]},
+                { label: "Components", items: [
+                  { n: "08", t: "Space & Outline", active: false },
+                  { n: "10", t: "Navigation",      active: false },
+                ]},
+              ].map((g) => (
+                <div key={g.label}>
+                  <h5 className="label text-ink-faint">{g.label}</h5>
+                  <ul className="mt-3 space-y-1">
+                    {g.items.map((i) => (
+                      <li key={i.n}>
+                        <span
+                          className={[
+                            "flex items-center gap-3 border-l px-3 py-2 font-ui text-sm",
+                            i.active
+                              ? "border-accent text-ink"
+                              : "border-transparent text-ink-muted",
+                          ].join(" ")}
+                        >
+                          <span className="font-mono text-xs text-ink-faint">{i.n}</span>
+                          <span>{i.t}</span>
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </section>
+          </div>
+          <div className="bg-canvas-raised p-8">
+            <h3 className="font-display text-title">Anatomy</h3>
+            <ul className="mt-6 space-y-3 font-ui text-sm text-ink-muted">
+              <li>· 240px fixed width at lg+; collapses below.</li>
+              <li>· Group heading uses the <code className="font-mono text-xs">.label</code> utility in <code className="font-mono text-xs">ink-faint</code>.</li>
+              <li>· Item left-border is 1px <code className="font-mono text-xs">accent</code> when active; transparent otherwise.</li>
+              <li>· Chapter numeral is <code className="font-mono text-xs">font-mono text-xs</code> in <code className="font-mono text-xs">ink-faint</code>.</li>
+              <li>· Row hover brings a hairline left-border without changing fill.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      {/* TopBar specimen */}
+      <div>
+        <div className="mb-6 flex items-center gap-3">
+          <span className="chip">Specimen</span>
+          <span className="micro text-ink-faint">TopBar · brand + search + utility + theme</span>
+        </div>
+        <div className="border border-rule">
+          <div className="flex items-center justify-between gap-6 border-b border-rule bg-canvas px-6 py-3">
+            <div className="flex items-center gap-3">
+              <span className="font-display text-sm">Oütlas</span>
+              <span className="chip">v2</span>
+            </div>
+            <div className="hidden flex-1 justify-center md:flex">
+              <span className="flex w-full max-w-md items-center gap-2 border border-rule bg-canvas-raised px-3 py-1.5 text-ink-faint">
+                <span className="font-ui text-sm">Search the system</span>
+                <span className="chip ml-auto">/</span>
+              </span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="chip hidden md:inline-flex">GitHub →</span>
+              <span className="chip hidden md:inline-flex">Live site →</span>
+              <span className="chip">theme</span>
+            </div>
+          </div>
+          <div className="bg-canvas-raised p-6 font-ui text-xs text-ink-muted">
+            <code className="font-mono">{"<TopBar />"}</code> renders this bar. Sticky; sits above
+            Sidebar and OnThisPage. 57px tall at md+. Hidden search on small viewports; chips
+            collapse to the switcher.
+          </div>
+        </div>
+      </div>
+
+      {/* Behaviour table */}
+      <div>
+        <div className="mb-6 flex items-center gap-3">
+          <span className="chip">Behaviour</span>
+          <span className="micro text-ink-faint">responsive rules</span>
+        </div>
+        <table className="w-full border-collapse font-ui text-sm">
+          <thead>
+            <tr>
+              <th className="label border-b border-rule py-3 pr-4 text-left text-ink-faint">Breakpoint</th>
+              <th className="label border-b border-rule py-3 pr-4 text-left text-ink-faint">TopBar</th>
+              <th className="label border-b border-rule py-3 pr-4 text-left text-ink-faint">Sidebar</th>
+              <th className="label border-b border-rule py-3 text-left text-ink-faint">OnThisPage</th>
+            </tr>
+          </thead>
+          <tbody>
+            {[
+              { bp: "base",   top: "logo + theme only",      side: "hidden (hamburger)", otp: "hidden" },
+              { bp: "md",     top: "+ search + chips",       side: "hidden (hamburger)", otp: "hidden" },
+              { bp: "lg",     top: "full",                   side: "shown (240px)",      otp: "hidden" },
+              { bp: "xl",     top: "full",                   side: "shown (240px)",      otp: "shown (224px)" },
+            ].map((r) => (
+              <tr key={r.bp}>
+                <td className="label border-b border-rule py-3 pr-4">{r.bp}</td>
+                <td className="border-b border-rule py-3 pr-4 text-ink-muted">{r.top}</td>
+                <td className="border-b border-rule py-3 pr-4 text-ink-muted">{r.side}</td>
+                <td className="border-b border-rule py-3 text-ink-muted">{r.otp}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
   );
 }
 
