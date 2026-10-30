@@ -595,17 +595,17 @@ function NavSpec() {
   const components = [
     {
       key: "TopBar",
-      body: "Sticky brand bar across the top of every long document. Carries the Ü mark, product chip, search field, utility links to external resources, and the theme switcher.",
-      slots: ["brand", "version chip", "search", "external chips", "theme switcher"],
+      body: "Brand chrome — hamburger, Oütlas typemark, version chip, utility links, theme switcher. The Ü medallion straddles whichever border the bar is anchored to (top or bottom) so the semi-circle reads as a continuous extension of the chrome.",
+      slots: ["hamburger (open/close)", "typemark (logotype_green / logotype_white)", "version chip", "medallion (Ü)", "utility chips", "theme switcher"],
     },
     {
       key: "Sidebar",
-      body: "Primary navigation on the left. Items grouped by section label; each item has its chapter numeral plus title and a 1px accent border when active.",
-      slots: ["group label", "numbered item", "active indicator (accent border)"],
+      body: "Grouped primary navigation. Behaves as a drawer at every breakpoint — one click on the hamburger opens it, one more closes it. Row hover and the current chapter use the TwelveLabs-style light-tint block, no left bar.",
+      slots: ["group label", "numbered item", "hover tint (ink @ 5%)", "active tint (ink @ 7%)"],
     },
     {
       key: "OnThisPage",
-      body: "Right-rail outline that mirrors the current page's structure. Appears only at xl+ viewports; collapses below.",
+      body: "Right-rail outline that mirrors the current page's structure. Appears only at xl+ viewports; collapses below. Reads as a quiet secondary index — does not duplicate the sidebar.",
       slots: ["section micro label", "chapter list", "active row (ink)"],
     },
   ];
@@ -629,94 +629,17 @@ function NavSpec() {
         ))}
       </div>
 
-      {/* Sidebar specimen — a static preview of the component */}
+      {/* 2 × 2 specimen grid — anchor (top | bottom) × sidebar (closed | open). */}
       <div>
         <div className="mb-6 flex items-center gap-3">
-          <span className="chip">Specimen</span>
-          <span className="micro text-ink-faint">Sidebar · grouped primary nav</span>
+          <span className="chip">Specimens</span>
+          <span className="micro text-ink-faint">Top vs bottom anchor · sidebar closed vs open</span>
         </div>
-        <div className="grid grid-cols-1 gap-px bg-rule md:grid-cols-[240px_1fr]">
-          {/* static replica of the sidebar's rendered shape */}
-          <div className="bg-canvas p-6">
-            <section className="space-y-6">
-              {[
-                { label: "Foundations", items: [
-                  { n: "01", t: "Voice",       active: false },
-                  { n: "02", t: "Logo",        active: false },
-                  { n: "03", t: "Palette",     active: true  },
-                  { n: "04", t: "Themes",      active: false },
-                ]},
-                { label: "Components", items: [
-                  { n: "08", t: "Space & Outline", active: false },
-                  { n: "10", t: "Navigation",      active: false },
-                ]},
-              ].map((g) => (
-                <div key={g.label}>
-                  <h5 className="label text-ink-faint">{g.label}</h5>
-                  <ul className="mt-3 space-y-1">
-                    {g.items.map((i) => (
-                      <li key={i.n}>
-                        <span
-                          className={[
-                            "flex items-center gap-3 border-l px-3 py-2 font-ui text-sm",
-                            i.active
-                              ? "border-accent text-ink"
-                              : "border-transparent text-ink-muted",
-                          ].join(" ")}
-                        >
-                          <span className="font-mono text-xs text-ink-faint">{i.n}</span>
-                          <span>{i.t}</span>
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ))}
-            </section>
-          </div>
-          <div className="bg-canvas-raised p-8">
-            <h3 className="font-display text-title">Anatomy</h3>
-            <ul className="mt-6 space-y-3 font-ui text-sm text-ink-muted">
-              <li>· 240px inline rail at lg+; drawer with backdrop below.</li>
-              <li>· Hamburger in <code className="font-mono text-xs">TopBar</code> toggles the drawer. Escape, backdrop click, and item click all close it; body scroll locks while open.</li>
-              <li>· Group heading uses the <code className="font-mono text-xs">.label</code> utility in <code className="font-mono text-xs">ink-faint</code>.</li>
-              <li>· Item left-border is 1px <code className="font-mono text-xs">accent</code> when active; transparent otherwise.</li>
-              <li>· Chapter numeral is <code className="font-mono text-xs">font-mono text-xs</code> in <code className="font-mono text-xs">ink-faint</code>.</li>
-              <li>· Row hover brings a hairline left-border without changing fill.</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-
-      {/* TopBar specimen */}
-      <div>
-        <div className="mb-6 flex items-center gap-3">
-          <span className="chip">Specimen</span>
-          <span className="micro text-ink-faint">TopBar · brand + search + utility + theme</span>
-        </div>
-        <div className="border border-rule">
-          <div className="flex items-center justify-between gap-6 border-b border-rule bg-canvas px-6 py-3">
-            <div className="flex items-center gap-3">
-              <span className="font-display text-sm">Oütlas</span>
-              <span className="chip">v2</span>
-            </div>
-            <div className="hidden flex-1 justify-center md:flex">
-              <span className="flex w-full max-w-md items-center gap-2 border border-rule bg-canvas-raised px-3 py-1.5 text-ink-faint">
-                <span className="font-ui text-sm">Search the system</span>
-                <span className="chip ml-auto">/</span>
-              </span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="chip hidden md:inline-flex">GitHub →</span>
-              <span className="chip hidden md:inline-flex">Live site →</span>
-              <span className="chip">theme</span>
-            </div>
-          </div>
-          <div className="bg-canvas-raised p-6 font-ui text-xs text-ink-muted">
-            <code className="font-mono">{"<TopBar />"}</code> renders this bar. Sticky; sits above
-            Sidebar and OnThisPage. 57px tall at md+. Hidden search on small viewports; chips
-            collapse to the switcher.
-          </div>
+        <div className="grid grid-cols-1 gap-px bg-rule md:grid-cols-2">
+          <NavFrame label="Top · sidebar closed"   anchor="top"    withSidebar={false} />
+          <NavFrame label="Top · sidebar open"     anchor="top"    withSidebar={true}  />
+          <NavFrame label="Bottom · sidebar closed" anchor="bottom" withSidebar={false} />
+          <NavFrame label="Bottom · sidebar open"   anchor="bottom" withSidebar={true}  />
         </div>
       </div>
 
@@ -737,10 +660,10 @@ function NavSpec() {
           </thead>
           <tbody>
             {[
-              { bp: "base",   top: "menu + logo + theme",  side: "drawer (288px, backdrop)", otp: "hidden" },
-              { bp: "md",     top: "+ search + chips",     side: "drawer (288px, backdrop)", otp: "hidden" },
-              { bp: "lg",     top: "full",                 side: "inline rail (240px)",      otp: "hidden" },
-              { bp: "xl",     top: "full",                 side: "inline rail (240px)",      otp: "shown (224px)" },
+              { bp: "base", top: "hamburger + typemark + medallion + theme",       side: "drawer (288px, backdrop)", otp: "hidden" },
+              { bp: "md",   top: "+ version chip + utility chips",                  side: "drawer (288px, backdrop)", otp: "hidden" },
+              { bp: "lg",   top: "same",                                            side: "drawer (288px, backdrop)", otp: "hidden" },
+              { bp: "xl",   top: "same",                                            side: "drawer (288px, backdrop)", otp: "shown (224px)" },
             ].map((r) => (
               <tr key={r.bp}>
                 <td className="label border-b border-rule py-3 pr-4">{r.bp}</td>
@@ -751,6 +674,182 @@ function NavSpec() {
             ))}
           </tbody>
         </table>
+      </div>
+    </div>
+  );
+}
+
+/* -----------------------------------------------------------------
+ * NavFrame — a boxed, static preview of the TopBar component in one
+ * of four layouts: anchored to the top or bottom of the viewport,
+ * with the Sidebar drawer either closed or open. Uses the real brand
+ * assets so what you see here is pixel-faithful to the production
+ * chrome at the top of this page.
+ * ----------------------------------------------------------------- */
+function NavFrame({
+  label,
+  anchor,
+  withSidebar,
+}: {
+  label: string;
+  anchor: "top" | "bottom";
+  withSidebar: boolean;
+}) {
+  return (
+    <figure className="bg-canvas-raised p-6">
+      <figcaption className="mb-4 flex items-center gap-3">
+        <span className="chip">{label}</span>
+      </figcaption>
+      <div className="relative h-64 overflow-hidden border border-rule bg-canvas">
+        <NavBarPreview anchor={anchor} open={withSidebar} />
+        {withSidebar && <SidebarDrawerPreview anchor={anchor} />}
+        <div
+          className={[
+            "absolute inset-0 flex items-center justify-center font-ui text-xs text-ink-faint",
+            anchor === "top" ? "pt-10" : "pb-10",
+            withSidebar ? "pl-40" : "",
+          ].join(" ")}
+          aria-hidden
+        >
+          page body
+        </div>
+      </div>
+    </figure>
+  );
+}
+
+function NavBarPreview({ anchor, open }: { anchor: "top" | "bottom"; open: boolean }) {
+  return (
+    <div
+      className={[
+        "absolute inset-x-0 z-20 flex h-10 items-center justify-between gap-2 bg-canvas px-2",
+        anchor === "top" ? "top-0 border-b border-rule" : "bottom-0 border-t border-rule",
+      ].join(" ")}
+    >
+      {/* Left: hamburger (or close) + typemark + version chip */}
+      <div className="flex items-center gap-2">
+        <span className="flex h-6 w-6 items-center justify-center border border-rule text-ink">
+          {open ? (
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" aria-hidden>
+              <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" />
+            </svg>
+          ) : (
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" aria-hidden>
+              <path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" />
+            </svg>
+          )}
+        </span>
+        <Image
+          src="/brand/logotype/logotype_green.png"
+          alt=""
+          aria-hidden
+          width={2213}
+          height={478}
+          className="block h-3 w-auto dark:hidden"
+        />
+        <Image
+          src="/brand/logotype/logotype_white.png"
+          alt=""
+          aria-hidden
+          width={2213}
+          height={478}
+          className="hidden h-3 w-auto dark:block"
+        />
+        <span className="chip hidden md:inline-flex" style={{ fontSize: "0.5rem", padding: "0.15rem 0.4rem" }}>
+          v2
+        </span>
+      </div>
+
+      {/* Medallion straddles whichever border the bar sits against. */}
+      <span
+        className={[
+          "absolute left-1/2 flex h-10 w-10 -translate-x-1/2 items-center justify-center rounded-full border border-rule bg-canvas",
+          anchor === "top" ? "top-full -translate-y-1/2" : "bottom-full translate-y-1/2",
+        ].join(" ")}
+      >
+        <Image
+          src="/brand/mark/U_green.png"
+          alt=""
+          aria-hidden
+          width={904}
+          height={1314}
+          className="block h-6 w-auto dark:hidden"
+        />
+        <Image
+          src="/brand/mark/U_blue.png"
+          alt=""
+          aria-hidden
+          width={904}
+          height={1314}
+          className="hidden h-6 w-auto dark:block"
+        />
+      </span>
+
+      {/* Right: theme switcher stub (three pills). */}
+      <span className="flex items-center gap-0.5 rounded-full border border-rule p-0.5">
+        {(["L", "S", "D"] as const).map((t, i) => (
+          <span
+            key={t}
+            className={[
+              "flex h-4 w-4 items-center justify-center rounded-full font-ui",
+              i === 1 ? "bg-ink text-canvas" : "text-ink-muted",
+            ].join(" ")}
+            style={{ fontSize: "0.5rem" }}
+          >
+            {t}
+          </span>
+        ))}
+      </span>
+    </div>
+  );
+}
+
+function SidebarDrawerPreview({ anchor }: { anchor: "top" | "bottom" }) {
+  const groups = [
+    { label: "Foundations", items: [
+      { n: "01", t: "Voice",   active: false },
+      { n: "02", t: "Logo",    active: true  },
+      { n: "03", t: "Palette", active: false },
+    ]},
+    { label: "Components", items: [
+      { n: "10", t: "Navigation", active: false },
+    ]},
+  ];
+  return (
+    <div
+      className={[
+        "absolute left-0 z-10 w-40 overflow-hidden border-r border-rule bg-canvas",
+        anchor === "top" ? "top-10 bottom-0" : "top-0 bottom-10",
+      ].join(" ")}
+    >
+      <div className="space-y-3 px-2 py-3">
+        {groups.map((g) => (
+          <div key={g.label}>
+            <div
+              className="label text-ink-faint"
+              style={{ fontSize: "0.5rem", letterSpacing: "0.06em" }}
+            >
+              {g.label}
+            </div>
+            <ul className="mt-1 space-y-0.5">
+              {g.items.map((i) => (
+                <li
+                  key={i.n}
+                  className={[
+                    "flex items-center gap-1.5 rounded-sm px-1.5 py-1 font-ui",
+                    i.active ? "bg-ink/[0.07] text-ink" : "text-ink-muted",
+                  ].join(" ")}
+                  style={{ fontSize: "0.55rem" }}
+                >
+                  <span className="font-mono text-ink-faint" style={{ fontSize: "0.5rem" }}>
+                    {i.n}
+                  </span>
+                  <span>{i.t}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
       </div>
     </div>
   );
