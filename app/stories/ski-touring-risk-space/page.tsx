@@ -1,11 +1,19 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { AppShell } from "@/app/ui/AppShell";
+import { getStoryBySlug } from "@/app/content/stories";
+import type { StoryImage, StoryImageSlot } from "@/app/content/stories/registry";
 
 export const metadata: Metadata = {
   title: "Ski Touring & Risk Space — Oütlas",
   description:
     "An interactive guide to avalanche risk, the three essentials of ski touring, and a working checklist for assessing snow stability.",
 };
+
+// Fetch once at module scope. The registry is sync + typed, so this is a
+// cheap lookup; no network, no DB.
+const STORY = getStoryBySlug("ski-touring-risk-space")!;
+const img = (slot: StoryImageSlot): StoryImage | undefined => STORY.images[slot];
 
 /* -----------------------------------------------------------------
  * Editorial long-form page built on the Oütlas design system.
@@ -27,6 +35,7 @@ export default function SkiTouringPage() {
           slug="statistics"
           title="Statistics & Best Practice"
           intro="The scale of the risk, the history behind it, and the practice that turns awareness into instinct."
+          cover={img("statistics")}
         >
           <Statistics />
           <HumanFactor />
@@ -38,6 +47,7 @@ export default function SkiTouringPage() {
           slug="essentials"
           title="The Three Essentials"
           intro="A transceiver, a shovel and a probe. One without the others is a souvenir — carry the set, train with it, and know how to use it under pressure."
+          cover={img("essentials")}
         >
           <Essentials />
           <PracticeNote />
@@ -47,6 +57,7 @@ export default function SkiTouringPage() {
           slug="checklist"
           title="Snow Stability Checklist"
           intro="A systematic record used by British mountain guides and avalanche professionals. Build the profile at a particular time and place; the fuller the record, the clearer the judgement."
+          cover={img("checklist")}
         >
           <ChecklistIntro />
           <ChecklistTable />
@@ -56,6 +67,7 @@ export default function SkiTouringPage() {
           slug="further"
           title="Further Reading"
           intro="Five short follow-ups that extend the guide: awareness, scale, incidents, search, response."
+          cover={img("further")}
         >
           <FurtherReading />
         </Section>
@@ -72,16 +84,32 @@ function Section({
   slug,
   title,
   intro,
+  cover,
   children,
 }: {
   n: string;
   slug: string;
   title: string;
   intro: string;
+  cover?: StoryImage;
   children: React.ReactNode;
 }) {
   return (
     <section id={slug} className="border-t border-rule">
+      {cover && (
+        <figure className="relative aspect-[21/9] w-full overflow-hidden border-b border-rule">
+          <Image
+            src={cover.src}
+            alt={cover.alt}
+            fill
+            sizes="100vw"
+            className="object-cover"
+          />
+          <figcaption className="absolute bottom-0 right-0 bg-canvas/80 px-3 py-1 font-ui text-[0.6875rem] uppercase tracking-wide text-ink-muted backdrop-blur-sm">
+            {cover.credit}
+          </figcaption>
+        </figure>
+      )}
       <div className="mx-auto grid max-w-6xl grid-cols-1 gap-10 px-6 py-20 md:grid-cols-[1fr_2fr] md:px-10 md:py-28">
         <header className="space-y-6">
           <span className="label text-ink-faint">Chapter {n}</span>
@@ -99,15 +127,49 @@ function Section({
 /* ---------- hero ---------- */
 
 function Hero() {
+  const hero = img("hero");
   return (
-    <section
-      data-surface="story"
-      className="relative overflow-hidden bg-canvas"
-    >
-      <div className="mx-auto max-w-6xl px-6 py-24 md:px-10 md:py-32">
+    <section className="relative overflow-hidden" data-surface={hero ? undefined : "story"}>
+      {/* Full-bleed cover image when available; the gradient keeps the
+          display-1 lockup readable regardless of the photo's exposure. */}
+      {hero && (
+        <>
+          <Image
+            src={hero.src}
+            alt={hero.alt}
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover"
+          />
+          <div
+            className="absolute inset-0"
+            style={{
+              background:
+                "linear-gradient(180deg, rgba(30,30,30,0.15) 0%, rgba(30,30,30,0.55) 55%, rgba(30,30,30,0.85) 100%)",
+            }}
+            aria-hidden
+          />
+        </>
+      )}
+      <div
+        className={[
+          "relative mx-auto max-w-6xl px-6 py-24 md:px-10 md:py-32",
+          hero ? "text-snow" : "",
+        ].join(" ")}
+      >
         <div className="flex items-center gap-3">
-          <span className="chip">Choose your path 1.0</span>
-          <span className="micro text-ink-faint">Interactive guide</span>
+          <span
+            className={[
+              "chip",
+              hero ? "border-snow/40 text-snow" : "",
+            ].join(" ")}
+          >
+            Choose your path 1.0
+          </span>
+          <span className={["micro", hero ? "text-snow/70" : "text-ink-faint"].join(" ")}>
+            Interactive guide
+          </span>
         </div>
         <h1 className="mt-10 font-display leading-[0.9] tracking-[-0.03em] text-[clamp(3.5rem,10vw,8rem)]">
           Ski Touring
@@ -119,21 +181,33 @@ function Hero() {
           Re-assessing risk depends on your knowledge and on being cautious
           when assessing the risk before each tour.
         </p>
-        <dl className="mt-16 grid grid-cols-2 gap-x-10 gap-y-6 border-t border-rule pt-10 font-ui text-sm md:grid-cols-4">
-          <HeroMeta label="Words & photos" value="Zeger Dox" />
-          <HeroMeta label="Reading time"   value="~ 14 minutes" />
-          <HeroMeta label="Season"         value="Winter 25/26" />
-          <HeroMeta label="Series"         value="Risk Space, no. 1" />
+        <dl
+          className={[
+            "mt-16 grid grid-cols-2 gap-x-10 gap-y-6 border-t pt-10 font-ui text-sm md:grid-cols-4",
+            hero ? "border-snow/30" : "border-rule",
+          ].join(" ")}
+        >
+          <HeroMeta label="Words"        value={STORY.byline.replace(/^Words by\s+/i, "")} dark={!!hero} />
+          <HeroMeta label="Reading time" value={STORY.readTime}                            dark={!!hero} />
+          <HeroMeta label="Season"       value={STORY.season}                              dark={!!hero} />
+          <HeroMeta label="Series"       value={STORY.series ?? "—"}                       dark={!!hero} />
         </dl>
+        {hero && (
+          <p className="mt-10 font-ui text-xs leading-relaxed text-snow/70">
+            {STORY.photoCredit}
+          </p>
+        )}
       </div>
     </section>
   );
 }
 
-function HeroMeta({ label, value }: { label: string; value: string }) {
+function HeroMeta({ label, value, dark = false }: { label: string; value: string; dark?: boolean }) {
   return (
     <div>
-      <dt className="label text-ink-faint">{label}</dt>
+      <dt className={["label", dark ? "text-snow/60" : "text-ink-faint"].join(" ")}>
+        {label}
+      </dt>
       <dd className="mt-2">{value}</dd>
     </div>
   );
@@ -475,12 +549,12 @@ function ArticleFooter() {
         <div>
           <span className="label">Credits</span>
           <p className="mt-2 text-ink-muted">
-            Original words & photographs by Zeger Dox. Layout and tokens by
-            HUX using the Oütlas Design System.
+            {STORY.byline}. {STORY.photoCredit}. Layout and tokens by HUX
+            using the Oütlas Design System.
           </p>
         </div>
         <div className="font-mono text-ink-muted">
-          Series &middot; Risk Space 01 &nbsp;·&nbsp; Winter 25/26
+          Series &middot; {STORY.series ?? "—"} &nbsp;·&nbsp; {STORY.season}
         </div>
       </div>
     </footer>
