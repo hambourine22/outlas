@@ -53,9 +53,9 @@ function useNav() {
 }
 
 /* -------------------------------------------------------------------------
- * TopBar — brand mark, product chip, utility links, theme switcher.
- * On narrow viewports a hamburger replaces the search field and toggles
- * the sidebar drawer.
+ * TopBar — single sidebar toggle, brand typemark, utility links, theme
+ * switcher. The hamburger / close button is the one control that opens
+ * and closes the sidebar drawer at every breakpoint.
  * ---------------------------------------------------------------------- */
 export function TopBar() {
   const { drawerOpen, toggleDrawer } = useNav();
@@ -65,7 +65,7 @@ export function TopBar() {
       role="banner"
     >
       <div className="relative flex h-14 items-center justify-between gap-3 px-3 md:gap-6 md:px-6">
-        {/* Left: hamburger (below lg) + wordmark + version chip */}
+        {/* Left: single sidebar toggle + brand typemark + version chip */}
         <div className="flex items-center gap-3">
           <button
             type="button"
@@ -73,16 +73,30 @@ export function TopBar() {
             aria-expanded={drawerOpen}
             aria-controls="design-system-sidebar"
             onClick={toggleDrawer}
-            className="flex h-9 w-9 items-center justify-center border border-rule text-ink lg:hidden"
+            className="flex h-9 w-9 items-center justify-center border border-rule text-ink transition-colors hover:bg-ink/5"
           >
             {drawerOpen ? <CloseIcon /> : <MenuIcon />}
           </button>
-          <Link
-            href="/"
-            className="font-display text-sm text-ink"
-            aria-label="Oütlas home"
-          >
-            Oütlas
+          <Link href="/" aria-label="Oütlas home" className="flex items-center">
+            {/* Pine typemark reads on snow in light mode; swapped to snow on
+              * carbon in dark mode. One Image is hidden per theme. */}
+            <Image
+              src="/brand/logotype/logotype_green.png"
+              alt="Oütlas"
+              width={2213}
+              height={478}
+              priority
+              className="block h-5 w-auto dark:hidden"
+            />
+            <Image
+              src="/brand/logotype/logotype_white.png"
+              alt=""
+              aria-hidden
+              width={2213}
+              height={478}
+              priority
+              className="hidden h-5 w-auto dark:block"
+            />
           </Link>
           <span className="chip hidden sm:inline-flex">v2 · Design System</span>
         </div>
@@ -125,19 +139,29 @@ function LogoMedallion() {
       aria-label="Oütlas home"
       className="pointer-events-auto absolute left-1/2 top-full z-10 -translate-x-1/2 -translate-y-1/2"
     >
+      {/* The medallion fill tracks the TopBar canvas so the semi-circle reads
+        * as a continuous extension of the nav background: snow in light,
+        * carbon in dark. The Ü mark swaps accent (pine → glacier) to match. */}
       <span
-        className="flex h-14 w-14 items-center justify-center rounded-full border border-rule bg-snow"
+        className="flex h-14 w-14 items-center justify-center rounded-full border border-rule bg-canvas"
         aria-hidden
       >
-        {/* Ü mark is always pine so it reads on the snow medallion in either
-          * theme. No dark-mode swap needed. */}
         <Image
           src="/brand/mark/U_green.png"
           alt=""
           width={904}
           height={1314}
           priority
-          className="h-8 w-auto"
+          className="block h-8 w-auto dark:hidden"
+        />
+        <Image
+          src="/brand/mark/U_blue.png"
+          alt=""
+          aria-hidden
+          width={904}
+          height={1314}
+          priority
+          className="hidden h-8 w-auto dark:block"
         />
       </span>
     </Link>
@@ -162,9 +186,9 @@ function CloseIcon() {
 
 /* -------------------------------------------------------------------------
  * Sidebar — grouped primary navigation.
- * - At lg+: static inline rail, 240px wide.
- * - Below lg: fixed drawer that slides in from the left, with a
- *   backdrop. Dismisses on Escape, on backdrop click, and on item click.
+ * One behaviour at every breakpoint: a fixed drawer that slides in from
+ * the left, driven by the single TopBar toggle. Dismisses on Escape, on
+ * backdrop click, and on item click.
  * ---------------------------------------------------------------------- */
 export function Sidebar() {
   const { drawerOpen, closeDrawer } = useNav();
@@ -172,12 +196,12 @@ export function Sidebar() {
 
   return (
     <>
-      {/* Backdrop — only renders when the drawer is open, below lg. */}
+      {/* Backdrop — only renders when the drawer is open. */}
       <div
         onClick={closeDrawer}
         aria-hidden
         className={[
-          "fixed inset-0 z-30 bg-ink/40 backdrop-blur-sm transition-opacity lg:hidden",
+          "fixed inset-0 z-30 bg-ink/40 backdrop-blur-sm transition-opacity",
           drawerOpen ? "opacity-100" : "pointer-events-none opacity-0",
         ].join(" ")}
       />
@@ -187,13 +211,9 @@ export function Sidebar() {
         aria-label="Design system navigation"
         aria-hidden={!drawerOpen}
         className={[
-          // Shared
-          "overflow-y-auto border-r border-rule bg-canvas",
-          // Below lg: fixed drawer
-          "fixed inset-y-0 left-0 z-30 w-72 pt-16 transition-transform duration-200 ease-out",
+          "fixed inset-y-0 left-0 z-30 w-72 overflow-y-auto border-r border-rule bg-canvas pt-16",
+          "transition-transform duration-200 ease-out",
           drawerOpen ? "translate-x-0" : "-translate-x-full",
-          // lg+: static inline rail
-          "lg:sticky lg:top-14 lg:z-0 lg:h-[calc(100dvh-57px)] lg:w-64 lg:translate-x-0 lg:pt-0",
         ].join(" ")}
       >
         <nav className="space-y-10 px-4 py-8">
