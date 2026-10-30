@@ -1,0 +1,73 @@
+import type { Guides } from "./types";
+
+/* -----------------------------------------------------------------
+ * Guides — individual mountain guides and small guiding businesses
+ * registered with Oütlas. Service providers in the brand's provider
+ * taxonomy. Render as sand pins on the map.
+ * ---------------------------------------------------------------- */
+export const GUIDES: Guides[] = [
+  {
+    name: "Cairngorm Guides — Angus Kerr",
+    slug: "cairngorm-guides-angus-kerr",
+    item_id: "g-angus-kerr",
+    disciplines: "Ski touring, winter mountaineering, avalanche awareness",
+    languages: "English, Gaelic",
+    website: "https://cairngormguides.example",
+    phone: "+44 1479 810101",
+    rate_per_day: "£340 / day · 1 – 2 clients",
+    bio: "BMG qualified. Twenty winters in the Northern Corries. Teaches the Oütlas snow stability course each February.",
+    regions: "Cairngorms",
+    image_url: "",
+    lat: 57.1240,
+    long: -3.6730,
+    status: "published",
+  },
+  {
+    name: "West Highland Alpine — Rhona MacLeod",
+    slug: "west-highland-alpine-rhona-macleod",
+    item_id: "g-rhona-macleod",
+    disciplines: "Ski touring, ice climbing, splitboard touring",
+    languages: "English, French",
+    website: "https://westhighlandalpine.example",
+    phone: "+44 1397 701717",
+    rate_per_day: "£360 / day · 1 – 2 clients",
+    bio: "Based in Fort William. Specialises in Nevis Range backcountry and the Mamores. UIAGM accreditation.",
+    regions: "Lochaber",
+    image_url: "",
+    lat: 56.8220,
+    long: -5.0330,
+    status: "published",
+  },
+  {
+    name: "Glencoe Snow School — Ewan Taggart",
+    slug: "glencoe-snow-school-ewan-taggart",
+    item_id: "g-ewan-taggart",
+    disciplines: "Beginner snow safety, group avalanche awareness, courses",
+    languages: "English",
+    website: "https://glencoesnowschool.example",
+    phone: "+44 1855 851515",
+    rate_per_day: "£180 / day · small groups",
+    bio: "Teaches the entry-level snow safety course each weekend through winter. Partnered with Glencoe Mountain Resort.",
+    regions: "Glen Coe",
+    image_url: "",
+    lat: 56.6540,
+    long: -4.9080,
+    status: "published",
+  },
+  {
+    name: "Dàmhair Mountain — Mhairi Macdonald",
+    slug: "damhair-mountain-mhairi-macdonald",
+    item_id: "g-mhairi-macdonald",
+    disciplines: "Women-only backcountry days, splitboard progression",
+    languages: "English, Spanish",
+    website: "https://damhair.example",
+    phone: "+44 1479 870303",
+    rate_per_day: "£320 / day · 1 – 3 clients",
+    bio: "Runs women-only backcountry days from Aviemore through the season. Oütlas community guide.",
+    regions: "Cairngorms",
+    image_url: "",
+    lat: 57.1960,
+    long: -3.8320,
+    status: "published",
+  },
+];

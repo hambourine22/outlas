@@ -2,19 +2,20 @@
 
 import './sidebar.css';
 import { Resorts, Rentals, Repairs } from '@/app/definitions/mapboxDefinitions';
+import type { Guides } from '@/app/content/map/types';
 import Image from "next/image";
 
 export default function Sidebar(
     {
-        show, 
-        closeNav, 
+        show,
+        closeNav,
         content,
         screenWidth
-    } : 
+    } :
     {
-        show: boolean, 
-        closeNav: () => void, 
-        content: Resorts | Rentals | Repairs | undefined,
+        show: boolean,
+        closeNav: () => void,
+        content: Resorts | Rentals | Repairs | Guides | undefined,
         screenWidth: number
     }
 ) {

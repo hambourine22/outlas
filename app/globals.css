@@ -149,14 +149,17 @@ body {
 }
 
 /* -------------------------------------------------------------------------
- * Legacy Mapbox styles — kept so existing /ui/mapbox still renders.
+ * Mapbox — the Scotland basemap sits below the 56px TopBar. The container
+ * uses dynamic viewport units so iOS Safari's address bar doesn't push
+ * pins off-screen.
  * ---------------------------------------------------------------------- */
 #root { position: absolute; top: 0; right: 0; bottom: 0; left: 0; }
 
 #map-container {
-  height: 100vh;
+  position: relative;
+  height: calc(100dvh - 56px);
   width: 100%;
-  background-color: lightgrey;
+  background-color: var(--canvas);
 }
 
 .sidebar {
