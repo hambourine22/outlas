@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { AppShell } from "@/app/ui/AppShell";
 import { RentalSubmitForm } from "./RentalSubmitForm";
 
 export const metadata: Metadata = {
@@ -7,8 +8,11 @@ export const metadata: Metadata = {
     "Share where you are, what you rent, and one picture or clip. We'll be in touch within a week.",
 };
 
+// Wrapped in the AppShell so the route carries the TopBar + sidebar like
+// every other page.
 export default function RentalsSubmitPage() {
   return (
+    <AppShell>
     <section data-surface="rental" className="min-h-[calc(100dvh-56px)] bg-canvas text-ink">
       <div className="mx-auto max-w-2xl px-4 pb-24 pt-10 md:px-6 md:pt-16">
         <header>
@@ -27,5 +31,6 @@ export default function RentalsSubmitPage() {
         </div>
       </div>
     </section>
+    </AppShell>
   );
 }

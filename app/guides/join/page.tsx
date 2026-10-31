@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { AppShell } from "@/app/ui/AppShell";
 import GuideApplyForm from "./GuideApplyForm";
 
 export const metadata: Metadata = {
@@ -8,13 +9,16 @@ export const metadata: Metadata = {
 };
 
 // Server component — editorial header + the client form below. No data
-// read from the DB on load; the server action owns writes.
+// read from the DB on load; the server action owns writes. Wrapped in the
+// AppShell so the route carries the TopBar + sidebar like every other page
+// (AppShell supplies <main>, so the page body is a <div>).
 
 export default function JoinAsGuidePage() {
   return (
-    <main className="min-w-0 flex-1 bg-canvas">
+    <AppShell>
+    <div className="min-h-[calc(100dvh-56px)] bg-canvas">
       <section className="mx-auto max-w-3xl px-6 pb-24 pt-12 md:px-10 md:pt-20">
-        <span className="label text-ink-faint">Marketplace · Guides</span>
+        <span className="label text-ink-faint">Join · Guides</span>
         <h1 className="mt-4 font-display text-display-1 leading-tight text-ink">
           Join as a guide
         </h1>
@@ -30,6 +34,7 @@ export default function JoinAsGuidePage() {
           <GuideApplyForm />
         </div>
       </section>
-    </main>
+    </div>
+    </AppShell>
   );
 }

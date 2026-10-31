@@ -23,19 +23,20 @@ const STORY_CHAPTERS: Chapter[] = stories.map((s, i) => ({
   href: s.href,
 }));
 
+// Marketplace — browse. Self-submission entry points live in Join below so
+// "find a provider" and "become a provider" never share a list.
 const MARKETPLACE: Chapter[] = [
-  { n: "01", slug: "rentals",      title: "Rentals",          group: "marketplace", href: "/rentals" },
-  { n: "02", slug: "repairs",      title: "Repairs",          group: "marketplace", href: "/repairs" },
-  { n: "03", slug: "guides",       title: "Guides",           group: "marketplace", href: "/guides"  },
-  { n: "04", slug: "guides-join",  title: "Join as a guide",  group: "marketplace", href: "/guides/join" },
-  { n: "05", slug: "submit-shop",  title: "Submit your shop", group: "marketplace", href: "/repairs/submit" },
+  { n: "01", slug: "rentals", title: "Rentals", group: "marketplace", href: "/rentals" },
+  { n: "02", slug: "repairs", title: "Repairs", group: "marketplace", href: "/repairs" },
+  { n: "03", slug: "guides",  title: "Guides",  group: "marketplace", href: "/guides"  },
 ];
 
-// Join group — provider self-submission entry points. One row for v1 (the
-// rental-submission form). Future repair / guide self-submission flows can
-// join without a re-group.
+// Join — one row per provider type, in the same order as Marketplace, so a
+// reader who found "Repairs" above finds "Submit your repair shop" here.
 const JOIN: Chapter[] = [
-  { n: "—", slug: "rentals-submit", title: "List your rental shop", group: "join", href: "/rentals/submit" },
+  { n: "01", slug: "rentals-submit", title: "List your rental shop",   group: "join", href: "/rentals/submit" },
+  { n: "02", slug: "submit-shop",    title: "Submit your repair shop", group: "join", href: "/repairs/submit" },
+  { n: "03", slug: "guides-join",    title: "Join as a guide",         group: "join", href: "/guides/join" },
 ];
 
 const SYSTEM: Chapter[] = [
