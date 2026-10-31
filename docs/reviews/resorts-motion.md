@@ -1,0 +1,41 @@
+# Review — Anatomy of a mountain (resorts motion) · 2026-10-31
+
+**Slug:** `resorts-motion` · **Brief:** `docs/briefs/resorts-motion.md` · **Diff:** working tree → commit · **Reviewer:** Claude (UI + QA seats, same session)
+
+## Verdict: ship
+`/motion/resorts` plays the eight-second loop in both themes; every number comes from the content layer and every colour, font, duration and weight from the design system. Record-one-loop and save-still work in this browser (MP4 `avc1` available).
+
+## Acceptance (from the brief's success signal)
+- [x] Three strata (01 space · 02 altitude · 03 size) over the resorts — 106 at review time; the count, the scales and the grids are derived from the data, so the next resort doesn't overflow a plane.
+- [x] Sheet → oblique stack → playhead sweep west→east (each resort lit with a dashed leader: name · peak m · terrain km · lifts · country) → fold back; loop. Phases from `motion.drawIn` / `motion.morph` / `motion.loop`.
+- [x] Numbers: extracted server-side in `app/motion/resorts/page.tsx` from `getMapData()` (Postgres first, `resorts.ts` fallback) — peak, base = peak − vertical, terrain km, lifts, lon/lat. Nothing typed into the piece.
+- [x] Tokens: `motion` in `app/lib/design-system.ts` (frame 1080 × 1350, loop 8 s, morph 1.6 s, draw-in 1.2 s, ease power2.inOut, oblique view 0.42 / 0.3, lean 60°, strokes 1 / 0.5 / 0.75 dashed, opacities, strata copy, export sizes + mimes).
+- [x] Colour: `--canvas / --ink / --ink-muted / --ink-faint / --rule / --accent` read at draw time; theme switch and `prefers-color-scheme` re-read live; one emphasis from `dataviz.series` (rust). `grep` on the new files: no hex, no `gray-*`, no `rounded-lg+`, no `shadow-*`.
+- [x] Type: Vollkorn (title), Archivo Narrow (labels, uppercase, tracked), Geist Mono (numerals) resolved from the `next/font` variables on `<body>`; faces preloaded with `document.fonts.load` before the first frame.
+- [x] Layout on the Power-of-4 ladder: margin 44 (4 % of the short side → nearest 4), plane 240, gap 32, title 200, HUD 120.
+- [x] Export: `canvas.captureStream` + `MediaRecorder`, first supported of the token mime list; starts on the loop boundary so a clip is exactly one journey; backing store = frame × DPR (2160 × 2700 on a 2× display — one of the token export sizes). PNG still via `toBlob`.
+- [x] Reduced motion: one still frame mid-sweep; record button hidden.
+- [x] Nav: Explore · 03 · Anatomy of a mountain; page wrapped in `AppShell`.
+
+## Gate
+`qa-gate.sh` — typecheck ✓ · lint ✓ (one pre-existing warning in a sibling's untracked `FileDropZone.tsx`) · tokens ✓ (LEGACY: 2 in `app/ui/sidebar.css`) · **isolated `next build` ✓** (17 static pages).
+
+## Browser matrix
+| | Desktop (dev server :3200) |
+|---|---|
+| Dark | sheet ✓ · stack + playhead + leader ✓ · HUD counts ✓ |
+| Light | sheet ✓ — snow canvas, carbon ink, pine marks |
+| System | tokens re-read on `prefers-color-scheme` change (observer in code; not separately exercised) |
+Console: the only error during development was React's "dependency array changed size" from a hot reload while the effect's deps were edited; a fresh tab is clean. Fonts: `document.fonts.status === "loaded"`, family `__vollkorn_…` resolved.
+
+## Findings
+- **[Minor, fixed in review]** The "highest · …" note rode on Breckenridge's bar, which reaches the plane's top edge and collided with the plane title. Notes now sit in each plane's top-right corner.
+- **[Minor, fixed in review]** "100 resorts" was hard-coded in the eyebrow and a token sub while the content layer had grown to 106; count and scales now derive from the data.
+- **[Nit]** 1080-wide frame renders at 670 CSS px in the column — crisp on 2× (2160 backing); on a 1× display the piece is drawn at frame size, so no upscaling either way.
+
+## Noticed (outside this change)
+- No Motion chapter on `/design-system` yet — the `motion` token is documented only in code and `docs/DESIGN_SYSTEM.md` has no section. XS brief: table of the token + a link to the piece.
+- The reference's bilingual (uk · en) pairing was deliberately not carried over; Oütlas pairs "eyebrow · label" with a middle dot instead.
+
+---
+Next: `/security-ops` on `resorts-motion` — deploy on request.

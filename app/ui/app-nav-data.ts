@@ -11,8 +11,9 @@ import { getAllStories } from "@/app/content/stories";
 const stories = getAllStories();
 
 const EXPLORE: Chapter[] = [
-  { n: "01", slug: "map",     title: "Map",     group: "explore", href: "/" },
-  { n: "02", slug: "stories", title: "Stories", group: "explore", href: "/stories" },
+  { n: "01", slug: "map",     title: "Map",                   group: "explore", href: "/" },
+  { n: "02", slug: "stories", title: "Stories",               group: "explore", href: "/stories" },
+  { n: "03", slug: "motion",  title: "Anatomy of a mountain", group: "explore", href: "/motion/resorts" },
 ];
 
 const STORY_CHAPTERS: Chapter[] = stories.map((s, i) => ({

@@ -193,6 +193,24 @@ One circle per record, **fill only — no outline**. The fill is the category co
 
 Tokens live in `mapPins` (`design-system.ts`). `CATEGORY_COLOUR` in `app/content/map/types.ts` derives from it, the `locations` circle layer in `app/ui/mapbox/map.tsx` draws it, and the sidebar pin key, provider table and token-less placeholder reuse the same fill so key and map never drift. In the sidebar key a filtered-out category shows its fill at 30 % rather than a hollow ring.
 
+## Motion
+
+Animated data pieces follow one art direction: numbered **strata** that lie flat as a sheet, fold into an oblique stack, get read by a playhead, and fold back — eight seconds, on a loop, framed 4:5 for export. The tokens live in `motion` (`design-system.ts`) and are JS-only; a piece reads them directly.
+
+| Token | Value | Notes |
+|---|---|---|
+| `frame` | 1080 × 1350 | 4:5 portrait; export sizes 1080 / 1440 / 2160 |
+| `loop` · `morph` · `drawIn` | 8 s · 1.6 s · 1.2 s | one journey; sheet ⇄ stack fold; marks appear |
+| `ease` | power2.inOut — `cubic-bezier(0.45, 0, 0.55, 1)` | |
+| `view.oblique` | shear 0.42 · squash 0.3 | the strata view; `isoAxis` 30° for a true isometric |
+| `lean` | 60° | leader angle from the horizontal |
+| `stroke` | line 1 · rule 0.5 · leader 0.75 dashed 6/5 · grid dashed 2/4 | CSS px on the 1080 frame |
+| `opacity` | cells 0.03 · grid 0.3 · rules 0.55 · leaders 0.7 · marks 0.9 · playhead 0.75 | |
+
+Colour is never a motion token. A piece reads `--canvas`, `--ink`, `--ink-muted`, `--ink-faint`, `--rule` and `--accent` at draw time — so it follows light, dark and system — and takes one emphasis colour from `dataviz.series`. Type comes from the `next/font` variables (`--font-vollkorn`, `--font-archivo`, `--font-geist-mono`). Layout on the Power-of-4 ladder: margin 4 % of the short side to the nearest 4.
+
+First piece: **Anatomy of a mountain** at `/motion/resorts` — every resort's altitude (base → peak), size (pisted km, lifts) and position (lon / lat) from the content layer, drawn as three strata. Record one loop (MP4 / WebM) or save a still from the page.
+
 ## Credit
 
 Brand identity by **Tom Lenartowicz / Thrilly**, March 2020.

@@ -299,6 +299,59 @@ export const dataviz = {
   ] as const,
 } as const;
 
+// -------------------------------------------------------------------------
+// MOTION — art direction for animated data pieces. The reference is the
+// "Anatomy" sheet: numbered strata that lie flat as one sheet, fold into an
+// oblique stack, get swept by a playhead, and fold back. Eight seconds, on a
+// loop, framed 4:5 for export.
+//
+// JS-only tokens (canvas reads them directly). Durations in seconds, angles
+// in degrees, stroke widths in CSS px on the 1080-wide frame, opacities 0–1.
+// Colours are never here: a motion piece reads --canvas / --ink / --rule /
+// --accent at draw time so it follows light, dark and system, and takes its
+// one emphasis colour from dataviz.series. Fonts come from the next/font
+// variables (--font-vollkorn, --font-archivo, --font-geist-mono).
+// Rendered at /motion/resorts; documented in the Motion chapter.
+// -------------------------------------------------------------------------
+export const motion = {
+  frame:  { w: 1080, h: 1350 },                       // 4:5 portrait — the export size
+  loop:   8,                                          // one journey, seconds
+  morph:  1.6,                                        // sheet ⇄ stack fold, seconds
+  drawIn: 1.2,                                        // hairlines and marks appear, seconds
+  ease:   { name: "power2.inOut", css: "cubic-bezier(0.45, 0, 0.55, 1)" },
+  view: {
+    oblique: { shear: 0.42, squash: 0.3 },            // the strata view: x shear per unit depth, y squash
+    isoAxis: 30,                                      // the 30° axes, for any true isometric variant
+  },
+  lean:   60,                                         // leader angle from the horizontal, degrees
+  stroke: {
+    line:   1,                                        // routes, bars, borders
+    rule:   0.5,                                      // plane edges, cells, grids
+    leader: 0.75,                                     // dashed leaders
+    leaderDash: [6, 5],
+    gridDash:   [2, 4],
+  },
+  opacity: {
+    cells: 0.03, grid: 0.3, rules: 0.55, leaders: 0.7, marks: 0.9, playhead: 0.75,
+  },
+  strata: [
+    { n: "01", key: "space",    title: "space",    sub: "by longitude and latitude" },
+    { n: "02", key: "altitude", title: "altitude", sub: "base to peak, metres" },
+    { n: "03", key: "size",     title: "size",     sub: "pisted terrain, km" },
+  ],
+  export: {
+    sizes: { 1080: [1080, 1350], 1440: [1440, 1800], 2160: [2160, 2700] },
+    fps: 30,
+    mimes: [
+      "video/mp4;codecs=avc1.640028",
+      "video/mp4;codecs=avc1.4d0028",
+      "video/mp4",
+      "video/webm;codecs=vp9",
+      "video/webm",
+    ],
+  },
+} as const;
+
 // Voice — the three-line brand ladder; the brand mark pairs with it on splash.
 export const voice = {
   ladder: ["Share gear", "Buy less", "Ride more"],
