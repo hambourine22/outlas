@@ -33,6 +33,7 @@ export const CHAPTERS: Chapter[] = [
   { n: "12", slug: "score",      title: "Score Pills",      group: "data"        },
   { n: "13", slug: "map",        title: "Map Legend",       group: "data"        },
   { n: "14", slug: "dataviz",    title: "Data Viz",         group: "data"        },
+  { n: "15", slug: "resort-card", title: "Resort Card",     group: "data"        },
 ];
 
 export const GROUPS: Group[] = [

@@ -4,6 +4,37 @@ import type {
   Repairs,
 } from "@/app/definitions/mapboxDefinitions";
 
+// Curated activity enum. Max 10 — intentionally short so the preview panel
+// stays legible and the data layer stays honest. Added here (not on the
+// Resorts type file) because content records and UI primitives both import
+// from this module.
+export const ACTIVITIES = [
+  "ski",
+  "snowboard",
+  "splitboard",
+  "hike",
+  "trail-run",
+  "bike",
+  "climb",
+  "kayak",
+  "wild-swim",
+  "sail",
+] as const;
+export type Activity = (typeof ACTIVITIES)[number];
+
+export const ACTIVITY_LABEL: Record<Activity, string> = {
+  ski:          "Ski",
+  snowboard:    "Snowboard",
+  splitboard:   "Splitboard",
+  hike:         "Hike",
+  "trail-run":  "Trail run",
+  bike:         "Bike",
+  climb:        "Climb",
+  kayak:        "Kayak",
+  "wild-swim":  "Wild swim",
+  sail:         "Sail",
+};
+
 // Public category tag used by the map, the legend, and any detail panels.
 // Each category binds to a brand colour via `CATEGORY_COLOUR`.
 export type MapCategory = "resorts" | "rentals" | "repairs" | "guides";

@@ -19,6 +19,12 @@ import {
 import { TopBar, Sidebar, OnThisPage, NavProvider } from "./Nav";
 import { CHAPTERS } from "./nav-data";
 import { LineChart, ChartLegend, BarChart, RadarChart } from "./Chart";
+import {
+  StatusBadge,
+  SeasonBar,
+  ActivityChips,
+  type ResortStatus,
+} from "@/app/ui/mapbox/MapPreviewSidebar";
 
 export const metadata = {
   title: "Oütlas — Design System",
@@ -81,6 +87,9 @@ export default function DesignSystemPage() {
           </Chapter>
           <Chapter slug="dataviz" n="14" title="Data Viz" intro="Oütlas dataviz builds on the brand palette with solid Carbon axes, hairline dashed grids, and chip-tagged series. Transparent on canvas by default.">
             <Dataviz />
+          </Chapter>
+          <Chapter slug="resort-card" n="15" title="Resort Card" intro="Right-rail primitives for the map's resort preview: status badge, season bar, activity chips. Each is defined once and reused across every regional map.">
+            <ResortCard />
           </Chapter>
           <Footer />
         </main>
@@ -1130,6 +1139,90 @@ function Dataviz() {
           ))}
         </div>
       </div>
+    </div>
+  );
+}
+
+/* ---------- resort card specimen ----------
+ * Shows the three preview-panel primitives in isolation: four status
+ * states, three season-bar variants (winter window / summer window / wrap
+ * across year end), and the activity-chip overflow (7 items → "+ 1 more").
+ */
+function ResortCard() {
+  const states: ResortStatus[] = ["open", "in-season", "out-of-season", "closed"];
+  return (
+    <div className="space-y-12">
+      {/* Status badge — four states side by side */}
+      <section>
+        <h3 className="label text-ink-faint">Status badge · four states</h3>
+        <ul className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {states.map((s) => (
+            <li
+              key={s}
+              className="flex flex-col gap-3 border border-rule bg-canvas-raised p-4"
+            >
+              <StatusBadge status={s} />
+              <span className="font-mono text-[10px] uppercase tracking-wide text-ink-faint">
+                operational_status: {s === "open" ? "year-round" : s === "closed" ? "closed" : "seasonal"}
+              </span>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      {/* Season bar — three variants */}
+      <section>
+        <h3 className="label text-ink-faint">Season bar · three variants</h3>
+        <ul className="mt-4 grid grid-cols-1 gap-6 lg:grid-cols-3">
+          <li className="border border-rule bg-canvas-raised p-4">
+            <span className="label text-ink-faint">Winter window (Dec → Apr)</span>
+            <div className="mt-3">
+              <SeasonBar from="12-15" to="04-20" />
+            </div>
+          </li>
+          <li className="border border-rule bg-canvas-raised p-4">
+            <span className="label text-ink-faint">Summer window (Jun → Oct)</span>
+            <div className="mt-3">
+              <SeasonBar from="06-15" to="10-15" />
+            </div>
+          </li>
+          <li className="border border-rule bg-canvas-raised p-4">
+            <span className="label text-ink-faint">Out-of-season (dim)</span>
+            <div className="mt-3">
+              <SeasonBar from="12-15" to="04-20" dim />
+            </div>
+          </li>
+        </ul>
+      </section>
+
+      {/* Activity chips — default + overflow */}
+      <section>
+        <h3 className="label text-ink-faint">Activity chips · default · overflow at 7</h3>
+        <ul className="mt-4 grid grid-cols-1 gap-6 lg:grid-cols-2">
+          <li className="border border-rule bg-canvas-raised p-4">
+            <span className="label text-ink-faint">Four activities</span>
+            <div className="mt-3">
+              <ActivityChips activities={["ski", "snowboard", "hike", "bike"]} />
+            </div>
+          </li>
+          <li className="border border-rule bg-canvas-raised p-4">
+            <span className="label text-ink-faint">Seven activities — one collapses</span>
+            <div className="mt-3">
+              <ActivityChips
+                activities={[
+                  "ski",
+                  "snowboard",
+                  "splitboard",
+                  "hike",
+                  "trail-run",
+                  "bike",
+                  "climb",
+                ]}
+              />
+            </div>
+          </li>
+        </ul>
+      </section>
     </div>
   );
 }

@@ -43,7 +43,28 @@ export type Rentals = {
 
 }
 
+// Extensions for the world-mountain-resorts spec (2026-10-31).
+// A single `Activity` enum is the canonical taxonomy; see app/content/map/types.ts
+// for the string-literal union consumed by the preview panel.
+import type { Activity } from "@/app/content/map/types";
+
+export type OperationalStatus = "year-round" | "seasonal" | "closed";
+
 export type Resorts = {
+      // --- world-resort fields (new) ----------------------------------------
+      operational_status: OperationalStatus;
+      // ISO-ish month-day strings — "12-15" → "04-20". Required when
+      // operational_status === "seasonal"; omitted otherwise.
+      season_from?: string;
+      season_to?: string;
+      // Curated major activities, 3–6 per resort. Enum lives in types.ts
+      // so content and UI import from one place.
+      activities: Activity[];
+      // Human-readable country or region (e.g. "France", "USA/Vermont",
+      // "Japan"). Shown in the preview panel's place line.
+      country?: string;
+
+      // --- legacy fields (kept for backwards compat with existing records) ---
       name: string,
       lat: number,
       long: number,
