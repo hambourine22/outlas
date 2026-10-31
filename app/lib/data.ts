@@ -1,3 +1,4 @@
+import "server-only";
 import { sql } from "@vercel/postgres";
 import { Resorts, Rentals, Repairs } from "../definitions/mapboxDefinitions";
 
