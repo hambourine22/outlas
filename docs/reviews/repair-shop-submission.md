@@ -50,10 +50,9 @@ _None._
 ### Major
 _None._
 
-### Minor
-**[Minor] Rate-limit SQL uses template-literal interval that may not parameterise cleanly** — `app/lib/repair-submissions.ts` (checkRepairSubmissionRateLimit)
-Writing `INTERVAL '${RATE_LIMIT_WINDOW_MIN} minutes'` as a template literal interpolates on the JS side before @vercel/postgres parameterises. Not a SQL-injection risk because `RATE_LIMIT_WINDOW_MIN` is a module-level numeric constant, but a reviewer catching this cold wouldn't know that at a glance.
-Fix: change to a parameterised form (`NOW() - make_interval(mins := ${RATE_LIMIT_WINDOW_MIN})`) or add a `/* trusted constant */` comment. Follow-up acceptable.
+### Blocker · fixed in-review
+**[Blocker · fixed]** **Rate-limit SQL binds inside a string literal, would 500 on every real submission** — `app/lib/repair-submissions.ts` (checkRepairSubmissionRateLimit)
+`INTERVAL '${RATE_LIMIT_WINDOW_MIN} minutes'` inside the tagged template turns the `${}` into a bind parameter, but it sits inside a string literal — Postgres receives literal `'$2 minutes'` and the parameter count mismatches. Latent today because the route returns 503 first (BLOB env not set), but every real submission once env + migration are wired would 500. My initial review flagged this as Minor and labelled it "not a SQL-injection risk" — true, but I under-rated the runtime impact. **Caught by the design-system session's cross-review** before any live submission could fire. **Fixed in-review** by rewriting the clause as `NOW() - make_interval(mins => ${RATE_LIMIT_WINDOW_MIN})` so the value binds as a real parameter.
 
 ### Nit
 **[Nit] Pre-existing `bg-ink/40` opacity-trap** — unchanged carryover from the previous slugs; already tracked as a follow-up.

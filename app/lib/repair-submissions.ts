@@ -46,11 +46,17 @@ export async function insertRepairSubmission(
 // correctness for simplicity (hashed daily so Hamish never stores a raw IP,
 // but the hash changes at UTC midnight so a bad actor could re-post then).
 // Good enough for v1 — upgrade to a sliding window in a follow-up.
+//
+// Note on the interval expression: `make_interval(mins => $n)` keeps the
+// value as a bind parameter. An earlier draft tried
+// `INTERVAL '${N} minutes'`, which binds inside a string literal — Postgres
+// then sees literal text and the parameter count mismatches. Caught by
+// the design-system session's cross-review before first live submission.
 export async function checkRepairSubmissionRateLimit(ipHash: string): Promise<RateLimitResult> {
   const result = await sql<{ submitted_at: string }>`
     SELECT submitted_at FROM repair_submissions
     WHERE ip_hash = ${ipHash}
-      AND submitted_at > NOW() - INTERVAL '${RATE_LIMIT_WINDOW_MIN} minutes'
+      AND submitted_at > NOW() - make_interval(mins => ${RATE_LIMIT_WINDOW_MIN})
     ORDER BY submitted_at DESC
     LIMIT 1
   `;
