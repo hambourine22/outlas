@@ -481,37 +481,56 @@ const SCANDINAVIA: Resorts[] = [
 ];
 
 // --- Southern Hemisphere (10) --------------------------------------------
+// Southern seasons run roughly mid-June to mid-October — the Northern
+// winter's shoulder. Resorts here are smaller than their Alpine or NA
+// peers but the terrain is dramatic (Portillo's slingshot lifts, Catedral's
+// 1,150m vertical, Nevados de Chillán's volcanic hot springs).
 const SOUTHERN: Resorts[] = [
   r({ n: "Coronet Peak",              s: "coronet-peak",             lat: -44.9272, long: 168.7347, alt: "1,649m", country: "New Zealand",
       op: "seasonal", from: S.southern[0], to: S.southern[1],
-      acts: ["ski","snowboard","hike","bike"] }),
+      acts: ["ski","snowboard","hike","bike"],
+      peak_m: 1649, vertical_m: 462, terrain_km: 16, lifts: 7, snowfall_cm: 300 }),
   r({ n: "The Remarkables",           s: "the-remarkables",          lat: -45.0557, long: 168.8117, alt: "1,951m", country: "New Zealand",
       op: "seasonal", from: S.southern[0], to: S.southern[1],
-      acts: ["ski","snowboard","splitboard","hike","climb"] }),
+      acts: ["ski","snowboard","splitboard","hike","climb"],
+      peak_m: 1951, vertical_m: 365, terrain_km: 25, lifts: 7, snowfall_cm: 400 }),
   r({ n: "Cardrona",                  s: "cardrona",                 lat: -44.8747, long: 168.9458, alt: "1,860m", country: "New Zealand",
       op: "seasonal", from: S.southern[0], to: "10-20",
-      acts: ["ski","snowboard","hike","bike"] }),
+      acts: ["ski","snowboard","hike","bike"],
+      peak_m: 1860, vertical_m: 345, terrain_km: 34, lifts: 7, snowfall_cm: 300 }),
   r({ n: "Treble Cone",               s: "treble-cone",              lat: -44.6208, long: 168.8942, alt: "1,860m", country: "New Zealand",
       op: "seasonal", from: S.southern[0], to: "10-05",
-      acts: ["ski","snowboard","splitboard","hike"] }),
+      acts: ["ski","snowboard","splitboard","hike"],
+      peak_m: 1860, vertical_m: 700, terrain_km: 37, lifts: 4, snowfall_cm: 550 }),
   r({ n: "Mt Hutt",                   s: "mt-hutt",                  lat: -43.4683, long: 171.5500, alt: "2,086m", country: "New Zealand",
       op: "seasonal", from: "06-05", to: "10-15",
-      acts: ["ski","snowboard","hike","trail-run"] }),
+      acts: ["ski","snowboard","hike","trail-run"],
+      peak_m: 2086, vertical_m: 672, terrain_km: 37, lifts: 6, snowfall_cm: 400 }),
+  // Portillo: 500ha, one of the oldest resorts in South America; famously
+  // has va-et-vient slingshot lifts in avalanche-prone bowls.
   r({ n: "Portillo",                  s: "portillo",                 lat: -32.8322, long: -70.1308, alt: "2,880m", country: "Chile",
       op: "seasonal", from: "06-15", to: "10-10",
-      acts: ["ski","snowboard","hike","climb"] }),
+      acts: ["ski","snowboard","hike","climb"],
+      peak_m: 3310, vertical_m: 450, terrain_km: 50, lifts: 14, snowfall_cm: 800 }),
   r({ n: "Valle Nevado",              s: "valle-nevado",             lat: -33.3550, long: -70.2500, alt: "3,025m", country: "Chile",
       op: "seasonal", from: S.southern[0], to: S.southern[1],
-      acts: ["ski","snowboard","hike","climb"] }),
+      acts: ["ski","snowboard","hike","climb"],
+      peak_m: 3668, vertical_m: 643, terrain_km: 44, lifts: 14, snowfall_cm: 800 }),
+  // Nevados de Chillán: volcanic terrain, natural hot springs at the base,
+  // deepest average snowfall in South America.
   r({ n: "Nevados de Chillán",        s: "nevados-de-chillan",       lat: -36.9000, long: -71.4000, alt: "1,650m", country: "Chile",
       op: "seasonal", from: S.southern[0], to: "10-10",
-      acts: ["ski","snowboard","splitboard","hike","wild-swim"] }),
+      acts: ["ski","snowboard","splitboard","hike","wild-swim"],
+      peak_m: 2500, vertical_m: 850, terrain_km: 32, lifts: 10, snowfall_cm: 1000 }),
+  // Cerro Catedral — largest ski resort in South America by terrain.
   r({ n: "Cerro Catedral (Bariloche)", s: "cerro-catedral",          lat: -41.1703, long: -71.4425, alt: "2,180m", country: "Argentina",
       op: "seasonal", from: S.southern[0], to: "10-05",
-      acts: ["ski","snowboard","hike","bike","kayak","wild-swim"] }),
+      acts: ["ski","snowboard","hike","bike","kayak","wild-swim"],
+      peak_m: 2180, vertical_m: 1150, terrain_km: 120, lifts: 36, snowfall_cm: 500 }),
   r({ n: "Las Leñas",                 s: "las-lenas",                lat: -35.1500, long: -70.0833, alt: "2,240m", country: "Argentina",
       op: "seasonal", from: "06-20", to: "10-10",
-      acts: ["ski","snowboard","splitboard","hike"] }),
+      acts: ["ski","snowboard","splitboard","hike"],
+      peak_m: 3430, vertical_m: 1190, terrain_km: 56, lifts: 14, snowfall_cm: 500 }),
 ];
 
 // --- Rest of world (15) --------------------------------------------------
