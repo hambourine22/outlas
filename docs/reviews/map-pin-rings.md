@@ -3,14 +3,15 @@
 **Slug:** `map-pin-rings` · **Size:** S (no spec; intent in the commit) · **Diff:** working tree → commit · **Reviewer:** Claude (UI + QA seats, same session)
 
 ## Verdict: ship
-Pins render sharp at every zoom; resort pins carry a sand ring, repair pins a snow ring; the spec lives in `mapPins` and is documented on the design-system page and in `docs/DESIGN_SYSTEM.md`.
+Pins render sharp at every zoom as solid fills with no outline — a ring was tried at 2px and 1.5px and withdrawn on request; the spec lives in `mapPins` and is documented on the design-system page and in `docs/DESIGN_SYSTEM.md`.
 
 ## Requests covered
 1. "Pins render a bit soft — improve sharpness." Cause: `circle-stroke-width: 1` at 40 % alpha is entirely Mapbox's 1px anti-alias fringe, so the edge had no line in it; light fills (glacier, sand) had nothing to define them against light terrain. Fix: opaque 2px ring per category, radius stepped with zoom (5 → 7 → 9px) so the world view doesn't blob.
 2. "Yellow outline on green resort pins." Resorts: pine fill, **sand** ring.
 3. "Lighter outline for repairs." Repairs: rust fill, **snow** ring — the repair-surface pairing.
 4. "Reduce the stroke on the outline." Ring width 2px → **1.5px** via the `mapPins.ring.width` token; every key dot now reads `CATEGORY_RING_WIDTH` instead of a hard-coded `border-2`, so map and keys moved together. 1px was ruled out: opaque 1px sinks back into the anti-alias band on standard-density screens — the original softness.
-Rule recorded: *the ring is the ink that would sit on that fill* — carbon on light fills, sand on pine, snow on rust.
+5. "Changed my mind — just the colour, no outline." Ring removed entirely: `circle-stroke-width: 0`, no `ring` in the token, `CATEGORY_RING` / `CATEGORY_RING_WIDTH` deleted, every key dot fill-only. The sidebar key's filtered-out state becomes the fill at 30 % (a hollow ring no longer exists to show). Zoom-stepped radius kept — that is the part of the sharpness fix that never depended on a stroke.
+The ring rule (*the ring is the ink that would sit on that fill*) is retired with the outline; it stays here as the record of what was tried.
 
 ## Gate
 `tsc --noEmit` ✓ · `next lint` ✓ · `check-tokens.mjs` ✓ (LEGACY: 2 in `app/ui/sidebar.css`, pre-existing) · build – skipped locally (dev server held `.next/`); Vercel builds on deploy.

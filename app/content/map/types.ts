@@ -78,19 +78,9 @@ export const CATEGORY_COLOUR: Record<MapCategory, string> = {
   guides:  mapPins.categories.guides.fill,  // sand — human expertise
 };
 
-// Pin ring — the ink that would sit on that fill. Carbon on the light fills,
-// sand on pine, snow on rust. Used by the map layer, the sidebar pin key and
-// the token-less placeholder so all three stay identical.
-export const CATEGORY_RING: Record<MapCategory, string> = {
-  resorts: mapPins.categories.resorts.ring,
-  rentals: mapPins.categories.rentals.ring,
-  repairs: mapPins.categories.repairs.ring,
-  guides:  mapPins.categories.guides.ring,
-};
-
-// Ring width in CSS px — shared by the map layer and every key dot so a
-// change to the token moves all of them together.
-export const CATEGORY_RING_WIDTH = mapPins.ring.width;
+// Pins are fill-only (no outline) — see mapPins in design-system.ts. The
+// map layer, sidebar key, provider table and placeholder all use
+// CATEGORY_COLOUR alone so they stay identical.
 
 export const CATEGORY_LABEL: Record<MapCategory, string> = {
   resorts: "Resorts",

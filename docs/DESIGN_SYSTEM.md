@@ -182,16 +182,16 @@ Shared across the Scotland map and every regional map that follows.
 
 ## Map pins
 
-One circle per record. The fill is the category colour; the ring is **the ink that would sit on that fill**. Rings are opaque and 1.5px — a hairline that still survives Mapbox's 1px anti-alias fringe on standard-density screens; thinner or translucent and the pin reads soft. Radius steps with zoom (5px at world view → 7px at continent → 9px from zoom 8) so the world view stays legible where resorts cluster.
+One circle per record, **fill only — no outline**. The fill is the category colour at full opacity. Sharpness comes from integer radii that step with zoom (5px at world view → 7px at continent → 9px from zoom 8), not from a stroke: a translucent 1px stroke is all anti-alias fringe and reads soft, and an opaque ring (tried at 2px and 1.5px) read heavy against the editorial basemap.
 
-| Category | Fill | Ring | Why this ring |
-|---|---|---|---|
-| Resorts | `pine` | `sand` | The yellow signature on the product destination — the manifest pairing, inverted. |
-| Rentals | `glacier` | `carbon` | Light fill takes the dark ink. |
-| Repairs | `rust` | `snow` | The repair-surface pairing — snow on rust. |
-| Guides | `sand` | `carbon` | Light fill takes the dark ink. |
+| Category | Fill | Role |
+|---|---|---|
+| Resorts | `pine` | Product destination |
+| Rentals | `glacier` | Service provider |
+| Repairs | `rust` | Parts manufacturer |
+| Guides | `sand` | Human expertise |
 
-Tokens live in `mapPins` (`design-system.ts`). `CATEGORY_COLOUR` / `CATEGORY_RING` in `app/content/map/types.ts` derive from it, the `locations` circle layer in `app/ui/mapbox/map.tsx` draws it, and the sidebar pin key and token-less placeholder reuse the same fill + ring so key and map never drift.
+Tokens live in `mapPins` (`design-system.ts`). `CATEGORY_COLOUR` in `app/content/map/types.ts` derives from it, the `locations` circle layer in `app/ui/mapbox/map.tsx` draws it, and the sidebar pin key, provider table and token-less placeholder reuse the same fill so key and map never drift. In the sidebar key a filtered-out category shows its fill at 30 % rather than a hollow ring.
 
 ## Credit
 

@@ -84,7 +84,7 @@ export default function DesignSystemPage() {
           <Chapter slug="score" n="12" title="Score Pills" intro="Resort pillars are rendered as pills — a 0–5 band drives colour; the number is secondary.">
             <ScorePills />
           </Chapter>
-          <Chapter slug="map" n="13" title="Map Legend" intro="Pin fills and rings, plus the transport and feature vocabulary — shared across the world map and every regional map that follows.">
+          <Chapter slug="map" n="13" title="Map Legend" intro="Pin fills, plus the transport and feature vocabulary — shared across the world map and every regional map that follows.">
             <MapLegend />
           </Chapter>
           <Chapter slug="dataviz" n="14" title="Data Viz" intro="Oütlas dataviz builds on the brand palette with solid Carbon axes, hairline dashed grids, and chip-tagged series. Transparent on canvas by default.">
@@ -947,16 +947,14 @@ function MapLegend() {
     Object.entries(colors).find(([, c]) => c.hex === hex)?.[0] ?? hex;
   return (
     <div className="space-y-12">
-      {/* Pins — fill + ring per category, drawn at each zoom rung. The dots
-       * sit on a snow tile because that is what the basemap is in both
-       * themes; a carbon ring on a carbon canvas would misrepresent it. */}
+      {/* Pins — fill only, drawn at each zoom rung. The dots sit on a snow
+       * tile because that is what the basemap is in both themes. */}
       <div>
         <h3 className="label text-ink-muted">Pins</h3>
         <p className="mt-3 max-w-2xl font-ui text-sm leading-relaxed text-ink-muted">
-          One circle per record. Fill is the category colour; the ring is the ink
-          that would sit on that fill — carbon on light fills, sand on pine, snow
-          on rust. Rings are opaque and {mapPins.ring.width}px so the edge is a
-          line, not anti-alias fringe. Radius steps with zoom:{" "}
+          One circle per record, fill only — no outline. The fill is the category
+          colour at full opacity; sharpness comes from integer radii that step
+          with zoom, not from a stroke:{" "}
           {mapPins.radius.map((r) => `${r.px}px at z${r.zoom}`).join(" · ")}.
         </p>
         <ul className="mt-6 grid grid-cols-2 gap-6 md:grid-cols-4">
@@ -965,26 +963,18 @@ function MapLegend() {
             return (
               <li key={key} className="border border-rule p-4">
                 <div className="flex items-end gap-4 bg-snow p-3" aria-hidden>
-                  {mapPins.radius.map((r) => {
-                    const size = (r.px + mapPins.ring.width) * 2;
-                    return (
-                      <span
-                        key={r.zoom}
-                        className="inline-block shrink-0 rounded-full"
-                        style={{
-                          width: size,
-                          height: size,
-                          backgroundColor: p.fill,
-                          border: `${mapPins.ring.width}px solid ${p.ring}`,
-                        }}
-                      />
-                    );
-                  })}
+                  {mapPins.radius.map((r) => (
+                    <span
+                      key={r.zoom}
+                      className="inline-block shrink-0 rounded-full"
+                      style={{ width: r.px * 2, height: r.px * 2, backgroundColor: p.fill }}
+                    />
+                  ))}
                 </div>
                 <div className="mt-4 font-ui text-sm text-ink">{p.label}</div>
                 <div className="micro mt-1 text-ink-faint">{p.role}</div>
                 <div className="mt-3 font-mono text-xs text-ink-muted">
-                  {tokenName(p.fill)} · ring {tokenName(p.ring)}
+                  {tokenName(p.fill)}
                 </div>
               </li>
             );

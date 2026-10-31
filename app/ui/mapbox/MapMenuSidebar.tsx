@@ -3,7 +3,6 @@
 import { useState } from "react";
 import {
   CATEGORY_COLOUR,
-  CATEGORY_RING,
   CATEGORY_LABEL,
   type MapCategory,
 } from "@/app/content/map/types";
@@ -99,11 +98,10 @@ export default function MapMenuSidebar({ filters, counts, onToggle, onToggleAll 
             {CATEGORY_ORDER.map((c) => (
               <li
                 key={c}
-                className="h-2.5 w-2.5 rounded-full border-2"
+                className="h-2.5 w-2.5 rounded-full"
                 style={{
-                  backgroundColor: filters[c] ? CATEGORY_COLOUR[c] : "transparent",
-                  borderColor: CATEGORY_RING[c],
-                  opacity: filters[c] ? 1 : 0.5,
+                  backgroundColor: CATEGORY_COLOUR[c],
+                  opacity: filters[c] ? 1 : 0.3,
                 }}
                 title={CATEGORY_LABEL[c]}
                 aria-label={`${CATEGORY_LABEL[c]} ${filters[c] ? "visible" : "hidden"}`}
@@ -238,10 +236,9 @@ function ProviderRow({
       >
         <span
           aria-hidden
-          className="inline-block h-3 w-3 shrink-0 rounded-full border-2 transition-opacity"
+          className="inline-block h-3 w-3 shrink-0 rounded-full transition-opacity"
           style={{
             backgroundColor: CATEGORY_COLOUR[category],
-            borderColor: CATEGORY_RING[category],
             opacity: active ? 1 : 0.25,
           }}
         />

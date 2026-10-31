@@ -7,8 +7,6 @@ import type { Resorts, Rentals, Repairs } from "@/app/definitions/mapboxDefiniti
 import type { Guides } from "@/app/content/map/types";
 import {
   CATEGORY_COLOUR,
-  CATEGORY_RING,
-  CATEGORY_RING_WIDTH,
   CATEGORY_LABEL,
   type MapCategory,
 } from "@/app/content/map/types";
@@ -82,7 +80,6 @@ export default function Map({
       arrayType: MapCategory,
     ) {
       const markerColor = CATEGORY_COLOUR[arrayType];
-      const ringColor = CATEGORY_RING[arrayType];
       return inputArray.map((x) => ({
         geometry: {
           coordinates: [x.long, x.lat],
@@ -92,7 +89,6 @@ export default function Map({
           name: x.name,
           id: x.slug,
           markerColor,
-          ringColor,
           dataType: arrayType,
         },
         type: "Feature" as const,
@@ -142,20 +138,18 @@ export default function Map({
         type: "circle",
         source: "locations",
         paint: {
-          // Sharpness comes from an opaque hairline ring — a 1px translucent
-          // stroke is all anti-alias fringe and reads soft — and from a
-          // radius that steps with zoom so the world view doesn't blob where
-          // resorts cluster. Fill, ring and width per category come from
-          // mapPins in design-system.ts via CATEGORY_COLOUR / CATEGORY_RING.
+          // Fill only, no outline. Sharpness comes from integer radii that
+          // step with zoom so the world view doesn't blob where resorts
+          // cluster — a translucent 1px stroke is all anti-alias fringe and
+          // reads soft, and an opaque ring read heavy. Fill per category
+          // comes from mapPins in design-system.ts via CATEGORY_COLOUR.
           "circle-radius": [
             "interpolate", ["linear"], ["zoom"],
             ...mapPins.radius.flatMap((r) => [r.zoom, r.px]),
           ],
           "circle-color": ["get", "markerColor"],
           "circle-opacity": 1,
-          "circle-stroke-width": mapPins.ring.width,
-          "circle-stroke-color": ["get", "ringColor"],
-          "circle-stroke-opacity": mapPins.ring.opacity,
+          "circle-stroke-width": 0,
         },
       });
 
@@ -308,12 +302,8 @@ function MapPlaceholder({
               <li key={c} className="flex items-center justify-between gap-4">
                 <span className="flex items-center gap-3 text-ink">
                   <span
-                    className="inline-block h-3 w-3 rounded-full border-solid"
-                    style={{
-                      backgroundColor: CATEGORY_COLOUR[c],
-                      borderColor: CATEGORY_RING[c],
-                      borderWidth: CATEGORY_RING_WIDTH,
-                    }}
+                    className="inline-block h-3 w-3 rounded-full"
+                    style={{ backgroundColor: CATEGORY_COLOUR[c] }}
                     aria-hidden
                   />
                   {CATEGORY_LABEL[c]}

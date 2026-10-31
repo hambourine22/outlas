@@ -10,8 +10,6 @@ import type {
 import type { Guides } from "@/app/content/map/types";
 import {
   CATEGORY_COLOUR,
-  CATEGORY_RING,
-  CATEGORY_RING_WIDTH,
   CATEGORY_LABEL,
   ACTIVITY_LABEL,
   type Activity,
@@ -93,12 +91,8 @@ export default function MapPreviewSidebar({ show, category, content, onClose }: 
                   style={{ backgroundColor: CATEGORY_COLOUR[summary.category] + "33" }}
                 >
                   <span
-                    className="inline-block h-6 w-6 rounded-full border-solid"
-                    style={{
-                      backgroundColor: CATEGORY_COLOUR[summary.category],
-                      borderColor: CATEGORY_RING[summary.category],
-                      borderWidth: CATEGORY_RING_WIDTH,
-                    }}
+                    className="inline-block h-6 w-6 rounded-full"
+                    style={{ backgroundColor: CATEGORY_COLOUR[summary.category] }}
                   />
                 </div>
               )}

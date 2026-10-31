@@ -184,28 +184,26 @@ export const scoreBands = [
   { min: 4, max: 5, label: "Very good", surface: colors.carbon.hex, ink: colors.snow.hex   },
 ] as const;
 
-// Map pins — one circle per record. Fill is the category colour; the ring
-// is the ink that would sit on that fill: carbon on the light fills, sand on
-// pine, snow on rust (the repair-surface pairing). Rings are opaque and
-// 1.5px — a hairline that still survives Mapbox's 1px anti-alias fringe on
-// standard-density screens; thinner or translucent and the pin reads soft.
-// Radius steps with zoom so the world view stays legible where resorts
-// cluster.
-// Consumed by app/content/map/types.ts (CATEGORY_COLOUR / CATEGORY_RING /
-// CATEGORY_RING_WIDTH) and drawn by the `locations` circle layer in
-// app/ui/mapbox/map.tsx. Key dots everywhere read the same width.
+// Map pins — one circle per record, fill only: no outline. The fill is the
+// category colour at full opacity. Sharpness comes from integer radii that
+// step with zoom (so the world view stays legible where resorts cluster),
+// not from a stroke — a translucent 1px stroke is all anti-alias fringe and
+// reads soft, and an opaque ring was judged too heavy on the editorial
+// basemap.
+// Consumed by app/content/map/types.ts (CATEGORY_COLOUR) and drawn by the
+// `locations` circle layer in app/ui/mapbox/map.tsx. Key dots everywhere
+// use the same fill.
 export const mapPins = {
-  ring: { width: 1.5, opacity: 1 },
   radius: [
     { zoom: 1, px: 5 },   // world view
     { zoom: 4, px: 7 },   // continent
     { zoom: 8, px: 9 },   // region and closer
   ],
   categories: {
-    resorts: { label: "Resorts", fill: colors.pine.hex,    ring: colors.sand.hex,   role: "Product destination" },
-    rentals: { label: "Rentals", fill: colors.glacier.hex, ring: colors.carbon.hex, role: "Service provider" },
-    repairs: { label: "Repairs", fill: colors.rust.hex,    ring: colors.snow.hex,   role: "Parts manufacturer" },
-    guides:  { label: "Guides",  fill: colors.sand.hex,    ring: colors.carbon.hex, role: "Human expertise" },
+    resorts: { label: "Resorts", fill: colors.pine.hex,    role: "Product destination" },
+    rentals: { label: "Rentals", fill: colors.glacier.hex, role: "Service provider" },
+    repairs: { label: "Repairs", fill: colors.rust.hex,    role: "Parts manufacturer" },
+    guides:  { label: "Guides",  fill: colors.sand.hex,    role: "Human expertise" },
   },
 } as const;
 
