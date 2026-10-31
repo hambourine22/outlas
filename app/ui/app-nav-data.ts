@@ -24,9 +24,10 @@ const STORY_CHAPTERS: Chapter[] = stories.map((s, i) => ({
 }));
 
 const MARKETPLACE: Chapter[] = [
-  { n: "01", slug: "rentals", title: "Rentals", group: "marketplace", href: "/rentals" },
-  { n: "02", slug: "repairs", title: "Repairs", group: "marketplace", href: "/repairs" },
-  { n: "03", slug: "guides",  title: "Guides",  group: "marketplace", href: "/guides"  },
+  { n: "01", slug: "rentals",     title: "Rentals",         group: "marketplace", href: "/rentals" },
+  { n: "02", slug: "repairs",     title: "Repairs",         group: "marketplace", href: "/repairs" },
+  { n: "03", slug: "guides",      title: "Guides",          group: "marketplace", href: "/guides"  },
+  { n: "04", slug: "guides-join", title: "Join as a guide", group: "marketplace", href: "/guides/join" },
 ];
 
 const SYSTEM: Chapter[] = [
