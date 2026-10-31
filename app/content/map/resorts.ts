@@ -445,28 +445,39 @@ const JAPAN: Resorts[] = [
 ];
 
 // --- Scandinavia (7) -----------------------------------------------------
+// Scandinavian resorts have modest peaks but long seasons (and in
+// Riksgränsen's case, midnight-sun skiing well into June).
 const SCANDINAVIA: Resorts[] = [
   r({ n: "Trysil",                    s: "trysil",                   lat: 61.3078, long: 12.2650,  alt: "1,132m", country: "Norway",
       op: "seasonal", from: S.scandinavia[0], to: S.scandinavia[1],
-      acts: ["ski","snowboard","hike","bike"] }),
+      acts: ["ski","snowboard","hike","bike"],
+      peak_m: 1132, vertical_m: 685, terrain_km: 71, lifts: 32, snowfall_cm: 300 }),
   r({ n: "Hemsedal",                  s: "hemsedal",                 lat: 60.8550, long: 8.5553,   alt: "1,497m", country: "Norway",
       op: "seasonal", from: S.scandinavia[0], to: "05-01",
-      acts: ["ski","snowboard","splitboard","hike","trail-run"] }),
+      acts: ["ski","snowboard","splitboard","hike","trail-run"],
+      peak_m: 1497, vertical_m: 810, terrain_km: 45, lifts: 20, snowfall_cm: 450 }),
   r({ n: "Geilo",                     s: "geilo",                    lat: 60.5333, long: 8.2047,   alt: "1,178m", country: "Norway",
       op: "seasonal", from: S.scandinavia[0], to: S.scandinavia[1],
-      acts: ["ski","snowboard","hike","bike"] }),
+      acts: ["ski","snowboard","hike","bike"],
+      peak_m: 1178, vertical_m: 378, terrain_km: 40, lifts: 18, snowfall_cm: 350 }),
   r({ n: "Åre",                       s: "are",                      lat: 63.3989, long: 13.0786,  alt: "1,420m", country: "Sweden",
       op: "year-round",
-      acts: ["ski","snowboard","hike","bike","trail-run","kayak"] }),
+      acts: ["ski","snowboard","hike","bike","trail-run","kayak"],
+      peak_m: 1420, vertical_m: 1000, terrain_km: 90, lifts: 42, snowfall_cm: 500 }),
   r({ n: "Sälen (Lindvallen)",        s: "salen-lindvallen",         lat: 61.1764, long: 13.1067,  alt: "886m",   country: "Sweden",
       op: "seasonal", from: S.scandinavia[0], to: "04-20",
-      acts: ["ski","snowboard","hike","bike"] }),
+      acts: ["ski","snowboard","hike","bike"],
+      peak_m: 886, vertical_m: 303, terrain_km: 43, lifts: 32, snowfall_cm: 300 }),
+  // Riksgränsen — Arctic circle. Short low season, then midnight-sun
+  // skiing into late June.
   r({ n: "Riksgränsen",               s: "riksgransen",              lat: 68.4253, long: 18.1272,  alt: "909m",   country: "Sweden",
       op: "seasonal", from: "02-15", to: "06-24",
-      acts: ["ski","snowboard","splitboard","hike"] }),
+      acts: ["ski","snowboard","splitboard","hike"],
+      peak_m: 909, vertical_m: 404, terrain_km: 24, lifts: 6, snowfall_cm: 600 }),
   r({ n: "Levi",                      s: "levi",                     lat: 67.8042, long: 24.8011,  alt: "531m",   country: "Finland",
       op: "seasonal", from: S.scandinaviaNorth[0], to: S.scandinaviaNorth[1],
-      acts: ["ski","snowboard","hike","bike"] }),
+      acts: ["ski","snowboard","hike","bike"],
+      peak_m: 531, vertical_m: 325, terrain_km: 44, lifts: 27, snowfall_cm: 200 }),
 ];
 
 // --- Southern Hemisphere (10) --------------------------------------------
