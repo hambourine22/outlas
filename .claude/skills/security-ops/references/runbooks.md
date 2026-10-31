@@ -28,11 +28,12 @@ Project: `outlas-ds` · Team: `hamishs-projects-e7b0c0a0` · Linked by `.vercel/
    ```
    Good: every `process.env.X` the change introduced appears for `Production` (and `Preview` if previews need it).
 
-4. Deploy.
+4. Deploy — **from a clean worktree of the exact commit, never from the shared working tree.** `vercel` uploads whatever is on disk, and in this folder that includes other sessions' uncommitted files (a half-built API route shipped that way would be a real incident).
    ```bash
-   vercel --prod --yes
+   SHA=$(git rev-parse --short HEAD) && W=/tmp/outlas-release-$SHA && git worktree add --detach "$W" "$SHA" && mkdir -p "$W/.vercel" && cp .vercel/project.json "$W/.vercel/" && ln -s "$PWD/node_modules" "$W/node_modules" && (cd "$W" && pnpm build && vercel --prod --yes); git worktree remove --force "$W"
    ```
-   Good: ends with `Production: https://outlas-ds.vercel.app` and an inspect URL. Copy the deployment URL (`https://outlas-ds-<hash>-….vercel.app`) into the release note; the previous one is your rollback target (`vercel ls outlas-ds` shows it).
+   The `pnpm build` inside the worktree is the full production build that the local gate skips while a dev server holds `.next/` — it runs in isolation here, and it is the step that caught a React-19-only hook (`useActionState`) in a client component that tsc and lint had both passed. If it fails, nothing has been uploaded; fix forward, commit, repeat.
+   Good: ends with `Aliased: https://outlas-ds.vercel.app`. Copy the `Production:` URL (`https://outlas-<hash>-….vercel.app`) into the release note; `vercel ls outlas-ds --prod` shows the previous one — your rollback target.
 
 5. Verify every touched route.
    ```bash
