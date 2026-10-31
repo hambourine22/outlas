@@ -23,7 +23,8 @@ function rental(overrides: Partial<Rentals>): Rentals {
   };
 }
 
-export const RENTALS: Rentals[] = [
+// --- Scotland (4) — original seeded set --------------------------------
+const SCOTLAND: Rentals[] = [
   rental({
     name: "Aviemore Snowsports Rental",
     slug: "aviemore-snowsports-rental",
@@ -32,8 +33,7 @@ export const RENTALS: Rentals[] = [
     gear_for_rent: "Alpine skis, snowboards, splitboards, boots, poles",
     resort_description: "Full-service rental in the heart of Aviemore, five minutes from the funicular.",
     resort_Address: "Grampian Road, Aviemore PH22 1RL",
-    lat: 57.1922,
-    long: -3.8260,
+    lat: 57.1922, long: -3.8260,
     phone_number: "+44 1479 810000",
   }),
   rental({
@@ -44,8 +44,7 @@ export const RENTALS: Rentals[] = [
     gear_for_rent: "Freeride skis, splitboards, touring kit, transceivers",
     resort_description: "On-mountain rental attached to the chairlift base.",
     resort_Address: "Glencoe Mountain, Kingshouse PH49 4HZ",
-    lat: 56.6440,
-    long: -4.8955,
+    lat: 56.6440, long: -4.8955,
     phone_number: "+44 1855 851226",
   }),
   rental({
@@ -56,8 +55,7 @@ export const RENTALS: Rentals[] = [
     gear_for_rent: "Alpine skis, snowboards, backcountry touring",
     resort_description: "Rental at the Nevis Range base station, lift-pass bundles available.",
     resort_Address: "Torlundy, Fort William PH33 6SW",
-    lat: 56.8155,
-    long: -5.0080,
+    lat: 56.8155, long: -5.0080,
     phone_number: "+44 1397 705825",
   }),
   rental({
@@ -68,8 +66,375 @@ export const RENTALS: Rentals[] = [
     gear_for_rent: "Alpine skis, snowboards, all-mountain demo kit",
     resort_description: "Village rental serving Glenshee and the Linn of Dee.",
     resort_Address: "6 Mar Road, Braemar AB35 5YL",
-    lat: 57.0066,
-    long: -3.3966,
+    lat: 57.0066, long: -3.3966,
     phone_number: "+44 13397 41242",
   }),
+];
+
+// --- France · Alps (5) --------------------------------------------------
+const FRANCE: Rentals[] = [
+  rental({
+    name: "Zero G",
+    slug: "zero-g-chamonix",
+    item_id: "l-zero-g-chamonix",
+    resorts: "Chamonix-Mont-Blanc",
+    gear_for_rent: "Freeride & freetouring skis, splitboards, safety kit",
+    resort_description: "Chamonix freeride specialist on Rue Joseph Vallot.",
+    resort_Address: "Rue Joseph Vallot, Chamonix 74400",
+    lat: 45.9237, long: 6.8694,
+    regions: "France",
+  }),
+  rental({
+    name: "Oxygène",
+    slug: "oxygene-val-disere",
+    item_id: "l-oxygene-val-disere",
+    resorts: "Val d'Isère",
+    gear_for_rent: "Alpine skis, snowboards, boots, kids kit",
+    resort_description: "Multiple branches across Val Village and La Daille.",
+    resort_Address: "Val d'Isère 73150",
+    lat: 45.4489, long: 6.9792,
+    regions: "France",
+  }),
+  rental({
+    name: "Precision Ski",
+    slug: "precision-ski-tignes",
+    item_id: "l-precision-ski-tignes",
+    resorts: "Tignes",
+    gear_for_rent: "Alpine, touring, snowboards, boots",
+    resort_description: "Tignes Val Claret and Le Lac branches, pre-book online.",
+    resort_Address: "Val Claret, Tignes 73320",
+    lat: 45.4675, long: 6.9064,
+    regions: "France",
+  }),
+  rental({
+    name: "Nevada Sport",
+    slug: "nevada-sport-val-thorens",
+    item_id: "l-nevada-sport-val-thorens",
+    resorts: "Val Thorens",
+    gear_for_rent: "Freeride skis, snowboards, performance demos",
+    resort_description: "At the Val Thorens base, two minutes from the Péclet gondola.",
+    resort_Address: "Val Thorens 73440",
+    lat: 45.2975, long: 6.5806,
+    regions: "France",
+  }),
+  rental({
+    name: "Ski Set Alpe d'Huez",
+    slug: "ski-set-alpe-dhuez",
+    item_id: "l-ski-set-alpe-dhuez",
+    resorts: "Alpe d'Huez",
+    gear_for_rent: "Alpine skis, snowboards, boots, poles",
+    resort_description: "Village-centre rental with online pre-booking.",
+    resort_Address: "Alpe d'Huez 38750",
+    lat: 45.0909, long: 6.0693,
+    regions: "France",
+  }),
+];
+
+// --- Switzerland (4) ----------------------------------------------------
+const SWITZERLAND: Rentals[] = [
+  rental({
+    name: "Bayard Sports",
+    slug: "bayard-sports-zermatt",
+    item_id: "l-bayard-sports-zermatt",
+    resorts: "Zermatt",
+    gear_for_rent: "Alpine, freeride, touring, boots, boot-fitting",
+    resort_description: "Four locations across Zermatt — Bahnhofstrasse and the main lift stations.",
+    resort_Address: "Bahnhofplatz, Zermatt 3920",
+    lat: 46.0207, long: 7.7491,
+    regions: "Switzerland",
+  }),
+  rental({
+    name: "Mountain Air",
+    slug: "mountain-air-verbier",
+    item_id: "l-mountain-air-verbier",
+    resorts: "Verbier",
+    gear_for_rent: "Freeride skis, splitboards, touring, boot-fitting",
+    resort_description: "Place Centrale shop with a strong freeride & touring selection.",
+    resort_Address: "Place Centrale, Verbier 1936",
+    lat: 46.0961, long: 7.2286,
+    regions: "Switzerland",
+  }),
+  rental({
+    name: "Fuchs Sport",
+    slug: "fuchs-sport-davos",
+    item_id: "l-fuchs-sport-davos",
+    resorts: "Davos Klosters",
+    gear_for_rent: "Alpine, cross-country, boots",
+    resort_description: "Davos Platz, close to the Parsenn railway station.",
+    resort_Address: "Promenade 157, Davos 7260",
+    lat: 46.7988, long: 9.8355,
+    regions: "Switzerland",
+  }),
+  rental({
+    name: "Bergsport Grindelwald",
+    slug: "bergsport-grindelwald",
+    item_id: "l-bergsport-grindelwald",
+    resorts: "Grindelwald",
+    gear_for_rent: "Alpine, touring, climbing kit, boots",
+    resort_description: "Hauptstrasse shop; summer alpine kit alongside winter rentals.",
+    resort_Address: "Hauptstrasse, Grindelwald 3818",
+    lat: 46.6244, long: 8.0414,
+    regions: "Switzerland",
+  }),
+];
+
+// --- Austria (4) --------------------------------------------------------
+const AUSTRIA: Rentals[] = [
+  rental({
+    name: "Jennewein Sport",
+    slug: "jennewein-sport-st-anton",
+    item_id: "l-jennewein-sport-st-anton",
+    resorts: "St. Anton am Arlberg",
+    gear_for_rent: "Alpine skis, freeride, touring, boots",
+    resort_description: "Dorfstrasse shop, St. Anton village centre.",
+    resort_Address: "Dorfstrasse 65, St. Anton am Arlberg 6580",
+    lat: 47.1283, long: 10.2608,
+    regions: "Austria",
+  }),
+  rental({
+    name: "Strolz",
+    slug: "strolz-lech",
+    item_id: "l-strolz-lech",
+    resorts: "Lech-Zürs",
+    gear_for_rent: "Premium alpine, custom boot-fitting, snowboards",
+    resort_description: "Lech institution — three locations across the village.",
+    resort_Address: "Omesberg 173, Lech 6764",
+    lat: 47.2082, long: 10.1413,
+    regions: "Austria",
+  }),
+  rental({
+    name: "Intersport Kitzsport",
+    slug: "intersport-kitzsport-kitzbuhel",
+    item_id: "l-intersport-kitzsport-kitzbuhel",
+    resorts: "Kitzbühel",
+    gear_for_rent: "Alpine, snowboards, cross-country, boots",
+    resort_description: "Kitzbühel town centre and gondola-base rentals.",
+    resort_Address: "Jochberger Strasse 7, Kitzbühel 6370",
+    lat: 47.4467, long: 12.3917,
+    regions: "Austria",
+  }),
+  rental({
+    name: "Harakiri Sports",
+    slug: "harakiri-sports-mayrhofen",
+    item_id: "l-harakiri-sports-mayrhofen",
+    resorts: "Mayrhofen",
+    gear_for_rent: "Freeride skis, snowboards, touring, protection",
+    resort_description: "Named after the Harakiri piste; freeride-leaning rental in the village.",
+    resort_Address: "Hauptstrasse, Mayrhofen 6290",
+    lat: 47.1667, long: 11.8667,
+    regions: "Austria",
+  }),
+];
+
+// --- Italy (2) ----------------------------------------------------------
+const ITALY: Rentals[] = [
+  rental({
+    name: "Sport Chalet Armellini",
+    slug: "sport-chalet-armellini-cortina",
+    item_id: "l-sport-chalet-armellini-cortina",
+    resorts: "Cortina d'Ampezzo",
+    gear_for_rent: "Alpine, touring, boots, freeride demos",
+    resort_description: "Corso Italia in Cortina — close to the Faloria cable car.",
+    resort_Address: "Corso Italia, Cortina d'Ampezzo 32043",
+    lat: 46.5406, long: 12.1356,
+    regions: "Italy",
+  }),
+  rental({
+    name: "Trenker Sports",
+    slug: "trenker-sports-val-gardena",
+    item_id: "l-trenker-sports-val-gardena",
+    resorts: "Val Gardena",
+    gear_for_rent: "Alpine, snowboards, cross-country, boots",
+    resort_description: "Selva di Val Gardena shop at the Dantercepies lift base.",
+    resort_Address: "Strada Meisules, Selva di Val Gardena 39048",
+    lat: 46.5600, long: 11.7306,
+    regions: "Italy",
+  }),
+];
+
+// --- USA (6) ------------------------------------------------------------
+const USA: Rentals[] = [
+  rental({
+    name: "Vail Sports",
+    slug: "vail-sports",
+    item_id: "l-vail-sports",
+    resorts: "Vail",
+    gear_for_rent: "Alpine, snowboards, demos, boot-fitting",
+    resort_description: "Multiple Vail locations incl. Lionshead and Vail Village.",
+    resort_Address: "Vail, CO 81657",
+    lat: 39.6400, long: -106.3742,
+    regions: "USA/Colorado",
+  }),
+  rental({
+    name: "Four Mountain Sports",
+    slug: "four-mountain-sports-aspen",
+    item_id: "l-four-mountain-sports-aspen",
+    resorts: "Aspen Snowmass",
+    gear_for_rent: "Alpine, snowboards, performance demos, boots",
+    resort_description: "Rentals at every Aspen Snowmass mountain base.",
+    resort_Address: "Aspen, CO 81611",
+    lat: 39.1911, long: -106.8175,
+    regions: "USA/Colorado",
+  }),
+  rental({
+    name: "Christy Sports",
+    slug: "christy-sports-breckenridge",
+    item_id: "l-christy-sports-breckenridge",
+    resorts: "Breckenridge",
+    gear_for_rent: "Alpine, snowboards, kids kit, boots",
+    resort_description: "Main Street Breckenridge, with slope-side delivery.",
+    resort_Address: "505 S Main Street, Breckenridge, CO 80424",
+    lat: 39.4789, long: -106.0411,
+    regions: "USA/Colorado",
+  }),
+  rental({
+    name: "Jans",
+    slug: "jans-park-city",
+    item_id: "l-jans-park-city",
+    resorts: "Park City",
+    gear_for_rent: "Alpine, snowboards, cross-country, demos, boot-fitting",
+    resort_description: "Park City institution across multiple locations.",
+    resort_Address: "1600 Park Avenue, Park City, UT 84060",
+    lat: 40.6514, long: -111.5080,
+    regions: "USA/Utah",
+  }),
+  rental({
+    name: "Jackson Hole Sports",
+    slug: "jackson-hole-sports",
+    item_id: "l-jackson-hole-sports",
+    resorts: "Jackson Hole",
+    gear_for_rent: "Alpine, freeride, splitboards, touring, protection",
+    resort_description: "At the base of Teton Village — tram-adjacent.",
+    resort_Address: "Teton Village, WY 83025",
+    lat: 43.5875, long: -110.8278,
+    regions: "USA/Wyoming",
+  }),
+  rental({
+    name: "Footloose Sports",
+    slug: "footloose-sports-mammoth",
+    item_id: "l-footloose-sports-mammoth",
+    resorts: "Mammoth Mountain",
+    gear_for_rent: "Alpine, snowboards, boots, demos",
+    resort_description: "Main Street Mammoth Lakes, long-standing rental & tuning shop.",
+    resort_Address: "3043 Main Street, Mammoth Lakes, CA 93546",
+    lat: 37.6485, long: -118.9721,
+    regions: "USA/California",
+  }),
+];
+
+// --- Canada (1) ---------------------------------------------------------
+const CANADA: Rentals[] = [
+  rental({
+    name: "Comor Sports",
+    slug: "comor-sports-whistler",
+    item_id: "l-comor-sports-whistler",
+    resorts: "Whistler Blackcomb",
+    gear_for_rent: "Alpine, freeride, snowboards, splitboards, protection",
+    resort_description: "Whistler Village shop, close to the Blackcomb Gondola.",
+    resort_Address: "4154 Village Green, Whistler, BC V8E 1H1",
+    lat: 50.1163, long: -122.9574,
+    regions: "Canada/BC",
+  }),
+];
+
+// --- Japan (3) ----------------------------------------------------------
+const JAPAN: Rentals[] = [
+  rental({
+    name: "Rhythm Niseko",
+    slug: "rhythm-niseko",
+    item_id: "l-rhythm-niseko",
+    resorts: "Niseko (Grand Hirafu)",
+    gear_for_rent: "Powder skis, snowboards, splitboards, boots",
+    resort_description: "Hirafu village — the central powder-focused rental.",
+    resort_Address: "Yamada 190-6, Niseko-cho, Hokkaido 048-1522",
+    lat: 42.8614, long: 140.6986,
+    regions: "Japan/Hokkaido",
+  }),
+  rental({
+    name: "Rhythm Hakuba",
+    slug: "rhythm-hakuba",
+    item_id: "l-rhythm-hakuba",
+    resorts: "Hakuba Happo-One",
+    gear_for_rent: "Powder skis, snowboards, splitboards, boots",
+    resort_description: "Wadano area of Hakuba — close to Happo-One.",
+    resort_Address: "Hokujo, Hakuba, Nagano 399-9301",
+    lat: 36.6986, long: 137.8328,
+    regions: "Japan/Nagano",
+  }),
+  rental({
+    name: "Nozawa Ski Rental",
+    slug: "nozawa-ski-rental",
+    item_id: "l-nozawa-ski-rental",
+    resorts: "Nozawa Onsen",
+    gear_for_rent: "Alpine, snowboards, powder skis, boots",
+    resort_description: "Village-centre rental near the Nagasaka gondola.",
+    resort_Address: "Toyosato, Nozawa Onsen, Nagano 389-2502",
+    lat: 36.9220, long: 138.4506,
+    regions: "Japan/Nagano",
+  }),
+];
+
+// --- Scandinavia (2) ----------------------------------------------------
+const SCANDINAVIA: Rentals[] = [
+  rental({
+    name: "SkiStar Rental Trysil",
+    slug: "skistar-rental-trysil",
+    item_id: "l-skistar-rental-trysil",
+    resorts: "Trysil",
+    gear_for_rent: "Alpine, snowboards, kids kit, boots",
+    resort_description: "SkiStar on-mountain rental at Trysilfjellet.",
+    resort_Address: "Trysilfjellet, 2420 Trysil",
+    lat: 61.3078, long: 12.2650,
+    regions: "Norway",
+  }),
+  rental({
+    name: "SkiStar Rental Åre",
+    slug: "skistar-rental-are",
+    item_id: "l-skistar-rental-are",
+    resorts: "Åre",
+    gear_for_rent: "Alpine, freeride, snowboards, cross-country",
+    resort_description: "Åre Torg — the main village square rental.",
+    resort_Address: "Åre Torg, 837 51 Åre",
+    lat: 63.3989, long: 13.0786,
+    regions: "Sweden",
+  }),
+];
+
+// --- Southern Hemisphere (2) --------------------------------------------
+const SOUTHERN: Rentals[] = [
+  rental({
+    name: "Browns Ski Shop",
+    slug: "browns-ski-shop-queenstown",
+    item_id: "l-browns-ski-shop-queenstown",
+    resorts: "Coronet Peak",
+    gear_for_rent: "Alpine, snowboards, kids kit, boots, boot-fitting",
+    resort_description: "Queenstown town-centre shop serving Coronet Peak and The Remarkables.",
+    resort_Address: "39 Shotover Street, Queenstown 9300",
+    lat: -45.0312, long: 168.6626,
+    regions: "New Zealand",
+  }),
+  rental({
+    name: "Portillo Hotel Rentals",
+    slug: "portillo-hotel-rentals",
+    item_id: "l-portillo-hotel-rentals",
+    resorts: "Portillo",
+    gear_for_rent: "Alpine, snowboards, boots",
+    resort_description: "Resort-operated rental at the Hotel Portillo base.",
+    resort_Address: "Hotel Portillo, Los Andes",
+    lat: -32.8322, long: -70.1308,
+    regions: "Chile",
+  }),
+];
+
+export const RENTALS: Rentals[] = [
+  ...SCOTLAND,
+  ...FRANCE,
+  ...SWITZERLAND,
+  ...AUSTRIA,
+  ...ITALY,
+  ...USA,
+  ...CANADA,
+  ...JAPAN,
+  ...SCANDINAVIA,
+  ...SOUTHERN,
 ];
