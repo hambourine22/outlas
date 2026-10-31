@@ -180,6 +180,19 @@ Features: Ski · Hike · Bike Trails · Fishing · Kayak · Birding · Rock Clim
 
 Shared across the Scotland map and every regional map that follows.
 
+## Map pins
+
+One circle per record. The fill is the category colour; the ring is **the ink that would sit on that fill**. Rings are opaque and 2px — anything thinner or translucent dissolves into Mapbox's 1px anti-alias fringe and the pin reads soft. Radius steps with zoom (5px at world view → 7px at continent → 9px from zoom 8) so the world view stays legible where resorts cluster.
+
+| Category | Fill | Ring | Why this ring |
+|---|---|---|---|
+| Resorts | `pine` | `sand` | The yellow signature on the product destination — the manifest pairing, inverted. |
+| Rentals | `glacier` | `carbon` | Light fill takes the dark ink. |
+| Repairs | `rust` | `snow` | The repair-surface pairing — snow on rust. |
+| Guides | `sand` | `carbon` | Light fill takes the dark ink. |
+
+Tokens live in `mapPins` (`design-system.ts`). `CATEGORY_COLOUR` / `CATEGORY_RING` in `app/content/map/types.ts` derive from it, the `locations` circle layer in `app/ui/mapbox/map.tsx` draws it, and the sidebar pin key and token-less placeholder reuse the same fill + ring so key and map never drift.
+
 ## Credit
 
 Brand identity by **Tom Lenartowicz / Thrilly**, March 2020.

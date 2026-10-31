@@ -184,6 +184,31 @@ export const scoreBands = [
   { min: 4, max: 5, label: "Very good", surface: colors.carbon.hex, ink: colors.snow.hex   },
 ] as const;
 
+// Map pins — one circle per record. Fill is the category colour; the ring
+// is the ink that would sit on that fill: carbon on the light fills, sand on
+// pine, snow on rust (the repair-surface pairing). Rings are opaque and 2px —
+// anything thinner or translucent dissolves into Mapbox's 1px anti-alias
+// fringe and the pin reads soft. Radius steps with zoom so the world view
+// stays legible where resorts cluster.
+// Consumed by app/content/map/types.ts (CATEGORY_COLOUR / CATEGORY_RING) and
+// drawn by the `locations` circle layer in app/ui/mapbox/map.tsx.
+export const mapPins = {
+  ring: { width: 2, opacity: 1 },
+  radius: [
+    { zoom: 1, px: 5 },   // world view
+    { zoom: 4, px: 7 },   // continent
+    { zoom: 8, px: 9 },   // region and closer
+  ],
+  categories: {
+    resorts: { label: "Resorts", fill: colors.pine.hex,    ring: colors.sand.hex,   role: "Product destination" },
+    rentals: { label: "Rentals", fill: colors.glacier.hex, ring: colors.carbon.hex, role: "Service provider" },
+    repairs: { label: "Repairs", fill: colors.rust.hex,    ring: colors.snow.hex,   role: "Parts manufacturer" },
+    guides:  { label: "Guides",  fill: colors.sand.hex,    ring: colors.carbon.hex, role: "Human expertise" },
+  },
+} as const;
+
+export type MapPinCategory = keyof typeof mapPins.categories;
+
 // Map legend — categories drawn on the Scotland (and future) map views.
 export const mapLegend = {
   transport: [

@@ -7,9 +7,11 @@ import type { Resorts, Rentals, Repairs } from "@/app/definitions/mapboxDefiniti
 import type { Guides } from "@/app/content/map/types";
 import {
   CATEGORY_COLOUR,
+  CATEGORY_RING,
   CATEGORY_LABEL,
   type MapCategory,
 } from "@/app/content/map/types";
+import { mapPins } from "@/app/lib/design-system";
 import MapMenuSidebar, { type MapFilters } from "./MapMenuSidebar";
 import MapPreviewSidebar, { type PreviewContent } from "./MapPreviewSidebar";
 
@@ -79,6 +81,7 @@ export default function Map({
       arrayType: MapCategory,
     ) {
       const markerColor = CATEGORY_COLOUR[arrayType];
+      const ringColor = CATEGORY_RING[arrayType];
       return inputArray.map((x) => ({
         geometry: {
           coordinates: [x.long, x.lat],
@@ -88,6 +91,7 @@ export default function Map({
           name: x.name,
           id: x.slug,
           markerColor,
+          ringColor,
           dataType: arrayType,
         },
         type: "Feature" as const,
@@ -137,13 +141,20 @@ export default function Map({
         type: "circle",
         source: "locations",
         paint: {
-          // Carbon hairline halo at 40% to lift pins off any map tone,
-          // matching the editorial border system used across the brand.
-          "circle-radius": 8,
-          "circle-stroke-width": 1,
+          // Sharpness comes from an opaque ring at an integer width — a 1px
+          // translucent stroke is all anti-alias fringe and reads soft — and
+          // from a radius that steps with zoom so the world view doesn't
+          // blob where resorts cluster. Fill + ring per category come from
+          // mapPins in design-system.ts via CATEGORY_COLOUR / CATEGORY_RING.
+          "circle-radius": [
+            "interpolate", ["linear"], ["zoom"],
+            ...mapPins.radius.flatMap((r) => [r.zoom, r.px]),
+          ],
           "circle-color": ["get", "markerColor"],
           "circle-opacity": 1,
-          "circle-stroke-color": "rgba(30, 30, 30, 0.4)",
+          "circle-stroke-width": mapPins.ring.width,
+          "circle-stroke-color": ["get", "ringColor"],
+          "circle-stroke-opacity": mapPins.ring.opacity,
         },
       });
 
@@ -296,10 +307,10 @@ function MapPlaceholder({
               <li key={c} className="flex items-center justify-between gap-4">
                 <span className="flex items-center gap-3 text-ink">
                   <span
-                    className="inline-block h-3 w-3 rounded-full border"
+                    className="inline-block h-3 w-3 rounded-full border-2"
                     style={{
                       backgroundColor: CATEGORY_COLOUR[c],
-                      borderColor: "rgba(30,30,30,0.4)",
+                      borderColor: CATEGORY_RING[c],
                     }}
                     aria-hidden
                   />

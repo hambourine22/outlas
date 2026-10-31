@@ -3,6 +3,7 @@ import type {
   Rentals,
   Repairs,
 } from "@/app/definitions/mapboxDefinitions";
+import { mapPins } from "@/app/lib/design-system";
 
 // Curated activity enum. Max 10 — intentionally short so the preview panel
 // stays legible and the data layer stays honest. Added here (not on the
@@ -71,10 +72,20 @@ export type MapData = {
 // so a palette tweak in app/lib/design-system.ts does not need a code
 // change on the map layer.
 export const CATEGORY_COLOUR: Record<MapCategory, string> = {
-  resorts: "#2F5349", // pine — product destination
-  rentals: "#ADCFD3", // glacier — service provider
-  repairs: "#B04B50", // rust — parts manufacturer
-  guides:  "#FFF6C3", // sand — human expertise
+  resorts: mapPins.categories.resorts.fill, // pine — product destination
+  rentals: mapPins.categories.rentals.fill, // glacier — service provider
+  repairs: mapPins.categories.repairs.fill, // rust — parts manufacturer
+  guides:  mapPins.categories.guides.fill,  // sand — human expertise
+};
+
+// Pin ring — the ink that would sit on that fill. Carbon on the light fills,
+// sand on pine, snow on rust. Used by the map layer, the sidebar pin key and
+// the token-less placeholder so all three stay identical.
+export const CATEGORY_RING: Record<MapCategory, string> = {
+  resorts: mapPins.categories.resorts.ring,
+  rentals: mapPins.categories.rentals.ring,
+  repairs: mapPins.categories.repairs.ring,
+  guides:  mapPins.categories.guides.ring,
 };
 
 export const CATEGORY_LABEL: Record<MapCategory, string> = {
