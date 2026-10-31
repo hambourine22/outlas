@@ -17,7 +17,10 @@ import {
   themes,
   grid,
   dataviz,
+  anatomy,
 } from "@/app/lib/design-system";
+import { RESORTS } from "@/app/content/map";
+import { ResortAnatomy } from "@/app/ui/ResortAnatomy";
 import { TopBar, Sidebar, OnThisPage, NavProvider } from "./Nav";
 import { CHAPTERS } from "./nav-data";
 import { LineChart, ChartLegend, BarChart, RadarChart } from "./Chart";
@@ -96,6 +99,9 @@ export default function DesignSystemPage() {
           </Chapter>
           <Chapter slug="submit-form" n="16" title="Submit Form" intro="The provider-submission pattern — field states, file drop zone states, success state. Grows as repair and guide submission forms join Rentals.">
             <SubmitFormSpecimen />
+          </Chapter>
+          <Chapter slug="anatomy" n="17" title="Anatomy" intro="One contoured shape per resort that brings altitude, vertical, size and lifts together — drawn the same way for every resort, with fixed domains, so they compare at a glance. The mountain form is built; surf, snowdome and cable-park forms are reserved with their encodings.">
+            <AnatomySpec />
           </Chapter>
           <Footer />
         </main>
@@ -1009,6 +1015,70 @@ function MapLegend() {
           ))}
         </ul>
       </div>
+      </div>
+    </div>
+  );
+}
+
+/* -----------------------------------------------------------------
+ * Anatomy — three contrasting mountains from the content layer drawn by
+ * the shared primitive, then the encoding table straight from the token.
+ * A Scottish spike, a high Alpine peak and a wide Canadian one show the
+ * fixed domains doing their job: same scale, three very different shapes.
+ * ----------------------------------------------------------------- */
+function AnatomySpec() {
+  const trio = ["cairngorm-mountain", "zermatt", "whistler-blackcomb"]
+    .map((slug) => RESORTS.find((r) => r.slug === slug))
+    .filter((r): r is NonNullable<typeof r> => !!r && typeof r.peak_m === "number" && typeof r.terrain_km === "number");
+  return (
+    <div className="space-y-12">
+      <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
+        {trio.map((r) => (
+          <ResortAnatomy
+            key={r.slug}
+            name={r.name}
+            country={r.country}
+            stats={{
+              peak: r.peak_m as number,
+              base: Math.max(0, (r.peak_m as number) - (r.vertical_m ?? 0)),
+              terrain: r.terrain_km as number,
+              lifts: r.lifts ?? 0,
+              snowfall: r.snowfall_cm,
+            }}
+          />
+        ))}
+      </div>
+
+      <div>
+        <h3 className="label text-ink-muted">Encoding — one axis each, nothing doubled</h3>
+        <table className="mt-6 w-full border-y border-rule font-ui text-sm">
+          <thead>
+            <tr className="text-left">
+              <th className="label py-3 pr-6 text-ink-faint">Kind</th>
+              <th className="label py-3 pr-6 text-ink-faint">Height</th>
+              <th className="label py-3 pr-6 text-ink-faint">The ink band</th>
+              <th className="label py-3 pr-6 text-ink-faint">Width</th>
+              <th className="label py-3 pr-6 text-ink-faint">Rungs</th>
+              <th className="label py-3 text-ink-faint">Status</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-rule">
+            {anatomy.encodings.map((e) => (
+              <tr key={e.kind} className={e.status === "built" ? "text-ink" : "text-ink-muted"}>
+                <td className="py-3 pr-6 font-mono text-xs uppercase tracking-wide">{e.kind}</td>
+                <td className="py-3 pr-6">{e.height}</td>
+                <td className="py-3 pr-6">{e.band}</td>
+                <td className="py-3 pr-6">{e.width}</td>
+                <td className="py-3 pr-6">{e.rungs}</td>
+                <td className="py-3"><span className="chip">{e.status}</span></td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <p className="mt-4 max-w-2xl font-ui text-sm leading-relaxed text-ink-muted">
+          Domains {anatomy.domain.altitude} m × {anatomy.domain.terrain} km, contours every {anatomy.contour} m, the foot below the base drawn faint. Snowfall and the five numbers are readouts, not geometry. Geometry in <code className="font-mono text-ink">app/lib/anatomy.ts</code>; the same functions draw the motion piece at{" "}
+          <a href="/motion/resorts" className="text-ink underline-offset-4 hover:underline">/motion/resorts</a>.
+        </p>
       </div>
     </div>
   );

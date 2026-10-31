@@ -32,3 +32,7 @@ Stats landed today (`resort-stats-pack`); the art direction brief arrived with a
 
 ## Links
 Reference spec pasted in session (three.js "Anatomy of distance travelled", ref 1000·С002). Copy style: `docs/COPY_STYLE.md`.
+
+## Pivot — 2026-10-31, later
+
+The strata build was wrong at the root: the reference is a *journey*, so its left-to-right axis is distance travelled. Resorts aren't a sequence; sorting them by longitude invents one, and the viewer gets nothing from "west to east". Who benefits from this visual is a rider choosing between resorts — they have *where* (pins) and *numbers* (stat strip) and are missing *shape*. So: **Anatomy of a resort** — one contoured shape per resort that brings its numbers together, drawn the same way for every resort so they compare like mountains on a horizon. One axis each: height = altitude, the ink band = base → peak with contours every 200 m, width = pisted km, rungs = lifts; snowfall and the numbers are readouts. The form follows the kind of place — a surf break would be a wave — so the family is `anatomy.kinds` with the mountain built and surf / snowdome / cable reserved. Motion = one mountain reshaping into the next. Success signal unchanged except "three strata" → "one glyph"; scope adds the SVG primitive and a design-system chapter (17 · Anatomy).

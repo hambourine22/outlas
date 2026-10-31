@@ -39,3 +39,21 @@ Console: the only error during development was React's "dependency array changed
 
 ---
 Next: `/security-ops` on `resorts-motion` — deploy on request.
+
+---
+
+# Review — pivot to Anatomy of a resort · 2026-10-31, later
+
+**Change:** strata piece replaced by one morphing peak glyph; `app/lib/anatomy.ts` (geometry), `app/ui/ResortAnatomy.tsx` (SVG primitive), `app/motion/resorts/AnatomyMotion.tsx` (canvas), design-system chapter 17 · Anatomy, `anatomy` token, docs.
+
+## Verdict: ship-with-fixes
+Built and verified in the browser (dark + light; The Lecht and Chamonix in the loop; chapter 17 renders Cairngorm · Zermatt · Whistler with the encoding table). tsc ✓ · token drift ✓ · lint on *my* files ✓. The gate's lint/build failure is a sibling's uncommitted `<a href="/">` (no-html-link-for-pages), not in this commit. Fixes left: fresh-tab console check; label crowding on very small resorts (base / lifts labels touch); remove `ResortsMotion` references in older notes.
+
+## Acceptance
+- [x] One glyph per resort, same fixed domains everywhere (4000 m × 400 km) — primitive and canvas share `anatomy.ts`.
+- [x] Encodings: height = peak; ink band = base → peak with contours every 200 m, foot faint; width = pisted km; rungs = lifts on the lift line; readouts = peak, vertical, terrain, lifts, snowfall.
+- [x] Motion: dwell 1.6 s, morph 0.8 s, power2.inOut; contours fade in/out rather than pop; name cross-fades; readouts count.
+- [x] Non-mountains (snowdomes, cable parks) are excluded from the mountain form and counted on the page; reserved kinds listed from the token.
+- [x] Hold a single resort via the select; record 8 s; save still; reduced motion = one frame.
+- [x] Design-system chapter shows Cairngorm · Zermatt · Whistler Blackcomb side by side + the encoding table from `anatomy.encodings`.
+- [x] Nav: Explore · 03 · Anatomy of a resort; Data · 17 · Anatomy.

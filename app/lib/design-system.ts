@@ -334,11 +334,7 @@ export const motion = {
   opacity: {
     cells: 0.03, grid: 0.3, rules: 0.55, leaders: 0.7, marks: 0.9, playhead: 0.75,
   },
-  strata: [
-    { n: "01", key: "space",    title: "space",    sub: "by longitude and latitude" },
-    { n: "02", key: "altitude", title: "altitude", sub: "base to peak, metres" },
-    { n: "03", key: "size",     title: "size",     sub: "pisted terrain, km" },
-  ],
+  anatomy: { dwell: 1.6, morph: 0.8 },                // seconds a resort holds, seconds it reshapes into the next
   export: {
     sizes: { 1080: [1080, 1350], 1440: [1440, 1800], 2160: [2160, 2700] },
     fps: 30,
@@ -350,6 +346,34 @@ export const motion = {
       "video/webm",
     ],
   },
+} as const;
+
+// -------------------------------------------------------------------------
+// ANATOMY — one contoured shape per resort that brings its numbers together,
+// drawn the same way for every resort so they compare at a glance. The form
+// follows the kind of place: a mountain gets a peak; a surf break a wave; an
+// indoor slope or a cable park their own. Only `mountain` is built; the
+// others are reserved with their encodings so the family grows without a
+// redesign. Geometry lives in app/lib/anatomy.ts, the SVG primitive in
+// app/ui/ResortAnatomy.tsx, the motion piece at /motion/resorts.
+//
+// Encoding rule: one axis each, nothing doubled. Fixed domains so a glyph in
+// the sidebar and a glyph on the motion frame are the same shape.
+// -------------------------------------------------------------------------
+export const anatomy = {
+  kinds: ["mountain", "surf", "snowdome", "cable"] as const,
+  built: ["mountain"] as const,
+  domain: { altitude: 4000, terrain: 400 },             // m · km — the comparability frame
+  contour: 200,                                         // m between contour lines in the skiable band
+  flank: 0.7,                                           // silhouette exponent: half-width ∝ (1 − a/peak)^flank
+  asym: 0.85,                                           // the left flank is this much of the right — a real peak, not a cone
+  lift: { node: 2, dash: [6, 5] },                      // rung radius (px on the 400-unit primitive), lift-line dash
+  encodings: [
+    { kind: "mountain", height: "peak altitude",    band: "base → peak, contours every 200 m", width: "pisted km",   rungs: "lifts",             status: "built"    },
+    { kind: "surf",     height: "wave height",      band: "the face you can ride",             width: "ride length", rungs: "peaks on the break", status: "reserved" },
+    { kind: "snowdome", height: "indoor vertical",  band: "the slope",                         width: "slope length", rungs: "lifts",            status: "reserved" },
+    { kind: "cable",    height: "—",                band: "the cable loop",                    width: "cable length", rungs: "obstacles",        status: "reserved" },
+  ],
 } as const;
 
 // Voice — the three-line brand ladder; the brand mark pairs with it on splash.

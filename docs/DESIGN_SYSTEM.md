@@ -193,14 +193,28 @@ One circle per record, **fill only — no outline**. The fill is the category co
 
 Tokens live in `mapPins` (`design-system.ts`). `CATEGORY_COLOUR` in `app/content/map/types.ts` derives from it, the `locations` circle layer in `app/ui/mapbox/map.tsx` draws it, and the sidebar pin key, provider table and token-less placeholder reuse the same fill so key and map never drift. In the sidebar key a filtered-out category shows its fill at 30 % rather than a hollow ring.
 
+## Anatomy
+
+One contoured shape per resort that brings its numbers together — drawn the same way for every resort, with fixed domains, so two glyphs anywhere on the site compare at a glance. The form follows the kind of place; only the mountain is built, the others are reserved with their encodings so the family grows without a redesign.
+
+| Reads as | Mountain (built) | Surf (reserved) | Snowdome (reserved) | Cable park (reserved) |
+|---|---|---|---|---|
+| Height | peak altitude | wave height | indoor vertical | — |
+| The ink band | base → peak, contours every 200 m | the face you can ride | the slope | the cable loop |
+| Width | pisted km | ride length | slope length | cable length |
+| Rungs | lifts, on a line from base to summit | peaks on the break | lifts | obstacles |
+
+One axis each, nothing doubled; snowfall and the five numbers are readouts, not geometry. Domains: 4000 m tall, 400 km wide; the foot of the mountain below the base is drawn faint — you can see it, you can't ski it. Tokens in `anatomy` (`design-system.ts`); geometry in `app/lib/anatomy.ts`; the SVG primitive `ResortAnatomy` (`app/ui/ResortAnatomy.tsx`) and the motion piece share it.
+
 ## Motion
 
-Animated data pieces follow one art direction: numbered **strata** that lie flat as a sheet, fold into an oblique stack, get read by a playhead, and fold back — eight seconds, on a loop, framed 4:5 for export. The tokens live in `motion` (`design-system.ts`) and are JS-only; a piece reads them directly.
+Animated data pieces follow one art direction, taken from the "Anatomy" strata sheet: hairlines, dashed leaders, a 4:5 frame, a loop. The tokens live in `motion` (`design-system.ts`) and are JS-only; a piece reads them directly. The first piece, **Anatomy of a resort** at `/motion/resorts`, is one mountain reshaping into the next — each resort holds for `motion.anatomy.dwell`, morphs over `motion.anatomy.morph`.
 
 | Token | Value | Notes |
 |---|---|---|
 | `frame` | 1080 × 1350 | 4:5 portrait; export sizes 1080 / 1440 / 2160 |
-| `loop` · `morph` · `drawIn` | 8 s · 1.6 s · 1.2 s | one journey; sheet ⇄ stack fold; marks appear |
+| `loop` · `morph` · `drawIn` | 8 s · 1.6 s · 1.2 s | a recorded clip; a fold; marks appearing |
+| `anatomy.dwell` · `anatomy.morph` | 1.6 s · 0.8 s | a resort holds; it reshapes into the next |
 | `ease` | power2.inOut — `cubic-bezier(0.45, 0, 0.55, 1)` | |
 | `view.oblique` | shear 0.42 · squash 0.3 | the strata view; `isoAxis` 30° for a true isometric |
 | `lean` | 60° | leader angle from the horizontal |
@@ -209,7 +223,7 @@ Animated data pieces follow one art direction: numbered **strata** that lie flat
 
 Colour is never a motion token. A piece reads `--canvas`, `--ink`, `--ink-muted`, `--ink-faint`, `--rule` and `--accent` at draw time — so it follows light, dark and system — and takes one emphasis colour from `dataviz.series`. Type comes from the `next/font` variables (`--font-vollkorn`, `--font-archivo`, `--font-geist-mono`). Layout on the Power-of-4 ladder: margin 4 % of the short side to the nearest 4.
 
-First piece: **Anatomy of a mountain** at `/motion/resorts` — every resort's altitude (base → peak), size (pisted km, lifts) and position (lon / lat) from the content layer, drawn as three strata. Record one loop (MP4 / WebM) or save a still from the page.
+Record an 8 s clip (MP4 / WebM) or save a still from the page; hold any single resort to export its glyph.
 
 ## Credit
 
