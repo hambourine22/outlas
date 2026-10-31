@@ -136,37 +136,54 @@ const SCOTLAND: Resorts[] = [
 ];
 
 // --- Alps · France (10) ---------------------------------------------------
+// Stats from each resort's own site + Wikipedia. Peak = highest lift-served
+// point. Terrain = groomed pistes within the resort or linked domain,
+// stated per-resort for Trois Vallées / Paradiski / Espace Killy (not the
+// linked total — otherwise two resorts share the same number).
 const FRANCE: Resorts[] = [
   r({ n: "Chamonix-Mont-Blanc",       s: "chamonix-mont-blanc",      lat: 45.9237, long: 6.8694,  alt: "1,035m", country: "France",
       op: "year-round",
-      acts: ["ski","snowboard","splitboard","hike","climb","trail-run"] }),
+      acts: ["ski","snowboard","splitboard","hike","climb","trail-run"],
+      peak_m: 3842, vertical_m: 2807, terrain_km: 155, lifts: 48, snowfall_cm: 900 }),
   r({ n: "Val d'Isère",               s: "val-disere",               lat: 45.4489, long: 6.9792,  alt: "1,850m", country: "France",
       op: "seasonal", from: S.alps[0], to: S.alps[1],
-      acts: ["ski","snowboard","hike","bike"] }),
+      acts: ["ski","snowboard","hike","bike"],
+      peak_m: 3456, vertical_m: 1606, terrain_km: 150, lifts: 43, snowfall_cm: 750 }),
   r({ n: "Tignes",                    s: "tignes",                   lat: 45.4675, long: 6.9064,  alt: "2,100m", country: "France",
       op: "year-round",
-      acts: ["ski","snowboard","splitboard","hike","bike"] }),
+      acts: ["ski","snowboard","splitboard","hike","bike"],
+      peak_m: 3456, vertical_m: 1550, terrain_km: 150, lifts: 42, snowfall_cm: 750 }),
   r({ n: "Courchevel",                s: "courchevel",               lat: 45.4154, long: 6.6347,  alt: "1,850m", country: "France",
       op: "seasonal", from: S.alps[0], to: S.alps[1],
-      acts: ["ski","snowboard","hike","bike"] }),
+      acts: ["ski","snowboard","hike","bike"],
+      peak_m: 2738, vertical_m: 1438, terrain_km: 150, lifts: 56, snowfall_cm: 500 }),
   r({ n: "Val Thorens",               s: "val-thorens",              lat: 45.2975, long: 6.5806,  alt: "2,300m", country: "France",
       op: "seasonal", from: "11-20", to: "05-05",
-      acts: ["ski","snowboard","splitboard","hike"] }),
+      acts: ["ski","snowboard","splitboard","hike"],
+      peak_m: 3230, vertical_m: 930, terrain_km: 150, lifts: 30, snowfall_cm: 550 }),
   r({ n: "Méribel",                   s: "meribel",                  lat: 45.3961, long: 6.5658,  alt: "1,450m", country: "France",
       op: "seasonal", from: S.alps[0], to: S.alps[1],
-      acts: ["ski","snowboard","hike","bike"] }),
+      acts: ["ski","snowboard","hike","bike"],
+      peak_m: 2952, vertical_m: 1502, terrain_km: 150, lifts: 50, snowfall_cm: 500 }),
   r({ n: "La Plagne",                 s: "la-plagne",                lat: 45.5069, long: 6.6792,  alt: "2,100m", country: "France",
       op: "seasonal", from: S.alps[0], to: S.alps[1],
-      acts: ["ski","snowboard","hike","bike"] }),
+      acts: ["ski","snowboard","hike","bike"],
+      peak_m: 3250, vertical_m: 2000, terrain_km: 225, lifts: 86, snowfall_cm: 500 }),
   r({ n: "Les Arcs",                  s: "les-arcs",                 lat: 45.5720, long: 6.8160,  alt: "1,800m", country: "France",
       op: "seasonal", from: S.alps[0], to: S.alps[1],
-      acts: ["ski","snowboard","hike","bike"] }),
+      acts: ["ski","snowboard","hike","bike"],
+      peak_m: 3250, vertical_m: 2050, terrain_km: 200, lifts: 54, snowfall_cm: 500 }),
   r({ n: "Alpe d'Huez",               s: "alpe-dhuez",               lat: 45.0909, long: 6.0693,  alt: "1,860m", country: "France",
       op: "seasonal", from: S.alps[0], to: S.alps[1],
-      acts: ["ski","snowboard","hike","bike","climb"] }),
+      acts: ["ski","snowboard","hike","bike","climb"],
+      peak_m: 3330, vertical_m: 2080, terrain_km: 250, lifts: 69, snowfall_cm: 500 }),
+  // La Grave's "terrain" is almost all off-piste served by the La Meije
+  // téléphérique — only ~10km is formally groomed. Honest number, not
+  // zero.
   r({ n: "La Grave",                  s: "la-grave",                 lat: 45.0458, long: 6.3061,  alt: "1,450m", country: "France",
       op: "seasonal", from: "12-20", to: "04-30",
-      acts: ["ski","splitboard","hike","climb"] }),
+      acts: ["ski","splitboard","hike","climb"],
+      peak_m: 3600, vertical_m: 2150, terrain_km: 10, lifts: 2, snowfall_cm: 600 }),
 ];
 
 // --- Alps · Switzerland (10) ---------------------------------------------
