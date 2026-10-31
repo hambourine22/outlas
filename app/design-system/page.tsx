@@ -23,6 +23,7 @@ import {
   StatusBadge,
   SeasonBar,
   ActivityChips,
+  StatStrip,
   type ResortStatus,
 } from "@/app/ui/mapbox/MapPreviewSidebar";
 
@@ -1190,6 +1191,45 @@ function ResortCard() {
             <span className="label text-ink-faint">Out-of-season (dim)</span>
             <div className="mt-3">
               <SeasonBar from="12-15" to="04-20" dim />
+            </div>
+          </li>
+        </ul>
+      </section>
+
+      {/* Stat strip — all five · partial · empty */}
+      <section>
+        <h3 className="label text-ink-faint">Stat strip · all five · partial · empty</h3>
+        <ul className="mt-4 grid grid-cols-1 gap-6">
+          <li className="border border-rule bg-canvas-raised p-4">
+            <span className="label text-ink-faint">All five (Zermatt — reference numbers)</span>
+            <div className="mt-3">
+              <StatStrip
+                stats={[
+                  { label: "Peak",     value: "3,883 m" },
+                  { label: "Vertical", value: "2,281 m" },
+                  { label: "Terrain",  value: "360 km" },
+                  { label: "Lifts",    value: "53" },
+                  { label: "Snowfall", value: "4.8 m" },
+                ]}
+              />
+            </div>
+          </li>
+          <li className="border border-rule bg-canvas-raised p-4">
+            <span className="label text-ink-faint">Partial — only peak + lifts available</span>
+            <div className="mt-3">
+              <StatStrip
+                stats={[
+                  { label: "Peak",  value: "2,196 m" },
+                  { label: "Lifts", value: "4" },
+                ]}
+              />
+            </div>
+          </li>
+          <li className="border border-rule bg-canvas-raised p-4">
+            <span className="label text-ink-faint">Empty — nothing renders (StatStrip returns null)</span>
+            <div className="mt-3 font-mono text-[10px] uppercase tracking-wide text-ink-faint">
+              <StatStrip stats={[]} />
+              <span>(no output above this line)</span>
             </div>
           </li>
         </ul>

@@ -64,6 +64,14 @@ export type Resorts = {
       // "Japan"). Shown in the preview panel's place line.
       country?: string;
 
+      // --- top-5 statistics (resort-stats-pack spec, 2026-10-31) -----------
+      // All optional — a missing stat omits its cell in the StatStrip.
+      peak_m?: number;        // peak altitude, metres
+      vertical_m?: number;    // vertical drop base→peak, metres
+      terrain_km?: number;    // total pisted terrain, kilometres
+      lifts?: number;         // total lift count (chairs + gondolas + drag)
+      snowfall_cm?: number;   // annual average snowfall, centimetres
+
       // --- legacy fields (kept for backwards compat with existing records) ---
       name: string,
       lat: number,

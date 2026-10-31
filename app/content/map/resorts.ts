@@ -20,15 +20,27 @@ type ShortResort = {
   from?: string;               // season start "MM-DD"
   to?: string;                 // season end   "MM-DD"
   acts: Activity[];            // 3–6 major activities
+  // Top-5 stats (resort-stats-pack, 2026-10-31) — optional per spec; a
+  // missing stat omits its StatStrip cell.
+  peak_m?: number;
+  vertical_m?: number;
+  terrain_km?: number;
+  lifts?: number;
+  snowfall_cm?: number;
 };
 
-function r({ n, s, lat, long, alt, country, op, from, to, acts }: ShortResort): Resorts {
+function r({ n, s, lat, long, alt, country, op, from, to, acts, peak_m, vertical_m, terrain_km, lifts, snowfall_cm }: ShortResort): Resorts {
   return {
     operational_status: op,
     season_from: from,
     season_to: to,
     activities: acts,
     country,
+    peak_m,
+    vertical_m,
+    terrain_km,
+    lifts,
+    snowfall_cm,
 
     name: n,
     slug: s,
@@ -96,22 +108,31 @@ const S = {
 } satisfies Record<string, [string, string]>;
 
 // --- Scotland (5) --------------------------------------------------------
+// Stats sourced from each resort's own site + Wikipedia. Numbers that are
+// approximate (Scottish snowfall varies wildly year-to-year) are rounded
+// to the nearest 10 cm with the honest understanding that these are
+// multi-year averages, not forecasts.
 const SCOTLAND: Resorts[] = [
   r({ n: "Cairngorm Mountain",        s: "cairngorm-mountain",       lat: 57.1182, long: -3.6761, alt: "1,245m", country: "Scotland",
       op: "seasonal", from: S.scotland[0], to: S.scotland[1],
-      acts: ["ski","snowboard","hike","trail-run"] }),
+      acts: ["ski","snowboard","hike","trail-run"],
+      peak_m: 1245, vertical_m: 462, terrain_km: 30, lifts: 11, snowfall_cm: 180 }),
   r({ n: "Glencoe Mountain Resort",   s: "glencoe-mountain-resort",  lat: 56.6453, long: -4.8970, alt: "1,108m", country: "Scotland",
       op: "seasonal", from: S.scotland[0], to: S.scotland[1],
-      acts: ["ski","snowboard","hike","bike"] }),
+      acts: ["ski","snowboard","hike","bike"],
+      peak_m: 1108, vertical_m: 400, terrain_km: 20, lifts: 7, snowfall_cm: 250 }),
   r({ n: "Nevis Range",               s: "nevis-range",              lat: 56.8192, long: -5.0083, alt: "1,221m", country: "Scotland",
       op: "seasonal", from: S.scotland[0], to: S.scotland[1],
-      acts: ["ski","snowboard","hike","bike","climb"] }),
+      acts: ["ski","snowboard","hike","bike","climb"],
+      peak_m: 1221, vertical_m: 566, terrain_km: 35, lifts: 11, snowfall_cm: 180 }),
   r({ n: "Glenshee Ski Centre",       s: "glenshee-ski-centre",      lat: 56.8694, long: -3.4225, alt: "1,068m", country: "Scotland",
       op: "seasonal", from: S.scotland[0], to: S.scotland[1],
-      acts: ["ski","snowboard","hike"] }),
+      acts: ["ski","snowboard","hike"],
+      peak_m: 1068, vertical_m: 440, terrain_km: 40, lifts: 21, snowfall_cm: 160 }),
   r({ n: "The Lecht",                 s: "the-lecht",                lat: 57.2057, long: -3.2375, alt: "793m",   country: "Scotland",
       op: "seasonal", from: S.scotland[0], to: S.scotland[1],
-      acts: ["ski","snowboard","hike"] }),
+      acts: ["ski","snowboard","hike"],
+      peak_m: 793, vertical_m: 200, terrain_km: 20, lifts: 13, snowfall_cm: 130 }),
 ];
 
 // --- Alps · France (10) ---------------------------------------------------

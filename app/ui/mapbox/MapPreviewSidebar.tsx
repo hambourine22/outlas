@@ -204,8 +204,9 @@ export default function MapPreviewSidebar({ show, category, content, onClose }: 
 }
 
 /* ================================================================
- * Resort meta — composes SeasonBar + ActivityChips. Omits entirely
- * if the resort has neither a season window nor any activities.
+ * Resort meta — composes StatStrip + SeasonBar + ActivityChips.
+ * Each sub-block omits itself when it has no data; the whole wrapper
+ * omits when none of them have anything.
  * ================================================================ */
 function ResortMeta({
   resort,
@@ -214,28 +215,95 @@ function ResortMeta({
   resort: Resorts;
   status: ResortStatus | null;
 }) {
+  const stats = statsFor(resort);
+  const hasStats = stats.length > 0;
   const hasSeason =
     resort.operational_status === "seasonal" &&
     !!resort.season_from &&
     !!resort.season_to;
   const hasActivities = Array.isArray(resort.activities) && resort.activities.length > 0;
-  if (!hasSeason && !hasActivities) return null;
+  if (!hasStats && !hasSeason && !hasActivities) return null;
 
   return (
     <div className="px-6 pt-5">
+      {hasStats && <StatStrip stats={stats} />}
       {hasSeason && (
-        <SeasonBar
-          from={resort.season_from!}
-          to={resort.season_to!}
-          dim={status === "out-of-season"}
-        />
+        <div className={hasStats ? "mt-5" : ""}>
+          <SeasonBar
+            from={resort.season_from!}
+            to={resort.season_to!}
+            dim={status === "out-of-season"}
+          />
+        </div>
       )}
       {hasActivities && (
-        <div className={hasSeason ? "mt-5" : ""}>
+        <div className={hasStats || hasSeason ? "mt-5" : ""}>
           <ActivityChips activities={resort.activities} max={6} />
         </div>
       )}
     </div>
+  );
+}
+
+/* ================================================================
+ * StatStrip — top-5 statistics per resort-stats-pack spec. A row of
+ * equal cells with hairline dividers between them. Each cell shows
+ * a label (micro caps) above a formatted value in font-mono. Missing
+ * stats omit their cell silently — never a `—` or `n/a`.
+ * ================================================================ */
+type Stat = { label: string; value: string };
+
+function statsFor(r: Resorts): Stat[] {
+  const out: Stat[] = [];
+  if (typeof r.peak_m === "number")      out.push({ label: "Peak",     value: fmtMetres(r.peak_m) });
+  if (typeof r.vertical_m === "number")  out.push({ label: "Vertical", value: fmtMetres(r.vertical_m) });
+  if (typeof r.terrain_km === "number")  out.push({ label: "Terrain",  value: `${r.terrain_km} km` });
+  if (typeof r.lifts === "number")       out.push({ label: "Lifts",    value: String(r.lifts) });
+  if (typeof r.snowfall_cm === "number") out.push({ label: "Snowfall", value: fmtSnowfall(r.snowfall_cm) });
+  return out;
+}
+
+function fmtMetres(m: number): string {
+  // Thousands-separator + "m" unit; no decimals for altitudes/verticals.
+  return `${m.toLocaleString("en-GB")} m`;
+}
+
+function fmtSnowfall(cm: number): string {
+  // Metres when ≥ 100cm (one decimal place for readability), cm below.
+  if (cm >= 100) {
+    const m = cm / 100;
+    const trimmed = Number.isInteger(m) ? String(m) : m.toFixed(1);
+    return `${trimmed} m`;
+  }
+  return `${cm} cm`;
+}
+
+export function StatStrip({ stats }: { stats: Stat[] }) {
+  if (stats.length === 0) return null;
+  return (
+    <ul
+      role="list"
+      aria-label="Resort statistics"
+      className="grid border border-rule bg-canvas-raised"
+      style={{ gridTemplateColumns: `repeat(${stats.length}, minmax(0, 1fr))` }}
+    >
+      {stats.map((s, i) => (
+        <li
+          key={s.label}
+          className={[
+            "flex flex-col items-start gap-0.5 px-3 py-2",
+            i > 0 ? "border-l border-rule" : "",
+          ].join(" ")}
+        >
+          <span className="font-mono text-[10px] uppercase tracking-wide text-ink-faint">
+            {s.label}
+          </span>
+          <span className="font-mono text-[13px] leading-tight text-ink">
+            {s.value}
+          </span>
+        </li>
+      ))}
+    </ul>
   );
 }
 
