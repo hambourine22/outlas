@@ -404,31 +404,44 @@ const CANADA: Resorts[] = [
 ];
 
 // --- Japan (8) ------------------------------------------------------------
+// Japanese resorts are famous for depth; Myoko and Niseko regularly top
+// 15m seasons. Numbers below are multi-year averages — single seasons
+// swing wildly either side.
 const JAPAN: Resorts[] = [
   r({ n: "Niseko (Grand Hirafu)",     s: "niseko-grand-hirafu",      lat: 42.8614, long: 140.6986, alt: "1,308m", country: "Japan/Hokkaido",
       op: "seasonal", from: S.japan[0], to: S.japan[1],
-      acts: ["ski","snowboard","splitboard","hike","wild-swim"] }),
+      acts: ["ski","snowboard","splitboard","hike","wild-swim"],
+      peak_m: 1308, vertical_m: 940, terrain_km: 44, lifts: 32, snowfall_cm: 1500 }),
   r({ n: "Rusutsu",                   s: "rusutsu",                  lat: 42.7536, long: 140.9169, alt: "994m",   country: "Japan/Hokkaido",
       op: "year-round",
-      acts: ["ski","snowboard","hike","bike"] }),
+      acts: ["ski","snowboard","hike","bike"],
+      peak_m: 994, vertical_m: 670, terrain_km: 42, lifts: 18, snowfall_cm: 1200 }),
   r({ n: "Furano",                    s: "furano",                   lat: 43.3418, long: 142.3733, alt: "1,074m", country: "Japan/Hokkaido",
       op: "seasonal", from: S.japan[0], to: "04-05",
-      acts: ["ski","snowboard","hike","bike"] }),
+      acts: ["ski","snowboard","hike","bike"],
+      peak_m: 1074, vertical_m: 719, terrain_km: 25, lifts: 11, snowfall_cm: 900 }),
   r({ n: "Hakuba Happo-One",          s: "hakuba-happo-one",         lat: 36.6986, long: 137.8328, alt: "1,831m", country: "Japan/Nagano",
       op: "seasonal", from: S.japan[0], to: "05-05",
-      acts: ["ski","snowboard","hike","climb","trail-run"] }),
+      acts: ["ski","snowboard","hike","climb","trail-run"],
+      peak_m: 1831, vertical_m: 1071, terrain_km: 44, lifts: 23, snowfall_cm: 1100 }),
   r({ n: "Nozawa Onsen",              s: "nozawa-onsen",             lat: 36.9220, long: 138.4506, alt: "1,650m", country: "Japan/Nagano",
       op: "seasonal", from: "11-30", to: "05-05",
-      acts: ["ski","snowboard","hike"] }),
+      acts: ["ski","snowboard","hike"],
+      peak_m: 1650, vertical_m: 1085, terrain_km: 50, lifts: 21, snowfall_cm: 1000 }),
+  // Myoko: notorious for "Myoko powder" — some seasons top 20m.
   r({ n: "Myoko Kogen (Akakura)",     s: "myoko-kogen",              lat: 36.8828, long: 138.1917, alt: "1,500m", country: "Japan/Niigata",
       op: "seasonal", from: S.japan[0], to: "05-05",
-      acts: ["ski","snowboard","splitboard","hike"] }),
+      acts: ["ski","snowboard","splitboard","hike"],
+      peak_m: 1500, vertical_m: 750, terrain_km: 48, lifts: 32, snowfall_cm: 1300 }),
+  // Shiga Kogen: 18 interconnected ski areas — largest in Japan.
   r({ n: "Shiga Kogen",               s: "shiga-kogen",              lat: 36.7236, long: 138.5017, alt: "2,307m", country: "Japan/Nagano",
       op: "seasonal", from: "11-20", to: "05-10",
-      acts: ["ski","snowboard","hike"] }),
+      acts: ["ski","snowboard","hike"],
+      peak_m: 2307, vertical_m: 967, terrain_km: 80, lifts: 60, snowfall_cm: 1000 }),
   r({ n: "Appi Kogen",                s: "appi-kogen",               lat: 40.0397, long: 140.9792, alt: "1,304m", country: "Japan/Iwate",
       op: "seasonal", from: S.japan[0], to: "05-05",
-      acts: ["ski","snowboard","hike","bike"] }),
+      acts: ["ski","snowboard","hike","bike"],
+      peak_m: 1304, vertical_m: 804, terrain_km: 45, lifts: 21, snowfall_cm: 1000 }),
 ];
 
 // --- Scandinavia (7) -----------------------------------------------------
