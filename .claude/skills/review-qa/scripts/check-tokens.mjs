@@ -174,6 +174,22 @@ for (const f of files) {
   }
 }
 
+// 4. Tailwind opacity on semantic colours ---------------------------------------
+// `bg-ink/40`, `bg-canvas/90`, `border-rule/60` … compile to NOTHING here:
+// Tailwind injects alpha as `rgb(var(--x) / α)`, which needs an RGB triplet,
+// and the semantic variables are hex. Brand names (`bg-pine/20`) are fine —
+// `--brand-*` are triplets. Reported as warnings until the existing uses are
+// burned down (track in an XS brief); then promote to errors.
+const OPACITY_TRAP = /\b(bg|text|border|ring|divide|from|via|to|outline|shadow|fill|stroke)-(ink|canvas|rule|accent)(-[a-z]+)*\/(\[?[0-9.]+\]?)\b/g;
+for (const f of files) {
+  if (!f.endsWith(".tsx") && !f.endsWith(".ts")) continue;
+  const src = stripComments(readFileSync(f, "utf8"));
+  const r = rel(f);
+  for (const m of src.matchAll(OPACITY_TRAP)) {
+    warnings.push(`${r}:${lineOf(src, m.index)}  ${m[0]} compiles to no CSS (hex variable) — bake alpha into a token and bind with bg-[var(--token)]`);
+  }
+}
+
 // ---- Report ---------------------------------------------------------------
 
 const log = (label, items, colour) => {

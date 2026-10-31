@@ -37,6 +37,12 @@
   --row-hover:  rgb(30 30 30 / 0.07);
   --row-active: rgb(30 30 30 / 0.10);
 
+  /* Chrome tokens — the sticky TopBar's translucent fill and the drawer
+   * scrim. Alpha is baked in because Tailwind's `bg-canvas/90` cannot
+   * inject alpha into a hex variable and silently compiles to nothing. */
+  --chrome-bg:  rgb(255 255 255 / 0.9);  /* snow @ 90% */
+  --scrim:      rgb(30 30 30 / 0.4);     /* carbon @ 40% — always darkens */
+
   /* Legacy aliases retained for the Mapbox sidebar. */
   --background: var(--canvas);
   --foreground: var(--ink);
@@ -54,6 +60,8 @@
   --accent:        #ADCFD3;              /* glacier (pine is too dark on carbon) */
   --row-hover:     rgb(255 255 255 / 0.08);
   --row-active:    rgb(255 255 255 / 0.12);
+  --chrome-bg:     rgb(30 30 30 / 0.9);      /* carbon @ 90% */
+  --scrim:         rgb(30 30 30 / 0.6);      /* carbon @ 60% */
 }
 
 /* System dark mode — honours OS preference unless the user forced light. */
@@ -69,6 +77,8 @@
     --accent:        #ADCFD3;
     --row-hover:     rgb(255 255 255 / 0.08);
     --row-active:    rgb(255 255 255 / 0.12);
+    --chrome-bg:     rgb(30 30 30 / 0.9);
+    --scrim:         rgb(30 30 30 / 0.6);
   }
 }
 

@@ -38,6 +38,10 @@ export const themes = {
     inkFaint:      "rgb(30 30 30 / 0.35)",  // carbon @ 35%
     rule:          "rgb(30 30 30 / 0.15)",  // carbon @ 15%
     accent:        colors.pine.hex,       // #2F5349
+    rowHover:      "rgb(30 30 30 / 0.07)",  // sidebar / list hover wash
+    rowActive:     "rgb(30 30 30 / 0.10)",  // current item wash
+    chromeBg:      "rgb(255 255 255 / 0.9)", // sticky TopBar fill (snow @ 90%)
+    scrim:         "rgb(30 30 30 / 0.4)",   // drawer backdrop — always carbon
   },
   dark: {
     canvas:        colors.carbon.hex,     // #1E1E1E — never full black
@@ -47,6 +51,10 @@ export const themes = {
     inkFaint:      "rgb(255 255 255 / 0.35)",  // snow @ 35%
     rule:          "rgb(255 255 255 / 0.15)",  // snow @ 15%
     accent:        colors.glacier.hex,    // #ADCFD3 (pine is too dark on carbon)
+    rowHover:      "rgb(255 255 255 / 0.08)",
+    rowActive:     "rgb(255 255 255 / 0.12)",
+    chromeBg:      "rgb(30 30 30 / 0.9)",   // carbon @ 90%
+    scrim:         "rgb(30 30 30 / 0.6)",   // carbon @ 60%
   },
 } as const;
 

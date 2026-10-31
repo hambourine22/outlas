@@ -68,7 +68,7 @@ export function TopBar() {
   const isDesignSystem = pathname?.startsWith("/design-system") ?? false;
   return (
     <header
-      className="sticky top-0 z-40 border-b border-rule bg-canvas/90 backdrop-blur-sm"
+      className="sticky top-0 z-40 border-b border-rule bg-[var(--chrome-bg)] backdrop-blur-sm"
       role="banner"
     >
       <div className="relative flex h-14 items-center justify-between gap-3 px-3 md:gap-6 md:px-6">
@@ -224,7 +224,7 @@ export function Sidebar({
         onClick={closeDrawer}
         aria-hidden
         className={[
-          "fixed inset-0 z-30 bg-ink/40 backdrop-blur-sm transition-opacity",
+          "fixed inset-0 z-30 bg-[var(--scrim)] backdrop-blur-sm transition-opacity",
           drawerOpen ? "opacity-100" : "pointer-events-none opacity-0",
         ].join(" ")}
       />
