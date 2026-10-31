@@ -234,37 +234,53 @@ const SWITZERLAND: Resorts[] = [
 ];
 
 // --- Alps · Austria (10) --------------------------------------------------
+// Arlberg (St. Anton + Lech-Zürs) and Silvretta Arena (Ischgl + Samnaun)
+// are linked; stats per Austrian resort are their own-side figures.
 const AUSTRIA: Resorts[] = [
   r({ n: "St. Anton am Arlberg",      s: "st-anton-am-arlberg",      lat: 47.1283, long: 10.2608, alt: "1,304m", country: "Austria",
       op: "seasonal", from: S.alps[0], to: S.alps[1],
-      acts: ["ski","snowboard","splitboard","hike","bike"] }),
+      acts: ["ski","snowboard","splitboard","hike","bike"],
+      peak_m: 2811, vertical_m: 1507, terrain_km: 195, lifts: 42, snowfall_cm: 700 }),
   r({ n: "Lech-Zürs",                 s: "lech-zurs",                lat: 47.2082, long: 10.1413, alt: "1,450m", country: "Austria",
       op: "seasonal", from: S.alps[0], to: S.alps[1],
-      acts: ["ski","snowboard","hike","bike"] }),
+      acts: ["ski","snowboard","hike","bike"],
+      peak_m: 2811, vertical_m: 1361, terrain_km: 160, lifts: 48, snowfall_cm: 800 }),
+  // Nordkette: lift-served from Innsbruck city at 574m to 2,256m — the
+  // vertical headline is dramatic; groomed terrain is small (15km).
   r({ n: "Nordkette (Innsbruck)",     s: "nordkette",                lat: 47.3135, long: 11.3846, alt: "2,256m", country: "Austria",
       op: "year-round",
-      acts: ["ski","snowboard","hike","climb","trail-run"] }),
+      acts: ["ski","snowboard","hike","climb","trail-run"],
+      peak_m: 2256, vertical_m: 1682, terrain_km: 15, lifts: 7, snowfall_cm: 400 }),
   r({ n: "Kitzbühel",                 s: "kitzbuhel",                lat: 47.4467, long: 12.3917, alt: "800m",   country: "Austria",
       op: "seasonal", from: S.alps[0], to: S.alps[1],
-      acts: ["ski","snowboard","hike","bike"] }),
+      acts: ["ski","snowboard","hike","bike"],
+      peak_m: 2000, vertical_m: 1200, terrain_km: 230, lifts: 55, snowfall_cm: 500 }),
   r({ n: "Mayrhofen",                 s: "mayrhofen",                lat: 47.1667, long: 11.8667, alt: "630m",   country: "Austria",
       op: "seasonal", from: S.alps[0], to: S.alps[1],
-      acts: ["ski","snowboard","hike","bike","climb"] }),
+      acts: ["ski","snowboard","hike","bike","climb"],
+      peak_m: 2500, vertical_m: 1870, terrain_km: 142, lifts: 56, snowfall_cm: 500 }),
   r({ n: "Ischgl",                    s: "ischgl",                   lat: 47.0094, long: 10.2908, alt: "1,377m", country: "Austria",
       op: "seasonal", from: "11-25", to: "05-05",
-      acts: ["ski","snowboard","hike","bike"] }),
+      acts: ["ski","snowboard","hike","bike"],
+      peak_m: 2872, vertical_m: 1495, terrain_km: 160, lifts: 45, snowfall_cm: 700 }),
   r({ n: "SkiWelt Wilder Kaiser",     s: "skiwelt-wilder-kaiser",    lat: 47.4997, long: 12.1861, alt: "703m",   country: "Austria",
       op: "seasonal", from: S.alps[0], to: S.alps[1],
-      acts: ["ski","snowboard","hike","bike"] }),
+      acts: ["ski","snowboard","hike","bike"],
+      peak_m: 1957, vertical_m: 1254, terrain_km: 284, lifts: 90, snowfall_cm: 400 }),
   r({ n: "Zell am See",               s: "zell-am-see",              lat: 47.3236, long: 12.7963, alt: "750m",   country: "Austria",
       op: "year-round",
-      acts: ["ski","snowboard","hike","bike","sail","wild-swim"] }),
+      acts: ["ski","snowboard","hike","bike","sail","wild-swim"],
+      peak_m: 3029, vertical_m: 2272, terrain_km: 138, lifts: 55, snowfall_cm: 500 }),
   r({ n: "Sölden",                    s: "solden",                   lat: 46.9681, long: 11.0094, alt: "1,377m", country: "Austria",
       op: "seasonal", from: "10-20", to: "05-05",
-      acts: ["ski","snowboard","hike","bike"] }),
+      acts: ["ski","snowboard","hike","bike"],
+      peak_m: 3340, vertical_m: 1963, terrain_km: 143, lifts: 32, snowfall_cm: 850 }),
+  // Hintertux: year-round glacier skiing on Gefrorene Wand. One of the
+  // snowiest resorts in the Alps.
   r({ n: "Hintertux Glacier",         s: "hintertux-glacier",        lat: 47.0719, long: 11.6833, alt: "1,500m", country: "Austria",
       op: "year-round",
-      acts: ["ski","snowboard","splitboard","hike","climb"] }),
+      acts: ["ski","snowboard","splitboard","hike","climb"],
+      peak_m: 3250, vertical_m: 1750, terrain_km: 86, lifts: 21, snowfall_cm: 1000 }),
 ];
 
 // --- Alps · Italy (5) -----------------------------------------------------
