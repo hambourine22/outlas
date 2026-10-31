@@ -1,0 +1,9 @@
+schema_version: "1.1"
+name: reviews-diff-and-writes-report
+expected_outcome: |
+  The gate script (.claude/skills/review-qa/scripts/qa-gate.sh) is run first and its
+  result reported. The diff is reviewed against the review checklist; findings are ranked
+  blocker/major/minor/nit with file:line, what, why and fix. A report is written to
+  docs/reviews/sidebar-disclosure.md using the template with a single verdict of ship,
+  ship-with-fixes or hold. Nothing in the working tree is modified other than the report.
+  Pre-existing issues outside the diff appear under a Noticed section, not in the verdict.

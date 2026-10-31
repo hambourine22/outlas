@@ -1,0 +1,8 @@
+schema_version: "1.1"
+name: sizes-and-routes-a-feature
+expected_outcome: |
+  A brief is written to docs/briefs/<slug>.md following the template (problem, why now,
+  success signal, in/out of scope, seats). The change is sized L (it touches the content
+  layer and the map legend) and all four seats are listed in order with the handoff file
+  each produces. The response names the next seat (/ux) and the slug, and does not start
+  writing code or a spec itself.

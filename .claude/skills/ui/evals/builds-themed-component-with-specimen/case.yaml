@@ -1,0 +1,10 @@
+schema_version: "1.1"
+name: builds-themed-component-with-specimen
+expected_outcome: |
+  A component is added that uses data-surface="story" and semantic tokens (bg-canvas,
+  text-ink, text-ink-muted, .micro / .label) with no hex values, no gray-* classes and no
+  bg-ink/[alpha]-style opacity classes. Spacing is on the Power-of-4 ladder and radii are
+  at most md. A specimen chapter is added to app/design-system/page.tsx and registered in
+  nav-data.ts. node .claude/skills/review-qa/scripts/check-tokens.mjs passes and
+  tsc --noEmit passes. The response notes verification in light, dark and system mode and
+  ends with a hand-off to /review-qa.

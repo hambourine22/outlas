@@ -54,9 +54,11 @@ function useNav() {
 }
 
 /* -------------------------------------------------------------------------
- * TopBar — single sidebar toggle, brand typemark, utility links, theme
- * switcher. The hamburger / close button is the one control that opens
- * and closes the sidebar drawer at every breakpoint.
+ * TopBar — right-handed.
+ * Left:   brand typemark (+ Design System chip on that route).
+ * Centre: medallion.
+ * Right:  theme switcher then the hamburger, as a single pair of controls
+ *         that live where the sidebar drawer now swings in from.
  * ---------------------------------------------------------------------- */
 export function TopBar() {
   const { drawerOpen, toggleDrawer } = useNav();
@@ -70,18 +72,8 @@ export function TopBar() {
       role="banner"
     >
       <div className="relative flex h-14 items-center justify-between gap-3 px-3 md:gap-6 md:px-6">
-        {/* Left: single sidebar toggle + brand typemark + version chip */}
+        {/* Left: brand typemark + version chip */}
         <div className="flex items-center gap-3">
-          <button
-            type="button"
-            aria-label={drawerOpen ? "Close navigation" : "Open navigation"}
-            aria-expanded={drawerOpen}
-            aria-controls="design-system-sidebar"
-            onClick={toggleDrawer}
-            className="flex h-9 w-9 items-center justify-center border border-rule text-ink transition-colors hover:bg-ink/5"
-          >
-            {drawerOpen ? <CloseIcon /> : <MenuIcon />}
-          </button>
           <Link href="/" aria-label="Oütlas home" className="flex items-center">
             {/* Pine typemark on snow in light; snow typemark on carbon in
               * dark. Theme-match utilities handle System mode too. */}
@@ -114,25 +106,21 @@ export function TopBar() {
           * nav background. */}
         <LogoMedallion />
 
-        {/* Right: utility chips (md+) + theme switcher */}
+        {/* Right: theme switcher + sidebar handle. The hamburger lives on
+          * the right so the handle is on the same side as the drawer it
+          * opens. GitHub + Live site chips moved into the drawer itself. */}
         <nav className="flex items-center gap-2">
-          <a
-            href="https://github.com/hambourine22/outlas"
-            target="_blank"
-            rel="noreferrer"
-            className="chip hidden md:inline-flex"
-          >
-            GitHub →
-          </a>
-          <a
-            href="https://outlas.vercel.app"
-            target="_blank"
-            rel="noreferrer"
-            className="chip hidden md:inline-flex"
-          >
-            Live site →
-          </a>
           <ThemeSwitcher />
+          <button
+            type="button"
+            aria-label={drawerOpen ? "Close navigation" : "Open navigation"}
+            aria-expanded={drawerOpen}
+            aria-controls="design-system-sidebar"
+            onClick={toggleDrawer}
+            className="flex h-9 w-9 items-center justify-center border border-rule text-ink transition-colors hover:bg-[var(--row-hover)]"
+          >
+            {drawerOpen ? <CloseIcon /> : <MenuIcon />}
+          </button>
         </nav>
       </div>
     </header>
@@ -192,11 +180,26 @@ function CloseIcon() {
   );
 }
 
+function ExternalIcon() {
+  return (
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden>
+      <path
+        d="M7 17L17 7M9 7h8v8"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
 /* -------------------------------------------------------------------------
- * Sidebar — grouped primary navigation.
+ * Sidebar — right-handed drawer.
  * One behaviour at every breakpoint: a fixed drawer that slides in from
- * the left, driven by the single TopBar toggle. Dismisses on Escape, on
- * backdrop click, and on item click.
+ * the right, driven by the single TopBar hamburger. Dismisses on Escape,
+ * on backdrop click, and on item click. Utility links (GitHub, Live site)
+ * live in a footer section so they share the drawer with the groups.
  * ---------------------------------------------------------------------- */
 export function Sidebar({
   chapters = CHAPTERS,
@@ -228,15 +231,17 @@ export function Sidebar({
 
       <aside
         id="design-system-sidebar"
-        aria-label="Design system navigation"
+        aria-label="Primary navigation"
         aria-hidden={!drawerOpen}
         className={[
-          "fixed inset-y-0 left-0 z-30 w-72 overflow-y-auto border-r border-rule bg-canvas pt-16",
+          // Right-handed: anchored to the right edge, left-border hairline,
+          // slides out to the right when hidden.
+          "fixed inset-y-0 right-0 z-30 flex w-72 flex-col overflow-y-auto border-l border-rule bg-canvas pt-16",
           "transition-transform duration-200 ease-out",
-          drawerOpen ? "translate-x-0" : "-translate-x-full",
+          drawerOpen ? "translate-x-0" : "translate-x-full",
         ].join(" ")}
       >
-        <nav className="space-y-2 px-3 py-6">
+        <nav className="flex-1 space-y-2 px-3 py-6">
           {groups.map((g) => (
             <SidebarGroup
               key={g.key}
@@ -247,8 +252,43 @@ export function Sidebar({
             />
           ))}
         </nav>
+
+        <UtilityLinks onNavigate={closeDrawer} />
       </aside>
     </>
+  );
+}
+
+/* -------------------------------------------------------------------------
+ * UtilityLinks — the GitHub + Live site rows that previously lived as
+ * chips in the TopBar. Rendered as a hairline-separated footer inside the
+ * drawer, matching the SidebarItem visual language.
+ * ---------------------------------------------------------------------- */
+function UtilityLinks({ onNavigate }: { onNavigate: () => void }) {
+  const links: { label: string; href: string }[] = [
+    { label: "GitHub",    href: "https://github.com/hambourine22/outlas" },
+    { label: "Live site", href: "https://outlas.vercel.app" },
+  ];
+  return (
+    <section className="border-t border-rule px-3 py-4" aria-label="External links">
+      <h3 className="label px-3 pb-2 text-ink-faint">Links</h3>
+      <ul className="space-y-0.5">
+        {links.map((l) => (
+          <li key={l.href}>
+            <a
+              href={l.href}
+              target="_blank"
+              rel="noreferrer"
+              onClick={onNavigate}
+              className="flex items-center justify-between gap-3 rounded-sm px-3 py-2 font-ui text-sm text-ink-muted transition-colors hover:bg-[var(--row-hover)] hover:text-ink"
+            >
+              <span>{l.label}</span>
+              <ExternalIcon />
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
   );
 }
 

@@ -1,0 +1,11 @@
+schema_version: "1.1"
+name: gates-a-postgres-change
+expected_outcome: |
+  preflight.sh is run and its findings reported honestly (including the dependency audit
+  result and the server-only warning). The answer names the POSTGRES_* variables as
+  Vercel-injected, server-only and never NEXT_PUBLIC_; requires import "server-only" in
+  app/lib/data.ts; requires parameterised (tagged-template) queries once input is
+  involved; keeps pages on the app/content facade; and lays out the deploy as
+  preflight → env present in Vercel → vercel --prod --yes → curl 200 on touched routes →
+  browser smoke → release note with rollback command. No secret values appear anywhere
+  in the response or in files. Nothing is deployed.

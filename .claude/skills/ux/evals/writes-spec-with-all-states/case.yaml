@@ -1,0 +1,11 @@
+schema_version: "1.1"
+name: writes-spec-with-all-states
+expected_outcome: |
+  docs/specs/rental-request-sheet.md exists and follows the spec template: problem and
+  success signal, users and context naming data-surface="rental", a numbered primary path
+  plus empty/loading/error/no-backend/narrow states, a content table with real copy (no
+  lorem/TODO/TBD), structure that reuses existing primitives, accessibility requirements
+  (keyboard path, names, contrast class, motion), Given/When/Then acceptance criteria that
+  are browser-checkable, ranked assumptions with counter-evidence, at most three open
+  questions, and a closing "Next: /ui on rental-request-sheet". No hex colours or pixel
+  values are specified.
