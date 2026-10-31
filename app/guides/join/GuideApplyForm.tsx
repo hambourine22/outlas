@@ -1,19 +1,23 @@
 "use client";
 
-import { useActionState, useRef, useState } from "react";
+import { useRef, useState } from "react";
+import { useFormState, useFormStatus } from "react-dom";
 import { ACTIVITIES, ACTIVITY_LABEL, type Activity } from "@/app/content/map/types";
 import { submitGuideApplication, type SubmissionResult } from "./actions";
 
 // Guides apply form — client component. All field state is uncontrolled
 // via FormData so the browser can validate / autofill naturally; the
 // client bits are the character counter, the file-list preview, the
-// disciplines checkbox grid and the pending UI the useActionState hook
-// provides.
+// disciplines checkbox grid and the pending UI.
+//
+// React 18 / Next 14: `useFormState` (react-dom) carries the action result;
+// `useFormStatus` (read inside a child of the <form>) carries pending.
+// `useActionState` is React 19 only and fails the static prerender here.
 
 const PITCH_MAX = 400;
 
 export default function GuideApplyForm() {
-  const [state, formAction, pending] = useActionState<SubmissionResult | null, FormData>(
+  const [state, formAction] = useFormState<SubmissionResult | null, FormData>(
     submitGuideApplication,
     null,
   );
@@ -155,18 +159,26 @@ export default function GuideApplyForm() {
       )}
 
       <div className="flex items-center gap-4 border-t border-rule pt-6">
-        <button
-          type="submit"
-          disabled={pending}
-          className="inline-flex items-center gap-2 border border-ink bg-ink px-5 py-2.5 font-ui text-sm text-canvas transition-opacity hover:opacity-85 disabled:opacity-50"
-        >
-          {pending ? "Sending…" : "Send application"}
-        </button>
+        <SubmitButton />
         <span className="font-ui text-xs text-ink-faint">
           We&apos;ll come back to you within a week.
         </span>
       </div>
     </form>
+  );
+}
+
+// Must render inside the <form> so useFormStatus sees its pending state.
+function SubmitButton() {
+  const { pending } = useFormStatus();
+  return (
+    <button
+      type="submit"
+      disabled={pending}
+      className="inline-flex items-center gap-2 border border-ink bg-ink px-5 py-2.5 font-ui text-sm text-canvas transition-opacity hover:opacity-85 disabled:opacity-50"
+    >
+      {pending ? "Sending…" : "Send application"}
+    </button>
   );
 }
 
