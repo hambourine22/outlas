@@ -1,5 +1,8 @@
 # Review checklist
 
+> **`qa-gate.sh` now runs `next build` in an rsync'd copy of the working tree by default**, so a running dev server holding `.next/` is no longer a reason to skip. Prerender-time errors (notably: React 19 hooks like `useActionState` imported in a Next 14 / React 18 project) now surface in the gate, not for the first time on Vercel. `SKIP_BUILD=1` still works as an explicit opt-out — if you use it, say so in the review report. The release-worktree build in `/security-ops` then becomes the first full build. See `docs/learnings.md` 2026-10-31 · `guides-apply-form` + `map-pin-rings release`.
+
+
 Work through each category against the diff. The `grep` hints are starting points, not proof — read the code around every hit.
 
 ## 1. Correctness

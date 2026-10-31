@@ -7,6 +7,7 @@ Everything here is a question review will ask. Ticking it yourself first turns a
 - [ ] Composed from existing primitives where possible (`Nav`, `Chart`, `.chip`, `.label`, `.micro`, score pills, legend) — new primitive justified in one line
 - [ ] Server component unless it needs state/browser APIs; `"use client"` only on the leaf that needs it
 - [ ] Content comes through `app/content/*` facades, never from a backend or a hard-coded array in the component
+- [ ] **React 18 / Next 14 hooks only** — `useFormState` (`react-dom`) and `useFormStatus` (`react-dom`) for server-action forms, NOT `useActionState` (React 19). The error only shows at prerender time, so the local gate with `SKIP_BUILD=1` won't catch it; verify in a release worktree or wait for Vercel. See `docs/learnings.md` 2026-10-31 · `guides-apply-form`.
 
 ## Tokens
 - [ ] No hex, no `gray-*`, no `black/50`, no `opacity-*` on coloured elements — every colour is a semantic token or a surface
