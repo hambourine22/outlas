@@ -182,7 +182,7 @@ Shared across the Scotland map and every regional map that follows.
 
 ## Map pins
 
-One circle per record. The fill is the category colour; the ring is **the ink that would sit on that fill**. Rings are opaque and 2px — anything thinner or translucent dissolves into Mapbox's 1px anti-alias fringe and the pin reads soft. Radius steps with zoom (5px at world view → 7px at continent → 9px from zoom 8) so the world view stays legible where resorts cluster.
+One circle per record. The fill is the category colour; the ring is **the ink that would sit on that fill**. Rings are opaque and 1.5px — a hairline that still survives Mapbox's 1px anti-alias fringe on standard-density screens; thinner or translucent and the pin reads soft. Radius steps with zoom (5px at world view → 7px at continent → 9px from zoom 8) so the world view stays legible where resorts cluster.
 
 | Category | Fill | Ring | Why this ring |
 |---|---|---|---|

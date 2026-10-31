@@ -88,6 +88,10 @@ export const CATEGORY_RING: Record<MapCategory, string> = {
   guides:  mapPins.categories.guides.ring,
 };
 
+// Ring width in CSS px — shared by the map layer and every key dot so a
+// change to the token moves all of them together.
+export const CATEGORY_RING_WIDTH = mapPins.ring.width;
+
 export const CATEGORY_LABEL: Record<MapCategory, string> = {
   resorts: "Resorts",
   rentals: "Rentals",

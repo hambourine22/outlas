@@ -9,6 +9,7 @@ Pins render sharp at every zoom; resort pins carry a sand ring, repair pins a sn
 1. "Pins render a bit soft — improve sharpness." Cause: `circle-stroke-width: 1` at 40 % alpha is entirely Mapbox's 1px anti-alias fringe, so the edge had no line in it; light fills (glacier, sand) had nothing to define them against light terrain. Fix: opaque 2px ring per category, radius stepped with zoom (5 → 7 → 9px) so the world view doesn't blob.
 2. "Yellow outline on green resort pins." Resorts: pine fill, **sand** ring.
 3. "Lighter outline for repairs." Repairs: rust fill, **snow** ring — the repair-surface pairing.
+4. "Reduce the stroke on the outline." Ring width 2px → **1.5px** via the `mapPins.ring.width` token; every key dot now reads `CATEGORY_RING_WIDTH` instead of a hard-coded `border-2`, so map and keys moved together. 1px was ruled out: opaque 1px sinks back into the anti-alias band on standard-density screens — the original softness.
 Rule recorded: *the ring is the ink that would sit on that fill* — carbon on light fills, sand on pine, snow on rust.
 
 ## Gate

@@ -186,14 +186,16 @@ export const scoreBands = [
 
 // Map pins — one circle per record. Fill is the category colour; the ring
 // is the ink that would sit on that fill: carbon on the light fills, sand on
-// pine, snow on rust (the repair-surface pairing). Rings are opaque and 2px —
-// anything thinner or translucent dissolves into Mapbox's 1px anti-alias
-// fringe and the pin reads soft. Radius steps with zoom so the world view
-// stays legible where resorts cluster.
-// Consumed by app/content/map/types.ts (CATEGORY_COLOUR / CATEGORY_RING) and
-// drawn by the `locations` circle layer in app/ui/mapbox/map.tsx.
+// pine, snow on rust (the repair-surface pairing). Rings are opaque and
+// 1.5px — a hairline that still survives Mapbox's 1px anti-alias fringe on
+// standard-density screens; thinner or translucent and the pin reads soft.
+// Radius steps with zoom so the world view stays legible where resorts
+// cluster.
+// Consumed by app/content/map/types.ts (CATEGORY_COLOUR / CATEGORY_RING /
+// CATEGORY_RING_WIDTH) and drawn by the `locations` circle layer in
+// app/ui/mapbox/map.tsx. Key dots everywhere read the same width.
 export const mapPins = {
-  ring: { width: 2, opacity: 1 },
+  ring: { width: 1.5, opacity: 1 },
   radius: [
     { zoom: 1, px: 5 },   // world view
     { zoom: 4, px: 7 },   // continent

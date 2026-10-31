@@ -1,4 +1,9 @@
-import { CATEGORY_COLOUR, CATEGORY_RING, type MapCategory } from "@/app/content/map/types";
+import {
+  CATEGORY_COLOUR,
+  CATEGORY_RING,
+  CATEGORY_RING_WIDTH,
+  type MapCategory,
+} from "@/app/content/map/types";
 
 /* -----------------------------------------------------------------
  * ProviderTable — editorial rows for a list of providers (rentals,
@@ -41,10 +46,11 @@ export function ProviderTable({
                 {String(i + 1).padStart(2, "0")}
               </span>
               <span
-                className="inline-block h-3 w-3 shrink-0 rounded-full border-2"
+                className="inline-block h-3 w-3 shrink-0 rounded-full border-solid"
                 style={{
                   backgroundColor: CATEGORY_COLOUR[category],
                   borderColor: CATEGORY_RING[category],
+                  borderWidth: CATEGORY_RING_WIDTH,
                 }}
                 aria-hidden
               />

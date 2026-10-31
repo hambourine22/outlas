@@ -8,6 +8,7 @@ import type { Guides } from "@/app/content/map/types";
 import {
   CATEGORY_COLOUR,
   CATEGORY_RING,
+  CATEGORY_RING_WIDTH,
   CATEGORY_LABEL,
   type MapCategory,
 } from "@/app/content/map/types";
@@ -141,10 +142,10 @@ export default function Map({
         type: "circle",
         source: "locations",
         paint: {
-          // Sharpness comes from an opaque ring at an integer width — a 1px
-          // translucent stroke is all anti-alias fringe and reads soft — and
-          // from a radius that steps with zoom so the world view doesn't
-          // blob where resorts cluster. Fill + ring per category come from
+          // Sharpness comes from an opaque hairline ring — a 1px translucent
+          // stroke is all anti-alias fringe and reads soft — and from a
+          // radius that steps with zoom so the world view doesn't blob where
+          // resorts cluster. Fill, ring and width per category come from
           // mapPins in design-system.ts via CATEGORY_COLOUR / CATEGORY_RING.
           "circle-radius": [
             "interpolate", ["linear"], ["zoom"],
@@ -307,10 +308,11 @@ function MapPlaceholder({
               <li key={c} className="flex items-center justify-between gap-4">
                 <span className="flex items-center gap-3 text-ink">
                   <span
-                    className="inline-block h-3 w-3 rounded-full border-2"
+                    className="inline-block h-3 w-3 rounded-full border-solid"
                     style={{
                       backgroundColor: CATEGORY_COLOUR[c],
                       borderColor: CATEGORY_RING[c],
+                      borderWidth: CATEGORY_RING_WIDTH,
                     }}
                     aria-hidden
                   />
