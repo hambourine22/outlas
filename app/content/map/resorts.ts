@@ -284,22 +284,29 @@ const AUSTRIA: Resorts[] = [
 ];
 
 // --- Alps · Italy (5) -----------------------------------------------------
+// Dolomiti Superski (1,200km across 12 valleys) is linked — each resort
+// here shows its own domain, not the superski total.
 const ITALY: Resorts[] = [
   r({ n: "Cortina d'Ampezzo",         s: "cortina-dampezzo",         lat: 46.5406, long: 12.1356, alt: "1,224m", country: "Italy",
       op: "seasonal", from: S.alps[0], to: S.alps[1],
-      acts: ["ski","snowboard","hike","bike","climb"] }),
+      acts: ["ski","snowboard","hike","bike","climb"],
+      peak_m: 3243, vertical_m: 2019, terrain_km: 140, lifts: 34, snowfall_cm: 500 }),
   r({ n: "Val Gardena",               s: "val-gardena",              lat: 46.5600, long: 11.7306, alt: "1,236m", country: "Italy",
       op: "seasonal", from: S.alps[0], to: S.alps[1],
-      acts: ["ski","snowboard","hike","bike","climb"] }),
+      acts: ["ski","snowboard","hike","bike","climb"],
+      peak_m: 2518, vertical_m: 1282, terrain_km: 175, lifts: 79, snowfall_cm: 400 }),
   r({ n: "Madonna di Campiglio",      s: "madonna-di-campiglio",     lat: 46.2283, long: 10.8253, alt: "1,550m", country: "Italy",
       op: "seasonal", from: S.alps[0], to: S.alps[1],
-      acts: ["ski","snowboard","hike","bike"] }),
+      acts: ["ski","snowboard","hike","bike"],
+      peak_m: 2500, vertical_m: 950, terrain_km: 157, lifts: 61, snowfall_cm: 500 }),
   r({ n: "Livigno",                   s: "livigno",                  lat: 46.5386, long: 10.1361, alt: "1,816m", country: "Italy",
       op: "seasonal", from: "11-25", to: "05-01",
-      acts: ["ski","snowboard","hike","bike"] }),
+      acts: ["ski","snowboard","hike","bike"],
+      peak_m: 2900, vertical_m: 1084, terrain_km: 115, lifts: 29, snowfall_cm: 450 }),
   r({ n: "Bormio",                    s: "bormio",                   lat: 46.4675, long: 10.3756, alt: "1,225m", country: "Italy",
       op: "seasonal", from: S.alps[0], to: S.alps[1],
-      acts: ["ski","snowboard","hike","bike","wild-swim"] }),
+      acts: ["ski","snowboard","hike","bike","wild-swim"],
+      peak_m: 3012, vertical_m: 1787, terrain_km: 50, lifts: 15, snowfall_cm: 350 }),
 ];
 
 // --- North America · USA (16) --------------------------------------------
