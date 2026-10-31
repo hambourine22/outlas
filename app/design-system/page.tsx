@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import {
   colors,
   surfaces,
@@ -92,6 +93,9 @@ export default function DesignSystemPage() {
           </Chapter>
           <Chapter slug="resort-card" n="15" title="Resort Card" intro="Right-rail primitives for the map's resort preview: status badge, season bar, activity chips. Each is defined once and reused across every regional map.">
             <ResortCard />
+          </Chapter>
+          <Chapter slug="submit-form" n="16" title="Submit Form" intro="The provider-submission pattern — field states, file drop zone states, success state. Grows as repair and guide submission forms join Rentals.">
+            <SubmitFormSpecimen />
           </Chapter>
           <Footer />
         </main>
@@ -1304,6 +1308,247 @@ function ResortCard() {
           </li>
         </ul>
       </section>
+    </div>
+  );
+}
+
+/* ---------- submit-form specimen ----------
+ * Shows every state the spec names: field (default / filled / invalid /
+ * disabled / focused is implicit on inspection), file-drop zone (default /
+ * filled / invalid-size / invalid-type), submit button (ready / disabled /
+ * submitting / after). Hand-drawn specimen — the live form is just a
+ * composition of these primitives. Links out to the live page for a
+ * runtime check.
+ */
+function SubmitFormSpecimen() {
+  return (
+    <div className="space-y-12">
+      <section>
+        <h3 className="label text-ink-faint">Live form</h3>
+        <p className="mt-3 font-ui text-sm text-ink-muted">
+          The full working form lives at{" "}
+          <Link
+            href="/rentals/submit"
+            className="text-ink underline-offset-4 hover:underline"
+          >
+            /rentals/submit
+          </Link>
+          . This chapter is the state inventory the live page composes from.
+        </p>
+      </section>
+
+      {/* Text field — six states */}
+      <section>
+        <h3 className="label text-ink-faint">Text field · five states</h3>
+        <ul className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-2">
+          <SpecimenCard label="Default (empty)">
+            <SpecField id="s-default" label="Shop name" placeholder="e.g. Zero G" />
+          </SpecimenCard>
+          <SpecimenCard label="Filled">
+            <SpecField id="s-filled" label="Shop name" placeholder="e.g. Zero G" defaultValue="Zero G" />
+          </SpecimenCard>
+          <SpecimenCard label="Invalid">
+            <SpecField
+              id="s-invalid"
+              label="Shop name"
+              placeholder="e.g. Zero G"
+              error="Shop needs a name."
+            />
+          </SpecimenCard>
+          <SpecimenCard label="Disabled (submitting)">
+            <SpecField id="s-disabled" label="Shop name" placeholder="e.g. Zero G" defaultValue="Zero G" disabled />
+          </SpecimenCard>
+          <SpecimenCard label="With help text">
+            <SpecField
+              id="s-help"
+              label="Resorts you serve"
+              placeholder="e.g. Chamonix, Val d'Isère"
+              help="Comma-separate if more than one."
+            />
+          </SpecimenCard>
+        </ul>
+      </section>
+
+      {/* File drop zone states */}
+      <section>
+        <h3 className="label text-ink-faint">File drop zone · four states</h3>
+        <ul className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-2">
+          <SpecimenCard label="Default">
+            <SpecDropZone kind="default" />
+          </SpecimenCard>
+          <SpecimenCard label="Filled">
+            <SpecDropZone kind="filled" />
+          </SpecimenCard>
+          <SpecimenCard label="Invalid — size (over 50 MB)">
+            <SpecDropZone kind="invalid-size" />
+          </SpecimenCard>
+          <SpecimenCard label="Invalid — type (unsupported MIME)">
+            <SpecDropZone kind="invalid-type" />
+          </SpecimenCard>
+        </ul>
+      </section>
+
+      {/* Submit button states */}
+      <section>
+        <h3 className="label text-ink-faint">Submit button · three states</h3>
+        <ul className="mt-4 flex flex-wrap gap-3">
+          <li className="border border-rule bg-canvas-raised p-4">
+            <span className="label text-ink-faint">Disabled</span>
+            <button
+              disabled
+              className="label mt-3 inline-flex min-h-[44px] items-center justify-center border border-rule bg-canvas-raised px-6 py-3 text-ink-faint"
+            >
+              Submit
+            </button>
+          </li>
+          <li className="border border-rule bg-canvas-raised p-4">
+            <span className="label text-ink-faint">Ready</span>
+            <button
+              className="label mt-3 inline-flex min-h-[44px] items-center justify-center border border-ink bg-ink px-6 py-3 text-canvas hover:bg-[var(--accent)] hover:border-[var(--accent)]"
+            >
+              Submit
+            </button>
+          </li>
+          <li className="border border-rule bg-canvas-raised p-4">
+            <span className="label text-ink-faint">Submitting</span>
+            <button
+              disabled
+              aria-busy
+              className="label mt-3 inline-flex min-h-[44px] items-center justify-center border border-rule bg-canvas-raised px-6 py-3 text-ink-faint"
+            >
+              Submitting…
+            </button>
+          </li>
+        </ul>
+      </section>
+
+      {/* Success + preview states */}
+      <section>
+        <h3 className="label text-ink-faint">Success · live and preview</h3>
+        <ul className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-2">
+          <li className="border border-rule bg-canvas-raised p-6" data-surface="rental">
+            <span className="label text-ink-faint">Live</span>
+            <h4 className="mt-2 font-display text-title">We&rsquo;ve got it.</h4>
+            <p className="mt-2 font-ui text-sm text-ink-muted">
+              Thanks, Zero G. Hamish will review your listing within a week.
+            </p>
+          </li>
+          <li className="border border-rule bg-canvas-raised p-6" data-surface="rental">
+            <span className="label text-ink-faint">Preview mode</span>
+            <h4 className="mt-2 font-display text-title">We&rsquo;ve got it.</h4>
+            <p className="mt-2 font-ui text-sm text-ink-muted">
+              Thanks, Zero G. Hamish will review your listing within a week.
+            </p>
+            <p className="micro mt-4 text-ink-faint">
+              Preview mode — form is wired up but your submission wasn&rsquo;t stored yet. Secrets land soon.
+            </p>
+          </li>
+        </ul>
+      </section>
+    </div>
+  );
+}
+
+function SpecimenCard({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <li className="border border-rule bg-canvas-raised p-4">
+      <span className="label text-ink-faint">{label}</span>
+      <div className="mt-3">{children}</div>
+    </li>
+  );
+}
+
+function SpecField({
+  id, label, placeholder, defaultValue, error, help, disabled,
+}: {
+  id: string;
+  label: string;
+  placeholder?: string;
+  defaultValue?: string;
+  error?: string;
+  help?: string;
+  disabled?: boolean;
+}) {
+  return (
+    <div>
+      <label htmlFor={id} className="label text-ink">
+        {label}
+      </label>
+      <input
+        id={id}
+        type="text"
+        defaultValue={defaultValue}
+        placeholder={placeholder}
+        disabled={disabled}
+        aria-invalid={error ? ("true" as const) : undefined}
+        className={[
+          "mt-2 block w-full border bg-canvas px-3 py-3 font-ui text-sm text-ink placeholder:text-ink-faint",
+          "focus:outline-none focus:ring-2 focus:ring-[var(--accent)]",
+          error ? "border-[var(--rule-strong)]" : "border-rule",
+          disabled ? "opacity-60" : "",
+        ].join(" ")}
+      />
+      {help && !error && (
+        <p className="mt-1.5 font-ui text-xs text-ink-muted">{help}</p>
+      )}
+      {error && (
+        <p className="mt-1.5 font-ui text-xs text-[color:rgb(var(--brand-rust))]">{error}</p>
+      )}
+    </div>
+  );
+}
+
+function SpecDropZone({ kind }: { kind: "default" | "filled" | "invalid-size" | "invalid-type" }) {
+  const invalid = kind === "invalid-size" || kind === "invalid-type";
+  return (
+    <div>
+      <div
+        className={[
+          "flex min-h-[88px] items-center justify-between gap-4 border px-4 py-4",
+          invalid ? "border-dashed border-[var(--rule-strong)]" : "border-dashed border-rule",
+        ].join(" ")}
+      >
+        {kind === "filled" ? (
+          <>
+            <div className="flex items-center gap-4">
+              <span className="inline-flex h-14 w-14 items-center justify-center border border-rule">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden>
+                  <path d="M7 3h7l4 4v14H7V3zm7 0v4h4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </span>
+              <div>
+                <div className="label text-ink">Chosen</div>
+                <div className="font-mono text-xs text-ink-muted">zero-g-shopfront.jpg</div>
+              </div>
+            </div>
+            <span className="label text-ink-muted">Change</span>
+          </>
+        ) : (
+          <div className="flex items-center gap-4">
+            <span className="inline-flex h-14 w-14 items-center justify-center border border-rule">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden>
+                <path d="M12 16V4m0 0l-5 5m5-5l5 5M4 20h16" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </span>
+            <div>
+              <div className="label text-ink">Drop a file or tap to pick</div>
+              <div className="mt-1 font-ui text-xs text-ink-muted">
+                Photos: JPG, PNG, WEBP · Videos: MP4, MOV · 50 MB cap.
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+      {kind === "invalid-size" && (
+        <p className="mt-2 font-ui text-xs text-[color:rgb(var(--brand-rust))]">
+          This file is 72.4 MB. Keep it under 50 MB — compress or crop and try again.
+        </p>
+      )}
+      {kind === "invalid-type" && (
+        <p className="mt-2 font-ui text-xs text-[color:rgb(var(--brand-rust))]">
+          We take photos (JPG · PNG · WEBP) and short videos (MP4 · MOV). Try one of those.
+        </p>
+      )}
     </div>
   );
 }

@@ -31,6 +31,13 @@ const MARKETPLACE: Chapter[] = [
   { n: "05", slug: "submit-shop",  title: "Submit your shop", group: "marketplace", href: "/repairs/submit" },
 ];
 
+// Join group — provider self-submission entry points. One row for v1 (the
+// rental-submission form). Future repair / guide self-submission flows can
+// join without a re-group.
+const JOIN: Chapter[] = [
+  { n: "—", slug: "rentals-submit", title: "List your rental shop", group: "join", href: "/rentals/submit" },
+];
+
 const SYSTEM: Chapter[] = [
   { n: "01", slug: "ds", title: "Design System", group: "system", href: "/design-system" },
 ];
@@ -39,6 +46,7 @@ export const APP_CHAPTERS: Chapter[] = [
   ...EXPLORE,
   ...STORY_CHAPTERS,
   ...MARKETPLACE,
+  ...JOIN,
   ...SYSTEM,
 ];
 
@@ -46,5 +54,6 @@ export const APP_GROUPS: Group[] = [
   { key: "explore",     label: "Explore"     },
   { key: "stories",     label: "Stories"     },
   { key: "marketplace", label: "Marketplace" },
+  { key: "join",        label: "Join"        },
   { key: "system",      label: "System"      },
 ];

@@ -72,14 +72,62 @@
   }
 }
 
-/* Brand surfaces — bind a tree to one UX moment. These override --canvas / --ink
- * directly so they look the same in light and dark mode (brand moments are
- * intentional). Nest inside dark mode and the surface still carries its tone. */
-[data-surface="rental"]  { --canvas: rgb(var(--brand-sand));    --accent: rgb(var(--brand-pine)); --ink: rgb(var(--brand-carbon)); }
-[data-surface="repair"]  { --canvas: rgb(var(--brand-rust));    --accent: rgb(var(--brand-snow)); --ink: rgb(var(--brand-snow));   }
-[data-surface="story"]   { --canvas: rgb(var(--brand-glacier)); --accent: rgb(var(--brand-pine)); --ink: rgb(var(--brand-carbon)); }
-[data-surface="manifest"]{ --canvas: rgb(var(--brand-sand));    --accent: rgb(var(--brand-pine)); --ink: rgb(var(--brand-pine));   }
-[data-surface="carbon"]  { --canvas: rgb(var(--brand-carbon));  --accent: rgb(var(--brand-sand)); --ink: rgb(var(--brand-snow));   }
+/* Brand surfaces — bind a tree to one UX moment. These override --canvas /
+ * --ink / --canvas-raised / --rule / --ink-muted / --ink-faint directly so
+ * they look the same in light and dark mode (brand moments are
+ * intentional). Nest inside dark mode and the surface still carries its
+ * tone. Each surface owns its full ink ladder so muted/faint text stays
+ * legible regardless of OS theme. */
+[data-surface="rental"] {
+  --canvas:        rgb(var(--brand-sand));
+  --canvas-raised: rgb(var(--brand-snow));
+  --accent:        rgb(var(--brand-pine));
+  --ink:           rgb(var(--brand-carbon));
+  --ink-muted:     rgb(var(--brand-carbon) / 0.6);
+  --ink-faint:     rgb(var(--brand-carbon) / 0.35);
+  --rule:          rgb(var(--brand-carbon) / 0.15);
+  --rule-strong:   rgb(var(--brand-carbon) / 0.4);
+}
+[data-surface="repair"] {
+  --canvas:        rgb(var(--brand-rust));
+  --canvas-raised: rgb(var(--brand-rust));
+  --accent:        rgb(var(--brand-snow));
+  --ink:           rgb(var(--brand-snow));
+  --ink-muted:     rgb(var(--brand-snow) / 0.75);
+  --ink-faint:     rgb(var(--brand-snow) / 0.5);
+  --rule:          rgb(var(--brand-snow) / 0.2);
+  --rule-strong:   rgb(var(--brand-snow) / 0.5);
+}
+[data-surface="story"] {
+  --canvas:        rgb(var(--brand-glacier));
+  --canvas-raised: rgb(var(--brand-snow));
+  --accent:        rgb(var(--brand-pine));
+  --ink:           rgb(var(--brand-carbon));
+  --ink-muted:     rgb(var(--brand-carbon) / 0.6);
+  --ink-faint:     rgb(var(--brand-carbon) / 0.35);
+  --rule:          rgb(var(--brand-carbon) / 0.15);
+  --rule-strong:   rgb(var(--brand-carbon) / 0.4);
+}
+[data-surface="manifest"] {
+  --canvas:        rgb(var(--brand-sand));
+  --canvas-raised: rgb(var(--brand-snow));
+  --accent:        rgb(var(--brand-pine));
+  --ink:           rgb(var(--brand-pine));
+  --ink-muted:     rgb(var(--brand-pine) / 0.7);
+  --ink-faint:     rgb(var(--brand-pine) / 0.45);
+  --rule:          rgb(var(--brand-pine) / 0.2);
+  --rule-strong:   rgb(var(--brand-pine) / 0.5);
+}
+[data-surface="carbon"] {
+  --canvas:        rgb(var(--brand-carbon));
+  --canvas-raised: rgb(var(--brand-carbon));
+  --accent:        rgb(var(--brand-sand));
+  --ink:           rgb(var(--brand-snow));
+  --ink-muted:     rgb(var(--brand-snow) / 0.6);
+  --ink-faint:     rgb(var(--brand-snow) / 0.35);
+  --rule:          rgb(var(--brand-snow) / 0.15);
+  --rule-strong:   rgb(var(--brand-snow) / 0.4);
+}
 
 html {
   /* Account for the 56px sticky TopBar when the browser scrolls to an

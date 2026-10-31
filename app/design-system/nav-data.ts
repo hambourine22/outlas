@@ -34,10 +34,12 @@ export const CHAPTERS: Chapter[] = [
   { n: "13", slug: "map",        title: "Map Legend",       group: "data"        },
   { n: "14", slug: "dataviz",    title: "Data Viz",         group: "data"        },
   { n: "15", slug: "resort-card", title: "Resort Card",     group: "data"        },
+  { n: "16", slug: "submit-form", title: "Submit Form",     group: "patterns"    },
 ];
 
 export const GROUPS: Group[] = [
   { key: "foundations", label: "Foundations" },
   { key: "components",  label: "Components"  },
   { key: "data",        label: "Data"        },
+  { key: "patterns",    label: "Patterns"    },
 ];
