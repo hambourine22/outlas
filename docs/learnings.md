@@ -1,0 +1,7 @@
+# Factory learnings
+
+One to three lines per entry. The thing a stranger on the next change benefits from without reading the trail. Newest at the top.
+
+- **2026-10-31 · `world-mountain-resorts`** — Status/season/activity primitives live inside `MapPreviewSidebar.tsx` and are re-exported for the design-system specimen; keeping them in one file means `deriveStatus()` can stay a pure helper right next to the badge that calls it. If this pattern grows to a third category (not just resorts), split them to `app/ui/mapbox/primitives/` before the file passes ~500 lines.
+- **2026-10-31 · `world-mountain-resorts`** — SVG season bars with CSS-grid letters below silently clip the final cell at narrow widths because `columnGap` interprets the ratio as absolute percent of width, not of a cell+gap unit. Put the month letters *inside* the SVG as `<text>` elements aligned to each cell's x — the viewBox then does the math and the letters never clip.
+- **2026-10-31 · `world-mountain-resorts`** — Preflight RED on known-pending Next.js advisories isn't a silent-override case. Ask the user at deploy time with three concrete paths (ship as accepted risk / patch within major / full major bump) and record their choice in the release note under `## Accepted debt`. First time running the factory on a repo with pre-existing debt, this makes the decision explicit instead of eroding the gate's meaning.
