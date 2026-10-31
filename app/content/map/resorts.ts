@@ -603,6 +603,69 @@ const REST: Resorts[] = [
       peak_m: 2465, vertical_m: 615, terrain_km: 80, lifts: 18, snowfall_cm: 400 }),
 ];
 
+// --- Snowdomes (6) --------------------------------------------------------
+// Indoor artificial-snow facilities. Year-round by design. Peak/vertical
+// are the slope's own metres (so Chamonix 2,807m sits honestly beside
+// Ski Dubai 60m); terrain is slope length in km (0.4 km, 0.5 km); snowfall
+// is omitted — these places make their own snow continuously.
+const SNOWDOMES: Resorts[] = [
+  r({ n: "Ski Dubai",                 s: "ski-dubai",                lat: 25.1176, long: 55.2000,  alt: "indoor", country: "UAE/Dubai",
+      op: "year-round",
+      acts: ["ski","snowboard"],
+      peak_m: 85, vertical_m: 60, terrain_km: 0.4, lifts: 5 }),
+  r({ n: "SNØ Lørenskog",             s: "sno-lorenskog",            lat: 59.9307, long: 10.9803,  alt: "indoor", country: "Norway",
+      op: "year-round",
+      acts: ["ski","snowboard","splitboard"],
+      peak_m: 100, vertical_m: 100, terrain_km: 0.5, lifts: 6 }),
+  r({ n: "SnowWorld Landgraaf",       s: "snowworld-landgraaf",      lat: 50.8761, long: 6.0208,   alt: "indoor", country: "Netherlands",
+      op: "year-round",
+      acts: ["ski","snowboard"],
+      peak_m: 65, vertical_m: 60, terrain_km: 0.5, lifts: 5 }),
+  r({ n: "Alpincenter Wittenburg",    s: "alpincenter-wittenburg",   lat: 53.5000, long: 11.0833,  alt: "indoor", country: "Germany",
+      op: "year-round",
+      acts: ["ski","snowboard"],
+      peak_m: 70, vertical_m: 65, terrain_km: 0.33, lifts: 3 }),
+  r({ n: "Chill Factore",             s: "chill-factore",            lat: 53.4809, long: -2.3283,  alt: "indoor", country: "UK/Manchester",
+      op: "year-round",
+      acts: ["ski","snowboard"],
+      peak_m: 32, vertical_m: 32, terrain_km: 0.18, lifts: 3 }),
+  r({ n: "Snozone Milton Keynes",     s: "snozone-milton-keynes",    lat: 52.0432, long: -0.7489,  alt: "indoor", country: "UK/Milton Keynes",
+      op: "year-round",
+      acts: ["ski","snowboard"],
+      peak_m: 30, vertical_m: 30, terrain_km: 0.17, lifts: 2 }),
+];
+
+// --- Wakeboarding cable parks (5) ----------------------------------------
+// Cable-pulled wakeboarding — the lake equivalent of a drag lift. Season
+// is written per-site (tropical sites run year-round; northern lakes are
+// summer only). Peak / vertical / snowfall are omitted — stats that don't
+// apply to flat water. Terrain_km represents the cable length when
+// published; otherwise omitted. Lift count is the number of cable towers
+// (a full-size cable loop is 5 towers; a 2-tower is beginner-sized).
+const WAKEBOARDING: Resorts[] = [
+  // CWC Camsur — the sport's spiritual home; hosts world championships.
+  r({ n: "CWC Camsur",                s: "cwc-camsur",               lat: 13.4453, long: 123.3417, country: "Philippines",
+      op: "year-round",
+      acts: ["wakeboard","wild-swim"],
+      terrain_km: 0.8, lifts: 6 }),
+  r({ n: "Thai Wake Park",            s: "thai-wake-park",           lat: 14.0583, long: 100.5247, country: "Thailand/Bangkok",
+      op: "year-round",
+      acts: ["wakeboard","wild-swim"],
+      terrain_km: 0.75, lifts: 5 }),
+  r({ n: "Hipnotic Wakepark",         s: "hipnotic-wakepark",        lat: 46.6214, long: 14.3056,  country: "Austria",
+      op: "seasonal", from: "05-01", to: "09-30",
+      acts: ["wakeboard","wild-swim","sail"],
+      terrain_km: 0.65, lifts: 5 }),
+  r({ n: "The Wake Park",             s: "the-wake-park",            lat: 50.7183, long: -1.9803,  country: "UK/Dorset",
+      op: "seasonal", from: "04-15", to: "10-31",
+      acts: ["wakeboard","wild-swim","kayak"],
+      terrain_km: 0.55, lifts: 5 }),
+  r({ n: "O2 Wakeboarding",           s: "o2-wakeboarding",          lat: 50.9375, long: 6.9603,   country: "Germany/Cologne",
+      op: "seasonal", from: "04-15", to: "10-15",
+      acts: ["wakeboard","wild-swim"],
+      terrain_km: 0.6, lifts: 5 }),
+];
+
 export const RESORTS: Resorts[] = [
   ...SCOTLAND,
   ...FRANCE,
@@ -615,4 +678,6 @@ export const RESORTS: Resorts[] = [
   ...SCANDINAVIA,
   ...SOUTHERN,
   ...REST,
+  ...SNOWDOMES,
+  ...WAKEBOARDING,
 ];

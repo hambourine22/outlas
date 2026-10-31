@@ -20,6 +20,7 @@ export const ACTIVITIES = [
   "kayak",
   "wild-swim",
   "sail",
+  "wakeboard",
 ] as const;
 export type Activity = (typeof ACTIVITIES)[number];
 
@@ -34,6 +35,7 @@ export const ACTIVITY_LABEL: Record<Activity, string> = {
   kayak:        "Kayak",
   "wild-swim":  "Wild swim",
   sail:         "Sail",
+  wakeboard:    "Wakeboard",
 };
 
 // Public category tag used by the map, the legend, and any detail panels.
