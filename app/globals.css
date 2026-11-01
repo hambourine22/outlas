@@ -231,6 +231,39 @@ body {
 }
 .transport-card .mapboxgl-popup-tip { display: none; }
 
+/* Map cursor orbit — the hairline globe round the cursor dot over a pin
+ * (MapCursor.tsx, tokens in mapCursor.orbit). Hidden and paused until
+ * [data-on]. Each meridian turns about the vertical axis: scaleX traces its
+ * projected width, 1 → −1 → 1 eased, which is a cosine near enough. The
+ * second runs a quarter-turn behind, so the two read as a spinning sphere.
+ * Duration and the quarter-turn delay are set inline from the token. */
+.map-cursor-orbit {
+  opacity: 0;
+  transform: scale(0.6);
+  transition: opacity 150ms, transform 150ms;
+}
+.map-cursor-orbit[data-on] {
+  opacity: 1;
+  transform: scale(1);
+}
+@keyframes map-cursor-meridian {
+  0%   { transform: scaleX(1); }
+  50%  { transform: scaleX(-1); }
+  100% { transform: scaleX(1); }
+}
+.map-cursor-meridian {
+  animation-name: map-cursor-meridian;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  animation-play-state: paused;
+}
+.map-cursor-orbit[data-on] .map-cursor-meridian { animation-play-state: running; }
+@media (prefers-reduced-motion: reduce) {
+  .map-cursor-orbit { transition: opacity 150ms; transform: none; }
+  .map-cursor-meridian { animation: none; transform: scaleX(0.45); }
+  .map-cursor-meridian--late { display: none; }
+}
+
 .sidebar {
   background-color: rgb(35 55 75 / 90%);
   color: #fff;

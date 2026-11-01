@@ -106,3 +106,13 @@ Asked for: Hamish — "I want these train stations and EV points added to the ma
 
 ### Outlines, not plates — 2026-11-01, later
 Asked for (Hamish): *"transport icons on the map just as vector outlines not boxes please."* The carbon plate is gone. The map now draws the bare 16px glyph: carbon hairline (1.6) with a 1px snow halo under every stroke, and under the wheels as a ring, so it stays legible where it crosses a road or river. On open basemap the halo is invisible. The sidebar key went back to the bare outline in `--ink`, which matches the map's mark (fixed carbon there, because the basemap is light). Tokens: `mapTransport` drops `plate` and `glyphPx`, and gains `halo` and `haloPx`; `px` is now the glyph edge, 16.
+
+## Worldwide — 2026-11-01, later
+
+Asked for (Hamish): *"Build out the charging points and train stations nearest all the resorts on the worldwide view."*
+
+- **Data:** `app/content/map/transport-world.ts` is generated from OpenStreetMap (© OpenStreetMap contributors, ODbL) by `scripts/transport/` (see its README). It holds the nearest mainline station (`railway=station|halt`, with metro, tram and funicular stops excluded) and the nearest public car charger (`amenity=charging_station`, with private and bike-only excluded) for every resort outside Scotland. Scotland keeps its hand-picked set, which now has distances too. Each point carries `km` (straight line) and `serves`, the list of resorts it's nearest to.
+- **Station quality:** OSM tags plenty of heritage and mountain railways as ordinary stations. The fetch only counts North American stations with a passenger operator (Amtrak, VIA Rail, UTA and the like), drops lift-company stops (STBAG, SMC), and holds a hand-checked `EXCLUDE` list. That list covers heritage lines, funiculars, an event-only halt, and stations across a closed border or in Lebanon. Each resort falls through to its next-nearest real station, or shows none.
+- **World view (Hamish's choice):** below zoom 7, every resort pin carries badges, its station and charger glyphs side by side just right of the pin. From zoom 7 in, the points sit at their true positions. Hovering either shows the name and the straight-line distance from the resort.
+- **Card:** "Charge point · 3.2 km from Verbier". Unnamed chargers read "Unnamed charger", and generic Korean/Japanese "EV charger" labels fall back to the operator or that.
+- **Not verified:** each station's timetable. The data is what OSM says, filtered as above. Distances are straight-line, which the sidebar says.

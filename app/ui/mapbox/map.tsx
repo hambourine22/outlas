@@ -17,6 +17,7 @@ import {
 } from "@/app/content/map/regions";
 import {
   ALL_TRANSPORT,
+  TRANSPORT_BY_RESORT,
   TRANSPORT_LABEL,
   type TransportKind,
 } from "@/app/content/map/transport";
@@ -58,6 +59,7 @@ const TRANSPORT_FEATURES = ALL_TRANSPORT.map((t) => ({
     id: t.slug,
     kind: t.kind,
     nearest: t.nearest,
+    km: t.km ?? null,
   },
   type: "Feature" as const,
 }));
@@ -66,6 +68,51 @@ function transportData(visible: TransportFilters) {
   return {
     type: "FeatureCollection" as const,
     features: TRANSPORT_FEATURES.filter((f) => visible[f.properties.kind]),
+  };
+}
+
+// World-zoom badges — per resort, its nearest station and charger as glyphs
+// beside its pin. Each badge sits at the resort's own coordinates; `slot`
+// (0 station, 1 charger) picks its offset, so the pair always reads in the
+// same order. Name, km and nearest feed the same hover card as the points.
+const BADGE_SLOT: Record<TransportKind, number> = { station: 0, charge: 1 };
+
+function badgeFeaturesFor(resorts: Resorts[]) {
+  return resorts.flatMap((r) => {
+    const near = TRANSPORT_BY_RESORT[r.slug];
+    if (!near) return [];
+    return (Object.keys(BADGE_SLOT) as TransportKind[]).flatMap((kind) => {
+      const hit = near[kind];
+      if (!hit) return [];
+      return [{
+        geometry: {
+          coordinates: [r.long, r.lat],
+          type: "Point" as const,
+        },
+        properties: {
+          name: hit.point.name,
+          id: `${r.slug}-${kind}`,
+          kind,
+          nearest: r.name,
+          km: hit.km,
+          slot: BADGE_SLOT[kind],
+        },
+        type: "Feature" as const,
+      }];
+    });
+  });
+}
+
+// Badges belong to resort pins, so they hide with the Resorts filter as
+// well as with their own transport kind.
+function badgeData(
+  features: ReturnType<typeof badgeFeaturesFor>,
+  visible: TransportFilters,
+  resortsOn: boolean,
+) {
+  return {
+    type: "FeatureCollection" as const,
+    features: resortsOn ? features.filter((f) => visible[f.properties.kind]) : [],
   };
 }
 
@@ -137,6 +184,11 @@ export default function Map({
   });
   const transportRef = useRef(transport);
   transportRef.current = transport;
+
+  const badgeFeatures = useMemo(() => badgeFeaturesFor(resorts), [resorts]);
+  const badgesNow = () => badgeData(badgeFeatures, transport, filters.resorts);
+  const badgesRef = useRef(badgesNow);
+  badgesRef.current = badgesNow;
 
   const cursorRef = useRef<MapCursorHandle>(null);
 
@@ -283,9 +335,9 @@ export default function Map({
         cursorRef.current?.hide();
       });
 
-      // Transport — outline glyphs beneath the provider circles, so a charge
-      // point at a resort's base never covers the resort pin. Images first,
-      // then the source, layer and hover card.
+      // Transport — badges beside each resort pin below badge.maxZoom, the
+      // points at their true positions (beneath the provider circles) from
+      // there in. Images first, then the sources, layers and hover card.
       loadTransportImages(map).then(() => {
         if (!mapLoaded.current) return; // unmounted while the images loaded
         map.addSource("transport", {
@@ -310,8 +362,33 @@ export default function Map({
           "locations",
         );
 
-        // Hover card — name, kind and the resort it serves. Click opens it
-        // too, because touch has no hover; a click anywhere else closes it.
+        const { badge } = mapTransport;
+        map.addSource("transport-badges", {
+          type: "geojson",
+          data: badgesRef.current(),
+        });
+        map.addLayer({
+          id: "transport-badges",
+          type: "symbol",
+          source: "transport-badges",
+          maxzoom: badge.maxZoom,
+          layout: {
+            "icon-image": ["concat", "transport-", ["get", "kind"]],
+            "icon-size": badge.scale,
+            // icon-offset is in icon units, so screen px ÷ icon-size.
+            "icon-offset": [
+              "match", ["get", "slot"],
+              0, ["literal", [badge.x[0] / badge.scale, 0]],
+              ["literal", [badge.x[1] / badge.scale, 0]],
+            ],
+            "icon-allow-overlap": true,
+            "icon-ignore-placement": true,
+          },
+        });
+
+        // Hover card — name, kind, and how far it is from the resort it
+        // serves. Click opens it too, because touch has no hover; a click
+        // anywhere else closes it.
         const card = new mapboxgl.Popup({
           closeButton: false,
           closeOnClick: false,
@@ -328,7 +405,11 @@ export default function Map({
           name.textContent = String(props.name ?? "");
           const meta = document.createElement("p");
           meta.className = "mt-1 font-mono text-[10px] uppercase tracking-wide text-ink-faint";
-          meta.textContent = `${TRANSPORT_LABEL[kind]} · near ${props.nearest}`;
+          const km = typeof props.km === "number" ? props.km : null;
+          meta.textContent =
+            km === null
+              ? `${TRANSPORT_LABEL[kind]} · near ${props.nearest}`
+              : `${TRANSPORT_LABEL[kind]} · ${km < 10 ? km.toFixed(1) : Math.round(km)} km from ${props.nearest}`;
           const body = document.createElement("div");
           body.append(name, meta);
           card
@@ -336,17 +417,20 @@ export default function Map({
             .setDOMContent(body)
             .addTo(map);
         };
-        map.on("mouseenter", "transport", (e: MapMouseEvent) => {
-          cursorRef.current?.hover(true);
-          showCard(e);
-        });
-        map.on("mouseleave", "transport", () => {
-          cursorRef.current?.hover(false);
-          card.remove();
-        });
-        map.on("click", "transport", showCard);
+        const transportLayers = ["transport", "transport-badges"];
+        for (const layer of transportLayers) {
+          map.on("mouseenter", layer, (e: MapMouseEvent) => {
+            cursorRef.current?.hover(true);
+            showCard(e);
+          });
+          map.on("mouseleave", layer, () => {
+            cursorRef.current?.hover(false);
+            card.remove();
+          });
+          map.on("click", layer, showCard);
+        }
         map.on("click", (e: MapMouseEvent) => {
-          if (!map.queryRenderedFeatures(e.point, { layers: ["transport"] }).length) {
+          if (!map.queryRenderedFeatures(e.point, { layers: transportLayers }).length) {
             card.remove();
           }
         });
@@ -389,6 +473,16 @@ export default function Map({
     if (!source) return;
     source.setData(transportData(transport));
   }, [transport]);
+
+  // Badges follow both their transport kind and the Resorts filter.
+  useEffect(() => {
+    if (!mapRef.current || !mapLoaded.current) return;
+    const source = mapRef.current.getSource("transport-badges") as
+      | mapboxgl.GeoJSONSource
+      | undefined;
+    if (!source) return;
+    source.setData(badgeData(badgeFeatures, transport, filters.resorts));
+  }, [badgeFeatures, transport, filters.resorts]);
 
   // Fly back to the world centroid and reset the region picker to the
   // default (worldwide). The sidebar's active-row state follows.

@@ -16,14 +16,16 @@ export type MapCursorHandle = {
   hide: () => void;
 };
 
-const { dot, ink, px, gap, hoverScale, decimals } = mapCursor;
+const { dot, ink, px, gap, hoverScale, orbit, decimals } = mapCursor;
 const OFFSET = px / 2 + gap;
+const ORBIT_R = 9.5; // in the orbit's 20-unit viewBox, centred on 0,0
 const READOUT =
   "absolute whitespace-nowrap font-ui text-label uppercase tracking-wide tabular-nums";
 
 const MapCursor = forwardRef<MapCursorHandle>(function MapCursor(_, ref) {
   const root = useRef<HTMLDivElement>(null);
   const disc = useRef<HTMLSpanElement>(null);
+  const globe = useRef<SVGSVGElement>(null);
   const lat = useRef<HTMLSpanElement>(null);
   const lng = useRef<HTMLSpanElement>(null);
   const zoom = useRef<HTMLSpanElement>(null);
@@ -43,6 +45,8 @@ const MapCursor = forwardRef<MapCursorHandle>(function MapCursor(_, ref) {
       },
       hover(on) {
         if (disc.current) disc.current.style.transform = on ? `scale(${hoverScale})` : "";
+        // data-on fades the globe in and runs its meridians (globals.css).
+        if (globe.current) globe.current.toggleAttribute("data-on", on);
       },
       hide() {
         if (root.current) root.current.style.visibility = "hidden";
@@ -63,6 +67,35 @@ const MapCursor = forwardRef<MapCursorHandle>(function MapCursor(_, ref) {
         className="absolute rounded-full transition-transform duration-150"
         style={{ width: px, height: px, left: -px / 2, top: -px / 2, backgroundColor: dot }}
       />
+      <svg
+        ref={globe}
+        className="map-cursor-orbit absolute overflow-visible"
+        width={orbit.px}
+        height={orbit.px}
+        viewBox="-10 -10 20 20"
+        fill="none"
+        stroke={dot}
+        strokeWidth={orbit.stroke}
+        style={{ left: -orbit.px / 2, top: -orbit.px / 2 }}
+      >
+        <circle r={ORBIT_R} vectorEffect="non-scaling-stroke" />
+        <ellipse rx={ORBIT_R} ry={ORBIT_R * 0.32} vectorEffect="non-scaling-stroke" />
+        <ellipse
+          className="map-cursor-meridian"
+          rx={ORBIT_R}
+          ry={ORBIT_R}
+          vectorEffect="non-scaling-stroke"
+          style={{ animationDuration: `${orbit.periodMs}ms` }}
+        />
+        {/* A quarter-turn behind the first. */}
+        <ellipse
+          className="map-cursor-meridian map-cursor-meridian--late"
+          rx={ORBIT_R}
+          ry={ORBIT_R}
+          vectorEffect="non-scaling-stroke"
+          style={{ animationDuration: `${orbit.periodMs}ms`, animationDelay: `${-orbit.periodMs / 4}ms` }}
+        />
+      </svg>
       <span className={`${READOUT} -translate-y-1/2`} style={{ right: OFFSET, top: 0 }}>
         Latitude: <span ref={lat} />
       </span>

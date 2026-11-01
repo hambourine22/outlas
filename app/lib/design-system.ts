@@ -222,38 +222,54 @@ export type MapPinCategory = keyof typeof mapPins.categories;
 // outline itself is the mark, and a line drawing never reads as a provider
 // circle. Ink is fixed carbon because the basemap is light in both site
 // themes. A thin snow halo under each stroke keeps the outline legible where
-// it crosses a road or a river; on open basemap it disappears. Hidden below
-// minZoom (the world view stays providers-only; the Scotland preset is 6.5).
-// Drawn by the `transport` symbol layer in app/ui/mapbox/map.tsx, beneath
-// the provider circles so a charge point at a resort's base never covers
-// the resort pin.
+// it crosses a road or a river; on open basemap it disappears.
+//
+// Two scales, handing over at badge.maxZoom. Most stations and chargers are
+// within a few km of their resort, so at world zoom they'd sit under its
+// pin. Below 7 they're badges instead: the resort's nearest station and
+// charger glyphs side by side just right of its pin (`transport-badges`,
+// above the circles; station always first so the pair reads the same
+// everywhere). From 7 in, the points themselves at their true positions
+// (`transport`, beneath the provider circles so a charger at a resort's
+// base never covers the resort pin; Mapbox's collision pass drops overlaps).
+// Both layers live in app/ui/mapbox/map.tsx.
 export const mapTransport = {
   glyph:   colors.carbon.hex,
   halo:    colors.snow.hex,
   px:      16,    // glyph edge at icon-size 1, same as the sidebar key
   stroke:  1.6,   // hairline, in the glyph's 16-unit viewBox
   haloPx:  1,     // halo beyond each side of the stroke
-  minZoom: 5,
+  minZoom: 7,     // true positions from here; badges below
   size: [
-    { zoom: 5, scale: 0.75 },
+    { zoom: 7, scale: 0.75 },
     { zoom: 9, scale: 1 },
   ],
+  badge: {
+    maxZoom: 7,
+    scale:   0.6,          // ~10px glyph beside a 10–14px pin
+    x:       [13, 24],     // px right of the pin centre: station, charger
+  },
 } as const;
 
 // Map cursor — replaces the system pointer over the map with a rust dot
 // that reads out where it is: latitude to its left, longitude to its
 // right, zoom beneath. Ink is fixed carbon at the muted rung (60 %, as
 // --ink-muted in the light theme), not --ink, because the basemap is light
-// in both themes; greyed so the readout sits back behind the dot. Over a pin the dot grows
-// by hoverScale, which stands in for the pointer hand. Even grown it stays
-// smaller than the smallest pin (mapPins.radius at world zoom: 5px, so
-// 10px across): 8px → 9.6px.
+// in both themes; greyed so the readout sits back behind the dot. Over a
+// pin the dot grows by hoverScale, which stands in for the pointer hand.
+// Even grown it stays smaller than the smallest pin (mapPins.radius at
+// world zoom: 5px, so 10px across): 8px → 9.6px. Over a pin a hairline
+// globe also fades in round the dot — outline, equator, and two meridians
+// a quarter-turn apart turning once per orbit.periodMs — so the hover
+// reads as a sphere in motion. Keyframes live in globals.css
+// (.map-cursor-orbit); reduced motion gets one still meridian.
 export const mapCursor = {
   dot:        colors.rust.hex,
   ink:        `rgb(${colors.carbon.rgb} / 0.6)`,
   px:         8,     // dot diameter
   gap:        10,    // dot edge → readout
   hoverScale: 1.2,
+  orbit:      { px: 18, stroke: 1, periodMs: 2400 },
   decimals:   { coord: 4, zoom: 2 },
 } as const;
 

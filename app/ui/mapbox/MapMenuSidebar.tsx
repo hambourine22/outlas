@@ -49,6 +49,11 @@ type Props = {
   onSelectRegion: (region: RegionKey) => void;
 };
 
+// One corner radius for both states: the collapsed rail is a 40px pill, so
+// its caps are 20px round, and the open panel takes the same 20px corners
+// so collapsing and expanding read as one object changing size.
+const PANEL_ROUND = "rounded-[20px]";
+
 const CATEGORY_ORDER: MapCategory[] = ["resorts", "rentals", "repairs", "guides"];
 const TRANSPORT_ORDER: TransportKind[] = ["station", "charge"];
 const CATEGORY_NOTE: Record<MapCategory, string> = {
@@ -110,7 +115,7 @@ export default function MapMenuSidebar({
         aria-label="Map filters (collapsed)"
         className="pointer-events-auto absolute left-3 top-3 z-20 md:left-4 md:top-4"
       >
-        <div className="flex w-10 flex-col items-center rounded-full border border-rule bg-canvas p-1 pb-[15px] shadow-sm">
+        <div className={`flex w-10 flex-col items-center ${PANEL_ROUND} border border-rule bg-canvas p-1 pb-[15px] shadow-sm`}>
           <button
             type="button"
             onClick={() => setOpen(true)}
@@ -142,7 +147,7 @@ export default function MapMenuSidebar({
   return (
     <aside
       aria-label="Map symbols"
-      className="pointer-events-auto absolute left-3 top-3 z-20 flex max-h-[calc(100%-1.5rem)] w-72 flex-col border border-rule bg-canvas shadow-sm md:left-4 md:top-4 md:max-h-[calc(100%-2rem)]"
+      className={`pointer-events-auto absolute left-3 top-3 z-20 flex max-h-[calc(100%-1.5rem)] w-72 flex-col overflow-hidden ${PANEL_ROUND} border border-rule bg-canvas shadow-sm md:left-4 md:top-4 md:max-h-[calc(100%-2rem)]`}
     >
       {/* Header — sidebar name, chevron collapses to the pip rail */}
       <header className="flex items-center justify-between border-b border-rule px-4 py-3">
@@ -151,7 +156,7 @@ export default function MapMenuSidebar({
           type="button"
           onClick={() => setOpen(false)}
           aria-label="Collapse map symbols"
-          className="flex h-7 w-7 items-center justify-center text-ink-muted transition-colors hover:bg-[var(--row-hover)] hover:text-ink"
+          className="flex h-7 w-7 items-center justify-center rounded-full text-ink-muted transition-colors hover:bg-[var(--row-hover)] hover:text-ink"
         >
           <ChevronLeft />
         </button>
@@ -403,9 +408,11 @@ function TransportSection({
       {open && (
         <div id={panelId} className="pb-2">
           <p className="px-4 pb-2 font-ui text-xs leading-relaxed text-ink-muted">
-            ScotRail stations and ChargePlace Scotland points near the five
-            Scottish resorts. They show once you zoom to Scotland. Positions
-            are approximate, so check the operator before you rely on one.
+            The nearest train station and EV charge point to every resort,
+            from OpenStreetMap; Scotland&apos;s are hand-picked. Zoomed out,
+            they sit beside each resort pin; zoom in and they move to where
+            they are. Distances are straight-line, so check the route and the
+            operator before you rely on one.
           </p>
           <ul>
             {TRANSPORT_ORDER.map((kind) => (
