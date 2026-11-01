@@ -39,6 +39,7 @@ type Props = {
 export default function MapPreviewSidebar({ show, category, content, onClose }: Props) {
   const summary = content && category ? summarise(content, category) : null;
   const isResort = summary?.category === "resorts";
+  const mountain = isResort && content ? mountainStatsOf(content as Resorts) : null;
   const resort = isResort && content ? (content as Resorts) : null;
   const status = resort ? deriveStatus(resort) : null;
 
@@ -75,7 +76,24 @@ export default function MapPreviewSidebar({ show, category, content, onClose }: 
 
         {summary ? (
           <>
-            {/* Hero — 16:9 figure with a tinted fallback when none */}
+            {/* Hero — for a resort with mountain stats, its anatomy: the
+             *  square glyph on the category wash, the shape above the name.
+             *  Otherwise the 16:9 figure, with the tinted pin as fallback. */}
+            {mountain ? (
+              <div
+                className="w-full border-b border-rule px-6 pb-4 pt-10"
+                style={{ backgroundColor: CATEGORY_COLOUR[summary.category] + "33" }}
+              >
+                <ResortAnatomy
+                  kind="mountain"
+                  aspect="square"
+                  scale="fit"
+                  readouts={false}
+                  name={summary.title}
+                  stats={mountain}
+                />
+              </div>
+            ) : (
             <div className="relative aspect-[16/9] w-full border-b border-rule bg-canvas-raised">
               {summary.hero ? (
                 <Image
@@ -98,6 +116,7 @@ export default function MapPreviewSidebar({ show, category, content, onClose }: 
                 </div>
               )}
             </div>
+            )}
 
             {/* Title + place + status badge */}
             <div className="px-6 pt-6">
@@ -220,34 +239,10 @@ function ResortMeta({
     !!resort.season_from &&
     !!resort.season_to;
   const hasActivities = Array.isArray(resort.activities) && resort.activities.length > 0;
-  // The anatomy glyph needs the mountain trio; a snowdome or a cable park
-  // keeps the strip and waits for its own form.
-  const hasMountain =
-    typeof resort.peak_m === "number" &&
-    typeof resort.vertical_m === "number" &&
-    typeof resort.terrain_km === "number";
   if (!hasStats && !hasSeason && !hasActivities) return null;
 
   return (
     <div className="px-6 pt-5">
-      {hasMountain && (
-        <div className="mb-5">
-          <ResortAnatomy
-            kind="mountain"
-            aspect="square"
-            scale="fit"
-            readouts={false}
-            name={resort.name}
-            stats={{
-              peak: resort.peak_m as number,
-              base: Math.max(0, (resort.peak_m as number) - (resort.vertical_m as number)),
-              terrain: resort.terrain_km as number,
-              lifts: resort.lifts ?? 0,
-              snowfall: resort.snowfall_cm,
-            }}
-          />
-        </div>
-      )}
       {hasStats && <StatStrip stats={stats} />}
       {hasSeason && (
         <div className={hasStats ? "mt-5" : ""}>
@@ -563,6 +558,19 @@ type Summary = {
   href: string | null;
   details: Array<{ label: string; value: string; href?: string }>;
 };
+
+// A resort's anatomy needs the mountain trio; a snowdome or a cable park
+// keeps the photo / pin hero and waits for its own form.
+function mountainStatsOf(r: Resorts) {
+  if (typeof r.peak_m !== "number" || typeof r.vertical_m !== "number" || typeof r.terrain_km !== "number") return null;
+  return {
+    peak: r.peak_m,
+    base: Math.max(0, r.peak_m - r.vertical_m),
+    terrain: r.terrain_km,
+    lifts: r.lifts ?? 0,
+    snowfall: r.snowfall_cm,
+  };
+}
 
 function summarise(content: PreviewContent, category: MapCategory): Summary {
   const title = content.name || "Untitled";
