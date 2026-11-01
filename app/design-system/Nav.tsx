@@ -1,6 +1,7 @@
 "use client";
 
-import { createContext, useCallback, useContext, useEffect, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
+import { useFade, useSlideIn } from "@/app/ui/motion/panels";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -217,29 +218,32 @@ export function Sidebar({
     spiedSlug ??
     chapters.find((c) => c.href && c.href === pathname)?.slug;
 
+  // Slide and scrim run on GSAP with the shared panel motion (quart in-out,
+  // motion.panel), not CSS transitions. The translate-x-full and opacity-0
+  // classes are only the server-rendered closed state.
+  const scrimRef = useRef<HTMLDivElement>(null);
+  const drawerRef = useRef<HTMLElement>(null);
+  useFade(scrimRef, drawerOpen);
+  useSlideIn(drawerRef, drawerOpen);
+
   return (
     <>
-      {/* Backdrop — only renders when the drawer is open. */}
+      {/* Backdrop — fades with the drawer; hidden (no clicks) when closed. */}
       <div
+        ref={scrimRef}
         onClick={closeDrawer}
         aria-hidden
-        className={[
-          "fixed inset-0 z-30 bg-[var(--scrim)] backdrop-blur-sm transition-opacity",
-          drawerOpen ? "opacity-100" : "pointer-events-none opacity-0",
-        ].join(" ")}
+        className="invisible fixed inset-0 z-30 bg-[var(--scrim)] opacity-0 backdrop-blur-sm"
       />
 
       <aside
+        ref={drawerRef}
         id="design-system-sidebar"
         aria-label="Primary navigation"
         aria-hidden={!drawerOpen}
-        className={[
-          // Right-handed: anchored to the right edge, left-border hairline,
-          // slides out to the right when hidden.
-          "fixed inset-y-0 right-0 z-30 flex w-72 flex-col overflow-y-auto border-l border-rule bg-canvas pt-16",
-          "transition-transform duration-200 ease-out",
-          drawerOpen ? "translate-x-0" : "translate-x-full",
-        ].join(" ")}
+        // Right-handed: anchored to the right edge, left-border hairline,
+        // slides out to the right when hidden.
+        className="fixed inset-y-0 right-0 z-30 flex w-72 translate-x-full flex-col overflow-y-auto border-l border-rule bg-canvas pt-16"
       >
         <nav className="flex-1 space-y-2 px-3 py-6">
           {groups.map((g) => (

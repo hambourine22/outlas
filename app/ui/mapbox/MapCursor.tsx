@@ -1,7 +1,7 @@
 "use client";
 
 import { forwardRef, useImperativeHandle, useRef } from "react";
-import { mapCursor } from "@/app/lib/design-system";
+import { mapCursor, motion } from "@/app/lib/design-system";
 
 // The map's pointer — a rust dot that reads out where it is: latitude to
 // its left, longitude to its right, zoom beneath. map.tsx drives it
@@ -19,6 +19,8 @@ export type MapCursorHandle = {
 const { dot, ink, px, gap, hoverScale, orbit, decimals } = mapCursor;
 const OFFSET = px / 2 + gap;
 const ORBIT_R = 9.5; // in the orbit's 20-unit viewBox, centred on 0,0
+const EQUATOR_RY = ORBIT_R * 0.32; // the equator seen from a little above
+const FADE_EASE = motion.eases[motion.panel.ease].css;
 const READOUT =
   "absolute whitespace-nowrap font-ui text-label uppercase tracking-wide tabular-nums";
 
@@ -76,25 +78,25 @@ const MapCursor = forwardRef<MapCursorHandle>(function MapCursor(_, ref) {
         fill="none"
         stroke={dot}
         strokeWidth={orbit.stroke}
-        style={{ left: -orbit.px / 2, top: -orbit.px / 2 }}
+        style={{
+          left: -orbit.px / 2,
+          top: -orbit.px / 2,
+          // Fade and grow in (and out) on the panel ease, over orbit.fadeMs.
+          transition: `opacity ${orbit.fadeMs}ms ${FADE_EASE}, transform ${orbit.fadeMs}ms ${FADE_EASE}`,
+        }}
       >
+        {/* Silhouette — always full strength. */}
         <circle r={ORBIT_R} vectorEffect="non-scaling-stroke" />
-        <ellipse rx={ORBIT_R} ry={ORBIT_R * 0.32} vectorEffect="non-scaling-stroke" />
-        <ellipse
-          className="map-cursor-meridian"
-          rx={ORBIT_R}
-          ry={ORBIT_R}
+        {/* Equator: the near (lower) half full, the far (upper) half dim. */}
+        <path d={`M ${-ORBIT_R} 0 A ${ORBIT_R} ${EQUATOR_RY} 0 0 0 ${ORBIT_R} 0`} vectorEffect="non-scaling-stroke" />
+        <path
+          className="map-cursor-arc--far"
+          d={`M ${-ORBIT_R} 0 A ${ORBIT_R} ${EQUATOR_RY} 0 0 1 ${ORBIT_R} 0`}
           vectorEffect="non-scaling-stroke"
-          style={{ animationDuration: `${orbit.periodMs}ms` }}
         />
+        <Meridian lag={0} />
         {/* A quarter-turn behind the first. */}
-        <ellipse
-          className="map-cursor-meridian map-cursor-meridian--late"
-          rx={ORBIT_R}
-          ry={ORBIT_R}
-          vectorEffect="non-scaling-stroke"
-          style={{ animationDuration: `${orbit.periodMs}ms`, animationDelay: `${-orbit.periodMs / 4}ms` }}
-        />
+        <Meridian lag={0.25} late />
       </svg>
       <span className={`${READOUT} -translate-y-1/2`} style={{ right: OFFSET, top: 0 }}>
         Latitude: <span ref={lat} />
@@ -110,3 +112,32 @@ const MapCursor = forwardRef<MapCursorHandle>(function MapCursor(_, ref) {
 });
 
 export default MapCursor;
+
+// One meridian as two half-arcs. The group turns (scaleX, globals.css) and
+// each half fades with depth: the half on the near side of the sphere
+// brightens as it swings toward the viewer and dims as it swings away, so
+// the globe reads as solid rather than a flat wireframe. The far half runs
+// the same fade half a turn out of step. `lag` is in turns.
+function Meridian({ lag, late = false }: { lag: number; late?: boolean }) {
+  const period = orbit.periodMs;
+  const timing = (extra: number) => ({
+    animationDuration: `${period}ms`,
+    animationDelay: `${-(lag + extra) * period}ms`,
+  });
+  return (
+    <g className={`map-cursor-meridian${late ? " map-cursor-meridian--late" : ""}`} style={timing(0)}>
+      <path
+        className="map-cursor-arc"
+        d={`M 0 ${-ORBIT_R} A ${ORBIT_R} ${ORBIT_R} 0 0 1 0 ${ORBIT_R}`}
+        vectorEffect="non-scaling-stroke"
+        style={timing(0)}
+      />
+      <path
+        className="map-cursor-arc map-cursor-arc--far"
+        d={`M 0 ${-ORBIT_R} A ${ORBIT_R} ${ORBIT_R} 0 0 0 0 ${ORBIT_R}`}
+        vectorEffect="non-scaling-stroke"
+        style={timing(0.5)}
+      />
+    </g>
+  );
+}

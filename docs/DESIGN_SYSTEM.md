@@ -207,7 +207,7 @@ Tokens live in `mapPins` (`design-system.ts`). `CATEGORY_COLOUR` in `app/content
 
 **Collapsed map rail** — a 40px pill on the 4px ladder. The open chevron is a 32px circle inset 4px, concentric with the top cap. 15px of bottom padding puts the last pip's centre exactly as far from the bottom (21px, border included) as the chevron's is from the top, concentric with the bottom cap, so both ends match. The four 10px category pips sit on an 18px pitch, with 4px extra above the first to set the control apart from the key.
 
-**Map cursor.** Over the map the system pointer is replaced by an 8px rust dot reading `LATITUDE` (4 dp) to its left, `LONGITUDE` (4 dp) to its right and `ZOOM` (2 dp) beneath. It's set in Archivo Narrow caps with tabular figures, in carbon at 60 % (the muted rung, fixed rather than theme-flipped). Over a pin the dot grows 1.2× to 9.6px, still smaller than the smallest pin (10px at world zoom), and an 18px rust hairline globe fades in round it: outline, equator, and two meridians a quarter-turn apart turning every 2.4 s. With reduced motion set, the globe holds one still meridian. It's hidden on devices without hover. Tokens: `mapCursor`.
+**Map cursor.** Over the map the system pointer is replaced by an 8px rust dot reading `LATITUDE` (4 dp) to its left, `LONGITUDE` (4 dp) to its right and `ZOOM` (2 dp) beneath. It's set in Archivo Narrow caps with tabular figures, in carbon at 60 % (the muted rung, fixed rather than theme-flipped). Over a pin the dot grows 1.2× to 9.6px, still smaller than the smallest pin (10px at world zoom), and an 18px rust hairline globe fades in round it over 280 ms on the panel ease: outline, equator, and two meridians a quarter-turn apart turning every 2.4 s. Each meridian's near half brightens and its far half dims as it turns (0.2–1), and the equator's far half holds at 0.3, so the globe reads as solid. With reduced motion set, the globe holds one still meridian. It's hidden on devices without hover. Tokens: `mapCursor`.
 
 ## Anatomy
 
@@ -242,6 +242,8 @@ Animated data pieces follow one art direction, taken from the "Anatomy" strata s
 Colour is never a motion token. A piece reads `--canvas`, `--ink`, `--ink-muted`, `--ink-faint`, `--rule` and `--accent` at draw time — so it follows light, dark and system — and takes one emphasis colour from `dataviz.series`. Type comes from the `next/font` variables (`--font-vollkorn`, `--font-archivo`, `--font-geist-mono`). Layout on the Power-of-4 ladder: margin 4 % of the short side to the nearest 4.
 
 Record an 8 s clip (MP4 / WebM) or save a still from the page; hold any single resort to export its glyph.
+
+**Panel motion.** Toolbars and sidebars (the map menu's pill ⇄ panel, the resort preview rail and the nav drawer) open and close on GSAP with `motion.panel`: in-out quart (`power3.inOut`, `cubic-bezier(0.76, 0, 0.24, 1)`) over 0.45 s, with contents fading in over the last 0.25 s. In-out quint (`power4.inOut`, `cubic-bezier(0.83, 0, 0.17, 1)`) is tokenised alongside it in `motion.eases`. Under reduced motion the panels snap. The measured timings are in `docs/briefs/panel-motion.md`.
 
 ## Credit
 

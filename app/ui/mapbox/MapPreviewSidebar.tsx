@@ -1,6 +1,8 @@
 "use client";
 
+import { useRef } from "react";
 import Image from "next/image";
+import { useFade, useSlideIn } from "@/app/ui/motion/panels";
 import type {
   Resorts,
   Rentals,
@@ -43,26 +45,31 @@ export default function MapPreviewSidebar({ show, category, content, onClose }: 
   const resort = isResort && content ? (content as Resorts) : null;
   const status = resort ? deriveStatus(resort) : null;
 
+  // Slide and backdrop run on GSAP with the shared panel motion (quart
+  // in-out, motion.panel). translate-x-full and opacity-0 are only the
+  // server-rendered closed state.
+  const backdropRef = useRef<HTMLDivElement>(null);
+  const railRef = useRef<HTMLElement>(null);
+  useFade(backdropRef, show);
+  useSlideIn(railRef, show);
+
   return (
     <>
-      {/* Backdrop — mobile only, so the map stays visible on desktop */}
+      {/* Backdrop — mobile only, so the map stays visible on desktop. Fades
+          with the rail; hidden (no clicks) when closed. --scrim rather than
+          bg-ink/40, which compiles to no CSS on a hex variable. */}
       <div
+        ref={backdropRef}
         onClick={onClose}
         aria-hidden
-        className={[
-          "pointer-events-none absolute inset-0 z-20 bg-ink/40 backdrop-blur-sm transition-opacity md:hidden",
-          show ? "pointer-events-auto opacity-100" : "opacity-0",
-        ].join(" ")}
+        className="invisible absolute inset-0 z-20 bg-[var(--scrim)] opacity-0 backdrop-blur-sm md:hidden"
       />
 
       <aside
+        ref={railRef}
         aria-label="Location details"
         aria-hidden={!show}
-        className={[
-          "absolute inset-y-0 right-0 z-30 flex w-full max-w-md flex-col overflow-y-auto border-l border-rule bg-canvas shadow-lg",
-          "transition-transform duration-200 ease-out",
-          show ? "translate-x-0" : "translate-x-full",
-        ].join(" ")}
+        className="absolute inset-y-0 right-0 z-30 flex w-full max-w-md translate-x-full flex-col overflow-y-auto border-l border-rule bg-canvas shadow-lg"
       >
         {/* Close */}
         <button

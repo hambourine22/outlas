@@ -525,8 +525,11 @@ export default function Map({
     return <MapPlaceholder counts={counts} />;
   }
 
+  // overflow-clip, not -hidden: a hidden overflow box can still be scrolled
+  // (focus inside the off-screen preview rail once dragged the whole map
+  // 448px sideways); a clipped one can't.
   return (
-    <div className="relative overflow-hidden" style={{ height: "calc(100dvh - 56px)" }}>
+    <div className="relative overflow-clip" style={{ height: "calc(100dvh - 56px)" }}>
       <div id="map-container" ref={mapContainerRef} className="h-full w-full" />
 
       {/* Pointer readout — dot + latitude / longitude / zoom */}

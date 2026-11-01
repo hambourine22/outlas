@@ -287,7 +287,7 @@ export const mapCursor = {
   px:         8,     // dot diameter
   gap:        10,    // dot edge → readout
   hoverScale: 1.2,
-  orbit:      { px: 18, stroke: 1, periodMs: 2400 },
+  orbit:      { px: 18, stroke: 1, periodMs: 2400, fadeMs: 280 },
   decimals:   { coord: 4, zoom: 2 },
 } as const;
 
@@ -393,6 +393,20 @@ export const motion = {
   morph:  1.6,                                        // sheet ⇄ stack fold, seconds
   drawIn: 1.2,                                        // hairlines and marks appear, seconds
   ease:   { name: "power2.inOut", css: "cubic-bezier(0.45, 0, 0.55, 1)" },
+  // The named in-out curves, for GSAP and for CSS. GSAP counts powers from
+  // 1 = quad, so quart is power3 and quint is power4.
+  eases: {
+    inOutQuart: { name: "power3.inOut", css: "cubic-bezier(0.76, 0, 0.24, 1)" },
+    inOutQuint: { name: "power4.inOut", css: "cubic-bezier(0.83, 0, 0.17, 1)" },
+  },
+  // UI panels — the map menu's pill ⇄ panel, the resort preview rail and
+  // the nav drawer opening and closing (app/ui/motion/panels.ts). One ease
+  // and one duration for all three so they read as one family. Seconds.
+  panel: {
+    ease:     "inOutQuart" as "inOutQuart" | "inOutQuint",
+    duration: 0.45,
+    fadeIn:   0.25,   // contents fade in over the last part of an open
+  },
   view: {
     oblique: { shear: 0.42, squash: 0.3 },            // the strata view: x shear per unit depth, y squash
     isoAxis: 30,                                      // the 30° axes, for any true isometric variant

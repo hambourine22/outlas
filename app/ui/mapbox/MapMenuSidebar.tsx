@@ -1,6 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
+import { motion } from "@/app/lib/design-system";
+import { Flip, gsap, panelDuration, panelEase, useGSAP } from "@/app/ui/motion/panels";
 import {
   CATEGORY_COLOUR,
   CATEGORY_LABEL,
@@ -93,6 +95,35 @@ export default function MapMenuSidebar({
   onSelectRegion,
 }: Props) {
   const [open, setOpen] = useState(true);
+
+  // Pill ⇄ panel is one shape changing size. Both boxes carry
+  // data-flip-id="map-menu" and share boxRef: Flip records the box before
+  // the swap and grows or shrinks the new one from it on the shared panel
+  // motion (scale: false, so the 20px corners stay round). The incoming
+  // contents fade in over the last motion.panel.fadeIn seconds so they
+  // don't spill out of a box that's still moving.
+  const boxRef = useRef<HTMLElement | null>(null);
+  const flipState = useRef<Flip.FlipState | null>(null);
+  const toggle = (next: boolean) => {
+    if (boxRef.current) flipState.current = Flip.getState(boxRef.current);
+    setOpen(next);
+  };
+  useGSAP(
+    () => {
+      const state = flipState.current;
+      const box = boxRef.current;
+      if (!state || !box) return;
+      flipState.current = null;
+      const duration = panelDuration();
+      Flip.from(state, { targets: box, duration, ease: panelEase(), scale: false });
+      if (duration) {
+        const fade = Math.min(motion.panel.fadeIn, duration);
+        gsap.from(box.children, { autoAlpha: 0, duration: fade, delay: duration - fade, ease: "none" });
+      }
+    },
+    { dependencies: [open] },
+  );
+
   const allOn =
     CATEGORY_ORDER.every((c) => filters[c]) &&
     TRANSPORT_ORDER.every((k) => transport[k]);
@@ -115,10 +146,16 @@ export default function MapMenuSidebar({
         aria-label="Map filters (collapsed)"
         className="pointer-events-auto absolute left-3 top-3 z-20 md:left-4 md:top-4"
       >
-        <div className={`flex w-10 flex-col items-center ${PANEL_ROUND} border border-rule bg-canvas p-1 pb-[15px] shadow-sm`}>
+        <div
+          ref={(el) => {
+            boxRef.current = el;
+          }}
+          data-flip-id="map-menu"
+          className={`flex w-10 flex-col items-center ${PANEL_ROUND} border border-rule bg-canvas p-1 pb-[15px] shadow-sm`}
+        >
           <button
             type="button"
-            onClick={() => setOpen(true)}
+            onClick={() => toggle(true)}
             aria-label="Open map filters"
             className="flex h-8 w-8 items-center justify-center rounded-full text-ink transition-colors hover:bg-[var(--row-hover)]"
           >
@@ -146,6 +183,10 @@ export default function MapMenuSidebar({
 
   return (
     <aside
+      ref={(el) => {
+        boxRef.current = el;
+      }}
+      data-flip-id="map-menu"
       aria-label="Map symbols"
       className={`pointer-events-auto absolute left-3 top-3 z-20 flex max-h-[calc(100%-1.5rem)] w-72 flex-col overflow-hidden ${PANEL_ROUND} border border-rule bg-canvas shadow-sm md:left-4 md:top-4 md:max-h-[calc(100%-2rem)]`}
     >
@@ -154,7 +195,7 @@ export default function MapMenuSidebar({
         <span className="label text-ink-faint">Map symbols</span>
         <button
           type="button"
-          onClick={() => setOpen(false)}
+          onClick={() => toggle(false)}
           aria-label="Collapse map symbols"
           className="flex h-7 w-7 items-center justify-center rounded-full text-ink-muted transition-colors hover:bg-[var(--row-hover)] hover:text-ink"
         >

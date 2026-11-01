@@ -236,11 +236,14 @@ body {
  * [data-on]. Each meridian turns about the vertical axis: scaleX traces its
  * projected width, 1 → −1 → 1 eased, which is a cosine near enough. The
  * second runs a quarter-turn behind, so the two read as a spinning sphere.
- * Duration and the quarter-turn delay are set inline from the token. */
+ * Depth: each meridian is two half-arcs whose opacity follows how near the
+ * viewer they are (map-cursor-depth: 0.6 at the edge, 1 nearest, 0.2
+ * farthest), and the equator's far half holds at 0.3, so the sphere reads
+ * as solid. Durations, delays and the fade-in transition are set inline
+ * from the tokens. */
 .map-cursor-orbit {
   opacity: 0;
   transform: scale(0.6);
-  transition: opacity 150ms, transform 150ms;
 }
 .map-cursor-orbit[data-on] {
   opacity: 1;
@@ -251,16 +254,34 @@ body {
   50%  { transform: scaleX(-1); }
   100% { transform: scaleX(1); }
 }
-.map-cursor-meridian {
-  animation-name: map-cursor-meridian;
-  animation-timing-function: ease-in-out;
+@keyframes map-cursor-depth {
+  0%   { opacity: 0.6; }
+  25%  { opacity: 1; }
+  50%  { opacity: 0.6; }
+  75%  { opacity: 0.2; }
+  100% { opacity: 0.6; }
+}
+.map-cursor-meridian,
+.map-cursor-arc {
   animation-iteration-count: infinite;
   animation-play-state: paused;
 }
-.map-cursor-orbit[data-on] .map-cursor-meridian { animation-play-state: running; }
+.map-cursor-meridian {
+  animation-name: map-cursor-meridian;
+  animation-timing-function: ease-in-out;
+}
+.map-cursor-arc {
+  animation-name: map-cursor-depth;
+  animation-timing-function: linear;
+}
+.map-cursor-arc--far { opacity: 0.3; }
+.map-cursor-orbit[data-on] .map-cursor-meridian,
+.map-cursor-orbit[data-on] .map-cursor-arc { animation-play-state: running; }
 @media (prefers-reduced-motion: reduce) {
-  .map-cursor-orbit { transition: opacity 150ms; transform: none; }
+  .map-cursor-orbit { transform: none; }
   .map-cursor-meridian { animation: none; transform: scaleX(0.45); }
+  .map-cursor-arc { animation: none; opacity: 1; }
+  .map-cursor-arc--far { opacity: 0.3; }
   .map-cursor-meridian--late { display: none; }
 }
 
