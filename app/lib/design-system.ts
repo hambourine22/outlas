@@ -368,6 +368,11 @@ export const anatomy = {
   flank: 0.7,                                           // silhouette exponent: half-width ∝ (1 − a/peak)^flank
   asym: 0.85,                                           // the left flank is this much of the right — a real peak, not a cone
   lift: { node: 2, dash: [6, 5] },                      // rung radius (px on the 400-unit primitive), lift-line dash
+  // Contours are drawn as rings seen from a low angle — the oblique view of
+  // the motion art direction — so the peak reads in the round. `squash` is
+  // the ring's vertical radius as a share of its horizontal one; `back` is
+  // the opacity of the far half relative to the near half.
+  ring: { squash: 0.24, back: 0.35, samples: 36 },
   // Surf is the mountain reflected below the line: the waterline is the
   // ground, the trough is the water depth, the rungs stand on the shore.
   surf: {

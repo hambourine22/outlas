@@ -63,3 +63,10 @@ Built and verified in the browser (dark + light; The Lecht and Chamonix in the l
 # Review — surf form · 2026-11-01
 
 Surf built as the reflected mountain: `anatomy.surf` token (5000 m × 5 km, contour 500 m, rung 1,000 people); `anatomy.ts` gains `dir` on the box plus `trough / troughContours / shoreRungs`; `ResortAnatomy` takes `kind="surf"`; three curated spots in `surf.ts`, exported through the facade; chapter 17 adds the surf trio and the encoding table marks surf built. **Verdict: ship.** tsc ✓ · lint ✓ (sibling warning only) · token drift ✓ · no hex in new files. Browser (dark, dev :3200): chapter 17 shows the mountain trio above the line and the surf trio below it — Nazaré 5000 m / 2.5 km / ≈10 k, Hossegor 3000 m / 4 km / ≈3.8 k, Thurso 80 m / 2 km / ≈7.9 k — same scale, legible contrast; encoding table marks surf built. Light theme and the motion page not re-exercised (no surf in the motion sequence yet — follow-up).
+
+---
+
+# Review — ring variant · 2026-11-01
+
+**Change:** contours redrawn as oblique rings (`anatomy.ring`, `rings()` / `ringArc()` / `shoreRungsOnRing()` in `anatomy.ts`); SVG primitive and canvas share it; ground raised to y 976 on the frame to make room for the ground ring; scale bar and terrain bracket sit below it. Surf rungs now sit on the near rim of the waterline ring.
+**Why:** the flat stripes made every resort a striped triangle; rings give the form depth and character while every encoding keeps its meaning (ring extremes are on the outline, ring count is the band, ring width is the terrain).

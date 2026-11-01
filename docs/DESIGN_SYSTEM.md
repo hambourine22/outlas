@@ -204,7 +204,7 @@ One contoured shape per resort that brings its numbers together — drawn the sa
 | Width | pisted km | surfable coast, km | slope length | cable length |
 | Rungs | lifts, on the lift line | town population, one per 1,000, on the shore | lifts | obstacles |
 
-One axis each, nothing doubled; everything else is a readout, not geometry. Domains: mountain 4000 m × 400 km, with the foot below the base drawn faint — you can see it, you can't ski it; surf 5000 m × 5 km (Nazaré's canyon sets the depth frame). Surf records live in `app/content/map/surf.ts` and are curated, approximate figures — the UI says so. Tokens in `anatomy` (`design-system.ts`); geometry in `app/lib/anatomy.ts`; the SVG primitive `ResortAnatomy` (`app/ui/ResortAnatomy.tsx`) and the motion piece share it.
+Contours are drawn as **rings seen from a low angle** (`anatomy.ring`: vertical radius 0.24 × horizontal, far half at 0.35 opacity) — the oblique view of the motion art direction — so a peak reads in the round and a trough reads as a funnel; ring extremes sit exactly on the outline, so the silhouette and the rings are one geometry. One axis each, nothing doubled; everything else is a readout, not geometry. Domains: mountain 4000 m × 400 km, with the foot below the base drawn faint — you can see it, you can't ski it; surf 5000 m × 5 km (Nazaré's canyon sets the depth frame). Surf records live in `app/content/map/surf.ts` and are curated, approximate figures — the UI says so. Tokens in `anatomy` (`design-system.ts`); geometry in `app/lib/anatomy.ts`; the SVG primitive `ResortAnatomy` (`app/ui/ResortAnatomy.tsx`) and the motion piece share it.
 
 ## Motion
 

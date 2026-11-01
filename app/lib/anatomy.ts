@@ -167,3 +167,70 @@ export function shoreRungs(s: SurfStats, box: Box): Pt[] {
   for (let i = 0; i < n; i++) pts.push([x0 + ((x1 - x0) * (i + 0.5)) / n, box.ground]);
   return pts;
 }
+
+/* -------------------------------------------------------------------------
+ * Rings — the contours seen from a low angle. Each contour at altitude a is
+ * an ellipse centred on the summit column at that altitude's height, with
+ * the silhouette's half-widths as its horizontal radii (so ring extremes
+ * sit exactly on the outline) and `anatomy.ring.squash` × that as its
+ * vertical radius. The near half (larger y) is drawn in ink, the far half
+ * fainter. Works for the trough too: rings nest downward into a funnel.
+ * ---------------------------------------------------------------------- */
+
+export type Ring = {
+  a: number;        // altitude (or depth) of this contour
+  cy: number;       // screen y of the ring's centre line
+  rxL: number;      // horizontal radius to the left extreme
+  rxR: number;      // … to the right extreme
+  ry: number;       // vertical radius
+  alpha: number;    // 0–1 fade as a contour enters the band (for morphing)
+  inBand: boolean;  // between base and peak (ink) or in the foot (faint)
+};
+
+export function rings(s: MountainStats, box: Box, step: number = anatomy.contour): Ring[] {
+  const peak = Math.max(1, s.peak);
+  const base = Math.min(Math.max(0, s.base), peak);
+  const ramp = step / 2;
+  const out: Ring[] = [];
+  for (let a = 0; a < peak; a += step) {
+    const rxR = flankX(a, s, box, 1) - box.cx;
+    const rxL = box.cx - flankX(a, s, box, -1);
+    if (rxR < 1) continue;
+    const inBand = a >= base;
+    const alpha = inBand ? Math.max(0, Math.min(1, (a - base + ramp) / ramp, (peak - a) / ramp)) : 1;
+    out.push({ a, cy: yAt(a, box), rxL, rxR, ry: rxR * anatomy.ring.squash, alpha, inBand });
+  }
+  return out;
+}
+
+// Points along one half of a ring. "near" is the half toward the viewer
+// (larger y); θ runs from the right extreme through the near side to the
+// left extreme, so the first point is on the right.
+export function ringArc(r: Ring, cx: number, half: "near" | "far", n: number = anatomy.ring.samples): Pt[] {
+  const pts: Pt[] = [];
+  for (let i = 0; i <= n; i++) {
+    const t = i / n;
+    const th = half === "near" ? Math.PI * t : Math.PI + Math.PI * t;
+    const c = Math.cos(th);
+    const x = cx + (c >= 0 ? r.rxR : r.rxL) * c;
+    const y = r.cy + r.ry * Math.sin(th);
+    pts.push([x, y]);
+  }
+  return pts;
+}
+
+// The town, along the near shore of the waterline ring.
+export function shoreRungsOnRing(s: SurfStats, box: Box): Pt[] {
+  const p = asProfile(s);
+  const rxR = flankX(0, p, box, 1) - box.cx;
+  const rxL = box.cx - flankX(0, p, box, -1);
+  const ry = rxR * anatomy.ring.squash;
+  const n = Math.max(0, Math.round(s.population / anatomy.surf.rung));
+  const pts: Pt[] = [];
+  for (let i = 0; i < n; i++) {
+    const th = (Math.PI * (i + 0.5)) / n;
+    const c = Math.cos(th);
+    pts.push([box.cx + (c >= 0 ? rxR : rxL) * c, box.ground + ry * Math.sin(th)]);
+  }
+  return pts;
+}

@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { motion as M, anatomy } from "@/app/lib/design-system";
-import { boxFor, silhouette, band, contours, liftLine, lerpStats, yAt, type MountainStats } from "@/app/lib/anatomy";
+import { boxFor, silhouette, band, rings, ringArc, liftLine, lerpStats, yAt, type MountainStats } from "@/app/lib/anatomy";
 
 /* -------------------------------------------------------------------------
  * AnatomyMotion — "Anatomy of a resort". One contoured peak that reshapes
@@ -25,7 +25,7 @@ const W = M.frame.w;
 const H = M.frame.h;
 const MARGIN = 44;                       // 4 % of the short side, to the nearest 4
 const TITLE_H = 200;
-const BOX = boxFor(880, 640, W / 2, 1000); // 880 px = 400 km · 640 px = 4000 m · ground at y 1000
+const BOX = boxFor(880, 640, W / 2, 976);  // 880 px = 400 km · 640 px = 4000 m · ground at y 976, room below for the ground ring
 const DWELL = M.anatomy.dwell;
 const MORPH = M.anatomy.morph;
 const SLOT = DWELL + MORPH;
@@ -140,29 +140,32 @@ export default function AnatomyMotion({ resorts }: { resorts: AnatomyResort[] })
       const tick = 1000 * BOX.pxPerM;
       stroke([[MARGIN + 8, BOX.ground], [MARGIN + 8, BOX.ground - tick]], tokens.ruleStrong, M.stroke.rule);
       text("1000 m", MARGIN + 16, BOX.ground - tick + 5, { font: mono(13), color: tokens.inkFaint });
-      const bar = 100 * BOX.pxPerKm;
-      stroke([[W - MARGIN - 8 - bar, BOX.ground + 16], [W - MARGIN - 8, BOX.ground + 16]], tokens.ruleStrong, M.stroke.rule);
-      text("100 km", W - MARGIN - 8, BOX.ground + 34, { font: mono(13), color: tokens.inkFaint, align: "right" });
 
-      // ---- the glyph
+      // ---- the glyph: rings seen from a low angle, far halves first,
+      //      then the outline, then the near halves on top
+      const rs = rings(s, BOX);
+      const groundRy = rs[0]?.ry ?? 0;
+      const ringAlpha = (r: (typeof rs)[number]) => (r.inBand ? M.opacity.rules * r.alpha : M.opacity.rules);
+      for (const r of rs) stroke(ringArc(r, BOX.cx, "far"), r.inBand ? tokens.ink : tokens.rule, M.stroke.rule, ringAlpha(r) * anatomy.ring.back);
       const foot = silhouette(s, BOX);
       stroke(foot, tokens.rule, M.stroke.rule, M.opacity.rules);
-      for (const c of contours(s, BOX)) {
-        const y = yAt(c.a, BOX);
-        stroke([[c.x0, y], [c.x1, y]], tokens.ink, M.stroke.rule, M.opacity.rules * c.alpha);
-      }
       const cap = band(s, BOX);
       stroke(cap, tokens.ink, M.stroke.line);
+      for (const r of rs) stroke(ringArc(r, BOX.cx, "near"), r.inBand ? tokens.ink : tokens.rule, M.stroke.rule, ringAlpha(r));
       const lift = liftLine(s, BOX);
       stroke([lift.from, lift.to], tokens.accent, M.stroke.leader, M.opacity.leaders, anatomy.lift.dash);
       for (const p of lift.nodes) dot(p[0], p[1], 3, tokens.accent);
       const summit: [number, number] = [BOX.cx, yAt(s.peak, BOX)];
       dot(summit[0], summit[1], 3.5, tokens.ink);
 
+      const bar = 100 * BOX.pxPerKm;
+      stroke([[W - MARGIN - 8 - bar, BOX.ground + groundRy + 16], [W - MARGIN - 8, BOX.ground + groundRy + 16]], tokens.ruleStrong, M.stroke.rule);
+      text("100 km", W - MARGIN - 8, BOX.ground + groundRy + 34, { font: mono(13), color: tokens.inkFaint, align: "right" });
+
       // ---- marks on the glyph
       text(`${Math.round(s.peak)} m`, summit[0] + 12, summit[1] - 8, { font: mono(16), color: tokens.ink });
       text(`${Math.round(s.base)} m`, cap[0][0] - 10, cap[0][1] + 5, { font: mono(14), color: tokens.inkMuted, align: "right" });
-      const left = foot[0][0], right = foot[foot.length - 1][0], by = BOX.ground + 44;
+      const left = foot[0][0], right = foot[foot.length - 1][0], by = BOX.ground + groundRy + 28;
       stroke([[left, by - 6], [left, by], [right, by], [right, by - 6]], tokens.ruleStrong, M.stroke.rule);
       text(`${Math.round(s.terrain)} km`, (left + right) / 2, by + 20, { font: mono(14), color: tokens.inkMuted, align: "center" });
       const mid: [number, number] = [(lift.from[0] + lift.to[0]) / 2, (lift.from[1] + lift.to[1]) / 2];
