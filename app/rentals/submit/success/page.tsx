@@ -12,14 +12,17 @@ export const metadata: Metadata = {
 // RentalSubmitForm covers the JS-enabled path without a redirect so the
 // user keeps their place.
 
-export default function RentalsSubmitSuccess({
+export default async function RentalsSubmitSuccess({
   searchParams,
 }: {
-  searchParams: Record<string, string | string[] | undefined>;
+  // Next 15 — searchParams is a Promise on page components. Await it
+  // before reading fields.
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
-  const name = decodeMaybe(searchParams.name);
-  const preview = !!searchParams.preview;
-  const error = typeof searchParams.error === "string" ? searchParams.error : null;
+  const sp = await searchParams;
+  const name = decodeMaybe(sp.name);
+  const preview = !!sp.preview;
+  const error = typeof sp.error === "string" ? sp.error : null;
 
   return (
     <section data-surface="rental" className="min-h-[calc(100dvh-56px)] bg-canvas text-ink">

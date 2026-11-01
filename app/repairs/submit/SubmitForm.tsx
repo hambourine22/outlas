@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState, type FormEvent } from "react";
+import Link from "next/link";
 
 // Client-side submission form for repair shops. Fields and copy per the
 // spec at docs/specs/repair-shop-submission.md. The API route at
@@ -133,12 +134,12 @@ export default function SubmitForm() {
           We&apos;ll be in touch at <span className="text-ink">{successEmail}</span> once we&apos;ve had a look.
           Usually within a week.
         </p>
-        <a
+        <Link
           href="/"
           className="mt-6 inline-flex items-center gap-1.5 font-ui text-sm text-ink underline-offset-4 hover:underline"
         >
           Back to the map →
-        </a>
+        </Link>
       </section>
     );
   }
