@@ -192,6 +192,24 @@ export const scoreBands = [
   { min: 4, max: 5, label: "Very good", surface: colors.carbon.hex, ink: colors.snow.hex   },
 ] as const;
 
+// Iconography — hairline glyphs on a 24-unit grid, drawn by app/ui/icons.
+// One registry (icons.ts), one renderer (Icon.tsx), these numbers. The
+// stroke matches the chevrons and the transport key so every glyph on a
+// screen shares a weight; sizes are rungs of the spacing ladder so an icon
+// sits on the same grid as the type beside it. No fills — the only solids
+// are dots. Transport glyphs keep a 16-grid of their own because they also
+// serialise to Mapbox bitmaps (see mapTransport).
+export const iconography = {
+  grid:   24,
+  stroke: 1.6,
+  cap:    "round",
+  join:   "round",
+  colour: "currentColor",
+  sizes:  [12, 16, 20, 24],        // chrome · inline with 14–16px type · touch · hero
+  safe:   { min: 3, max: 21 },     // drawing area inside the grid, so strokes never clip
+  sets:   ["ui", "activity", "feature", "transport"],
+} as const;
+
 // Map pins — one circle per record, fill only: no outline. The fill is the
 // category colour at full opacity. Sharpness comes from integer radii that
 // step with zoom (so the world view stays legible where resorts cluster),

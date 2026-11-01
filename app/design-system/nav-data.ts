@@ -26,6 +26,7 @@ export const CHAPTERS: Chapter[] = [
   { n: "05", slug: "grid",       title: "Grid & Layout",    group: "foundations" },
   { n: "06", slug: "surfaces",   title: "Surfaces",         group: "foundations" },
   { n: "07", slug: "type",       title: "Type",             group: "foundations" },
+  { n: "18", slug: "icons",      title: "Iconography",      group: "foundations" },
   { n: "08", slug: "space",      title: "Space & Outline",  group: "components"  },
   { n: "09", slug: "principles", title: "Principles",       group: "components"  },
   { n: "10", slug: "nav",        title: "Navigation",       group: "components"  },

@@ -18,7 +18,11 @@ import {
   grid,
   dataviz,
   anatomy,
+  iconography,
 } from "@/app/lib/design-system";
+import { Icon } from "@/app/ui/icons/Icon";
+import { ICONS, LEGEND_ICON, iconsInSet, type IconSet } from "@/app/ui/icons/icons";
+import { TrainStation, ChargePoint } from "@/app/ui/icons/TransportIcons";
 import { RESORTS, SURF } from "@/app/content/map";
 import { ResortAnatomy } from "@/app/ui/ResortAnatomy";
 import { TopBar, Sidebar, OnThisPage, NavProvider } from "./Nav";
@@ -72,6 +76,9 @@ export default function DesignSystemPage() {
           </Chapter>
           <Chapter slug="type" n="07" title="Type" intro="Vollkorn for editorial display and body — it carries the storytelling. Archivo Narrow for UI labels, meta, and navigation chrome.">
             <TypeScale />
+          </Chapter>
+          <Chapter slug="icons" n="18" title="Iconography" intro="Hairline glyphs on a 24-unit grid — one stroke weight shared with the chevrons and the transport key, currentColor so they take the surface's ink, no fills but dots. One registry, one renderer; nothing drawn inline.">
+            <Iconography />
           </Chapter>
           <Chapter slug="space" n="08" title="Space & Outline" intro="One ladder each. Every rung is a multiple of 4px. Depth comes from outline weight, never drop shadow.">
             <SpaceRadiiOutline />
@@ -951,6 +958,97 @@ function ScorePills() {
   );
 }
 
+/* ---------- iconography ---------- */
+const ICON_SETS: { key: IconSet; label: string; note: string }[] = [
+  { key: "ui",        label: "UI",        note: "Chrome and controls — nav, disclosure, theme, forms. Decorative beside a label; needs an aria-label on the control when it stands alone." },
+  { key: "activity",  label: "Activity",  note: "The eleven activities a resort or guide can carry (ACTIVITIES in app/content/map/types.ts). Same order as the chips." },
+  { key: "feature",   label: "Feature",   note: "Legend vocabulary beyond the activity enum — what a place offers rather than what you do there." },
+  { key: "transport", label: "Transport", note: "Legend and list rows. On the map itself the 16-grid glyphs in TransportIcons.tsx are used instead, because they also serialise to Mapbox bitmaps." },
+];
+
+function Iconography() {
+  const rules = [
+    { k: "Grid",   v: `${iconography.grid} units · safe ${iconography.safe.min}–${iconography.safe.max}` },
+    { k: "Stroke", v: `${iconography.stroke}px · ${iconography.cap} caps · ${iconography.join} joins` },
+    { k: "Colour", v: `${iconography.colour} — flips with --ink, takes the surface's ink` },
+    { k: "Fills",  v: "none; dots only (wheels, heads, eyes)" },
+    { k: "Sizes",  v: iconography.sizes.map((s) => `${s}`).join(" · ") + " px — ladder rungs" },
+    { k: "Source", v: "app/ui/icons/icons.ts → <Icon name=… />" },
+  ];
+  return (
+    <div className="space-y-12">
+      <dl className="grid grid-cols-1 gap-x-10 gap-y-4 border-y border-rule py-6 font-ui text-sm sm:grid-cols-2 lg:grid-cols-3">
+        {rules.map((r) => (
+          <div key={r.k} className="flex items-baseline gap-4">
+            <dt className="label w-16 shrink-0 text-ink-faint">{r.k}</dt>
+            <dd className="text-ink">{r.v}</dd>
+          </div>
+        ))}
+      </dl>
+
+      {/* Size ladder — the same glyph at each rung, beside the type it sits with */}
+      <div>
+        <h3 className="label text-ink-muted">Sizes</h3>
+        <ul className="mt-6 flex flex-wrap items-end gap-10">
+          {iconography.sizes.map((s) => (
+            <li key={s} className="flex flex-col items-start gap-3">
+              <span className="flex items-center gap-2 text-ink" style={{ fontSize: Math.max(12, s) }}>
+                <Icon name="ski" size={s} />
+                <span className="font-ui">Ski</span>
+              </span>
+              <span className="font-mono text-xs text-ink-faint">{s}px</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      {ICON_SETS.map((set) => (
+        <div key={set.key}>
+          <h3 className="label text-ink-muted">{set.label}</h3>
+          <p className="mt-3 max-w-2xl font-ui text-sm leading-relaxed text-ink-muted">{set.note}</p>
+          <ul className="mt-6 grid grid-cols-3 gap-4 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8">
+            {iconsInSet(set.key).map((name) => (
+              <li key={name} className="flex flex-col items-center gap-3 border border-rule p-4 text-ink">
+                <Icon name={name} size={24} />
+                <span className="micro text-center text-ink-faint">{ICONS[name].label}</span>
+                <span className="font-mono text-[10px] text-ink-faint">{name}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+
+      {/* Map glyphs — the 16-grid siblings, shown at both sizes they ship at */}
+      <div>
+        <h3 className="label text-ink-muted">Map glyphs (16-grid)</h3>
+        <p className="mt-3 max-w-2xl font-ui text-sm leading-relaxed text-ink-muted">
+          Transport on the basemap uses TransportIcons.tsx — same stroke and caps, a 16-unit grid, and a serialiser for Mapbox symbol images. Keep the two in step by eye: the 24-grid train and EV above are these, redrawn.
+        </p>
+        <ul className="mt-6 flex flex-wrap gap-4">
+          {[{ C: TrainStation, label: "station" }, { C: ChargePoint, label: "charge" }].map(({ C, label }) => (
+            <li key={label} className="flex items-center gap-6 border border-rule px-6 py-4 text-ink">
+              <C size={16} />
+              <C size={24} />
+              <span className="font-mono text-[10px] text-ink-faint">{label}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <div>
+        <h3 className="label text-ink-muted">Usage</h3>
+        <pre className="mt-4 overflow-x-auto border border-rule p-4 font-mono text-xs leading-relaxed text-ink-muted">
+{`import { Icon } from "@/app/ui/icons/Icon";
+
+<Icon name="ski" size={16} />                       // beside text: decorative, aria-hidden
+<Icon name="close" size={18} label="Close" />       // standalone meaning: role="img" + name
+<button aria-label="Open navigation"><Icon name="menu" /></button>`}
+        </pre>
+      </div>
+    </div>
+  );
+}
+
 function MapLegend() {
   const pinKeys = Object.keys(mapPins.categories) as Array<keyof typeof mapPins.categories>;
   const tokenName = (hex: string) =>
@@ -998,6 +1096,7 @@ function MapLegend() {
         <ul className="mt-6 divide-y divide-rule border-y border-rule font-ui">
           {mapLegend.transport.map((t) => (
             <li key={t.key} className="flex items-center gap-6 py-3">
+              <Icon name={LEGEND_ICON[t.key]} size={20} className="shrink-0 text-ink" />
               <span className="label w-20 text-ink-faint">{t.key}</span>
               <span>{t.label}</span>
             </li>
@@ -1009,6 +1108,7 @@ function MapLegend() {
         <ul className="mt-6 divide-y divide-rule border-y border-rule font-ui">
           {mapLegend.features.map((f) => (
             <li key={f.key} className="flex items-center gap-6 py-3">
+              <Icon name={LEGEND_ICON[f.key]} size={20} className="shrink-0 text-ink" />
               <span className="label w-20 text-ink-faint">{f.key}</span>
               <span>{f.label}</span>
             </li>

@@ -89,6 +89,14 @@ Type scale lives in `typography.scale` and in Tailwind `fontSize`:
 | `label` | 0.75rem · tracking 0.08em · uppercase | UI chrome. |
 | `micro` | 0.6875rem · tracking 0.10em · uppercase | Meta, pills. |
 
+## Iconography
+
+Hairline glyphs on a **24-unit grid**, drawn inside a 3–21 safe area: stroke 1.6, round caps and joins, `currentColor` (so an icon flips with `--ink` and takes the surface's ink), no fills except dots. Sizes are ladder rungs — 12 (chrome), 16 (inline with 14–16px type), 20 (touch), 24 (hero). The token is `iconography` in `design-system.ts`.
+
+One registry, one renderer: `app/ui/icons/icons.ts` holds the geometry (`ICONS`, grouped into `ui` · `activity` · `feature` · `transport`), `app/ui/icons/Icon.tsx` draws it — `<Icon name="ski" size={16} />`. Beside text an icon is decoration (aria-hidden); when it *is* the meaning, pass `label` and it becomes `role="img"`. Nothing is drawn inline in a component; add to the registry and the Iconography chapter documents it.
+
+The map's transport glyphs (`TransportIcons.tsx`) keep a 16-unit grid of their own because they also serialise to Mapbox bitmaps; the 24-grid `train` and `ev` are the same drawings redrawn for lists and the legend. `LEGEND_ICON` maps every `mapLegend` key to an icon so the legend chapter and any future map key read the same glyph.
+
 ## Spacing, radii, shadow
 
 A single ladder each. New components reach for an existing rung before adding one.
