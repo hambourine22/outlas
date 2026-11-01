@@ -362,15 +362,22 @@ export const motion = {
 // -------------------------------------------------------------------------
 export const anatomy = {
   kinds: ["mountain", "surf", "snowdome", "cable"] as const,
-  built: ["mountain"] as const,
-  domain: { altitude: 4000, terrain: 400 },             // m · km — the comparability frame
+  built: ["mountain", "surf"] as const,
+  domain: { altitude: 4000, terrain: 400 },             // m · km — the mountain comparability frame
   contour: 200,                                         // m between contour lines in the skiable band
   flank: 0.7,                                           // silhouette exponent: half-width ∝ (1 − a/peak)^flank
   asym: 0.85,                                           // the left flank is this much of the right — a real peak, not a cone
   lift: { node: 2, dash: [6, 5] },                      // rung radius (px on the 400-unit primitive), lift-line dash
+  // Surf is the mountain reflected below the line: the waterline is the
+  // ground, the trough is the water depth, the rungs stand on the shore.
+  surf: {
+    domain: { depth: 5000, coast: 5 },                  // m · km — Nazaré's canyon sets the depth frame
+    contour: 500,                                       // m between contour lines in the trough
+    rung: 1000,                                         // people per rung along the shore
+  },
   encodings: [
-    { kind: "mountain", height: "peak altitude",    band: "base → peak, contours every 200 m", width: "pisted km",   rungs: "lifts",             status: "built"    },
-    { kind: "surf",     height: "wave height",      band: "the face you can ride",             width: "ride length", rungs: "peaks on the break", status: "reserved" },
+    { kind: "mountain", height: "peak altitude, above the line",  band: "base → peak, contours every 200 m", width: "pisted km",       rungs: "lifts, on the lift line",                 status: "built"    },
+    { kind: "surf",     height: "water depth, below the line",    band: "the trough, contours every 500 m",  width: "coast, km",       rungs: "town population, one per 1,000, on the shore", status: "built" },
     { kind: "snowdome", height: "indoor vertical",  band: "the slope",                         width: "slope length", rungs: "lifts",            status: "reserved" },
     { kind: "cable",    height: "—",                band: "the cable loop",                    width: "cable length", rungs: "obstacles",        status: "reserved" },
   ],

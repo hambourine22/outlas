@@ -11,6 +11,7 @@ export { RESORTS } from "./resorts";
 export { RENTALS } from "./rentals";
 export { REPAIRS } from "./repairs";
 export { GUIDES }  from "./guides";
+export { SURF, type SurfSpot } from "./surf";
 
 /* -----------------------------------------------------------------
  * getMapData — single entry point for every page / server component

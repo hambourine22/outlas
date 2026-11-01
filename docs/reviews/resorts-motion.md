@@ -57,3 +57,9 @@ Built and verified in the browser (dark + light; The Lecht and Chamonix in the l
 - [x] Hold a single resort via the select; record 8 s; save still; reduced motion = one frame.
 - [x] Design-system chapter shows Cairngorm · Zermatt · Whistler Blackcomb side by side + the encoding table from `anatomy.encodings`.
 - [x] Nav: Explore · 03 · Anatomy of a resort; Data · 17 · Anatomy.
+
+---
+
+# Review — surf form · 2026-11-01
+
+Surf built as the reflected mountain: `anatomy.surf` token (5000 m × 5 km, contour 500 m, rung 1,000 people); `anatomy.ts` gains `dir` on the box plus `trough / troughContours / shoreRungs`; `ResortAnatomy` takes `kind="surf"`; three curated spots in `surf.ts`, exported through the facade; chapter 17 adds the surf trio and the encoding table marks surf built. **Verdict: ship.** tsc ✓ · lint ✓ (sibling warning only) · token drift ✓ · no hex in new files. Browser (dark, dev :3200): chapter 17 shows the mountain trio above the line and the surf trio below it — Nazaré 5000 m / 2.5 km / ≈10 k, Hossegor 3000 m / 4 km / ≈3.8 k, Thurso 80 m / 2 km / ≈7.9 k — same scale, legible contrast; encoding table marks surf built. Light theme and the motion page not re-exercised (no surf in the motion sequence yet — follow-up).

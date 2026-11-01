@@ -26,7 +26,9 @@ export type Pt = [number, number];
 
 // A drawing box: where the ground line sits, where the summit column is,
 // and the fixed px-per-unit scales that make glyphs comparable.
-export type Box = { cx: number; ground: number; pxPerM: number; pxPerKm: number };
+// `dir` is +1 for forms that rise above the line (mountain) and −1 for
+// forms that drop below it (surf) — the same silhouette maths, reflected.
+export type Box = { cx: number; ground: number; pxPerM: number; pxPerKm: number; dir: 1 | -1 };
 
 export function boxFor(width: number, height: number, cx: number, ground: number): Box {
   return {
@@ -34,10 +36,11 @@ export function boxFor(width: number, height: number, cx: number, ground: number
     ground,
     pxPerM: height / anatomy.domain.altitude,
     pxPerKm: width / anatomy.domain.terrain,
+    dir: 1,
   };
 }
 
-export const yAt = (a: number, box: Box) => box.ground - a * box.pxPerM;
+export const yAt = (a: number, box: Box) => box.ground - a * box.pxPerM * box.dir;
 
 // Half-width of the silhouette at altitude a. side −1 is the left flank,
 // slightly narrower, so the peak reads as a mountain rather than a cone.
@@ -77,10 +80,9 @@ export function band(s: MountainStats, box: Box, step = 40): Pt[] {
 // Contour lines across the band at every `anatomy.contour` metres. `alpha`
 // fades a line in over half an interval as it enters the band, so a morphing
 // glyph grows contours instead of popping them.
-export function contours(s: MountainStats, box: Box): { a: number; x0: number; x1: number; alpha: number }[] {
+export function contours(s: MountainStats, box: Box, step: number = anatomy.contour): { a: number; x0: number; x1: number; alpha: number }[] {
   const peak = Math.max(1, s.peak);
   const base = Math.min(Math.max(0, s.base), peak);
-  const step = anatomy.contour;
   const ramp = step / 2;
   const out: { a: number; x0: number; x1: number; alpha: number }[] = [];
   for (let a = Math.ceil(base / step) * step; a < peak; a += step) {
@@ -119,4 +121,49 @@ export function lerpStats(a: MountainStats, b: MountainStats, w: number): Mounta
 
 export function pathD(pts: Pt[]): string {
   return pts.map((p, i) => `${i === 0 ? "M" : "L"}${p[0].toFixed(1)} ${p[1].toFixed(1)}`).join(" ");
+}
+
+/* -------------------------------------------------------------------------
+ * Surf form — the mountain reflected below the line. The waterline is the
+ * ground; the trough is the offshore depth (a canyon or a channel) with
+ * contours every `anatomy.surf.contour` metres; the width is the coast;
+ * the rungs stand on the shore, one per `anatomy.surf.rung` people.
+ * ---------------------------------------------------------------------- */
+
+export type SurfStats = {
+  depth: number;      // m below the waterline
+  coast: number;      // km of surfable coast
+  population: number; // people in the town
+};
+
+export function surfBoxFor(width: number, depth: number, cx: number, waterline: number): Box {
+  return {
+    cx,
+    ground: waterline,
+    pxPerM: depth / anatomy.surf.domain.depth,
+    pxPerKm: width / anatomy.surf.domain.coast,
+    dir: -1,
+  };
+}
+
+// The trough is a mountain with peak = depth, base = 0, terrain = coast.
+export const asProfile = (s: SurfStats): MountainStats => ({ peak: s.depth, base: 0, terrain: s.coast, lifts: 0 });
+
+export function trough(s: SurfStats, box: Box, step = 40): Pt[] {
+  return silhouette(asProfile(s), box, step);
+}
+
+export function troughContours(s: SurfStats, box: Box) {
+  return contours(asProfile(s), box, anatomy.surf.contour);
+}
+
+// Rungs along the waterline between the two ends of the coast.
+export function shoreRungs(s: SurfStats, box: Box): Pt[] {
+  const p = asProfile(s);
+  const x0 = flankX(0, p, box, -1);
+  const x1 = flankX(0, p, box, 1);
+  const n = Math.max(0, Math.round(s.population / anatomy.surf.rung));
+  const pts: Pt[] = [];
+  for (let i = 0; i < n; i++) pts.push([x0 + ((x1 - x0) * (i + 0.5)) / n, box.ground]);
+  return pts;
 }

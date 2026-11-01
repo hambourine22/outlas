@@ -195,16 +195,16 @@ Tokens live in `mapPins` (`design-system.ts`). `CATEGORY_COLOUR` in `app/content
 
 ## Anatomy
 
-One contoured shape per resort that brings its numbers together — drawn the same way for every resort, with fixed domains, so two glyphs anywhere on the site compare at a glance. The form follows the kind of place; only the mountain is built, the others are reserved with their encodings so the family grows without a redesign.
+One contoured shape per resort that brings its numbers together — drawn the same way for every resort, with fixed domains, so two glyphs anywhere on the site compare at a glance. The form follows the kind of place: **mountains rise above the line; seas drop below it.** Mountain and surf are built; the others are reserved with their encodings so the family grows without a redesign.
 
-| Reads as | Mountain (built) | Surf (reserved) | Snowdome (reserved) | Cable park (reserved) |
+| Reads as | Mountain (built) | Surf (built) | Snowdome (reserved) | Cable park (reserved) |
 |---|---|---|---|---|
-| Height | peak altitude | wave height | indoor vertical | — |
-| The ink band | base → peak, contours every 200 m | the face you can ride | the slope | the cable loop |
-| Width | pisted km | ride length | slope length | cable length |
-| Rungs | lifts, on a line from base to summit | peaks on the break | lifts | obstacles |
+| Height | peak altitude, above the line | water depth offshore, below the line | indoor vertical | — |
+| The ink band | base → peak, contours every 200 m | the trough, contours every 500 m | the slope | the cable loop |
+| Width | pisted km | surfable coast, km | slope length | cable length |
+| Rungs | lifts, on the lift line | town population, one per 1,000, on the shore | lifts | obstacles |
 
-One axis each, nothing doubled; snowfall and the five numbers are readouts, not geometry. Domains: 4000 m tall, 400 km wide; the foot of the mountain below the base is drawn faint — you can see it, you can't ski it. Tokens in `anatomy` (`design-system.ts`); geometry in `app/lib/anatomy.ts`; the SVG primitive `ResortAnatomy` (`app/ui/ResortAnatomy.tsx`) and the motion piece share it.
+One axis each, nothing doubled; everything else is a readout, not geometry. Domains: mountain 4000 m × 400 km, with the foot below the base drawn faint — you can see it, you can't ski it; surf 5000 m × 5 km (Nazaré's canyon sets the depth frame). Surf records live in `app/content/map/surf.ts` and are curated, approximate figures — the UI says so. Tokens in `anatomy` (`design-system.ts`); geometry in `app/lib/anatomy.ts`; the SVG primitive `ResortAnatomy` (`app/ui/ResortAnatomy.tsx`) and the motion piece share it.
 
 ## Motion
 

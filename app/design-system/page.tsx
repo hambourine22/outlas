@@ -19,7 +19,7 @@ import {
   dataviz,
   anatomy,
 } from "@/app/lib/design-system";
-import { RESORTS } from "@/app/content/map";
+import { RESORTS, SURF } from "@/app/content/map";
 import { ResortAnatomy } from "@/app/ui/ResortAnatomy";
 import { TopBar, Sidebar, OnThisPage, NavProvider } from "./Nav";
 import { CHAPTERS } from "./nav-data";
@@ -100,7 +100,7 @@ export default function DesignSystemPage() {
           <Chapter slug="submit-form" n="16" title="Submit Form" intro="The provider-submission pattern — field states, file drop zone states, success state. Grows as repair and guide submission forms join Rentals.">
             <SubmitFormSpecimen />
           </Chapter>
-          <Chapter slug="anatomy" n="17" title="Anatomy" intro="One contoured shape per resort that brings altitude, vertical, size and lifts together — drawn the same way for every resort, with fixed domains, so they compare at a glance. The mountain form is built; surf, snowdome and cable-park forms are reserved with their encodings.">
+          <Chapter slug="anatomy" n="17" title="Anatomy" intro="One contoured shape per resort that brings its numbers together — drawn the same way for every resort, with fixed domains, so they compare at a glance. Mountains rise above the line; seas drop below it. Mountain and surf forms are built; snowdome and cable-park forms are reserved with their encodings.">
             <AnatomySpec />
           </Chapter>
           <Footer />
@@ -1047,6 +1047,24 @@ function AnatomySpec() {
             }}
           />
         ))}
+      </div>
+
+      <div>
+        <h3 className="label text-ink-muted">Surf — the same shape, below the line</h3>
+        <p className="mt-3 max-w-2xl font-ui text-sm leading-relaxed text-ink-muted">
+          The waterline is the ground. The trough is the water offshore that shapes the break — a canyon, a gouf, a channel — with contours every {anatomy.surf.contour} m; the width is the surfable coast; the rungs stand on the shore, one per {anatomy.surf.rung.toLocaleString()} people in the town. Figures are curated and approximate.
+        </p>
+        <div className="mt-6 grid grid-cols-1 gap-8 md:grid-cols-3">
+          {SURF.map((s) => (
+            <ResortAnatomy
+              key={s.slug}
+              kind="surf"
+              name={s.name}
+              country={s.country}
+              stats={{ depth: s.depth_m, coast: s.coast_km, population: s.population }}
+            />
+          ))}
+        </div>
       </div>
 
       <div>
