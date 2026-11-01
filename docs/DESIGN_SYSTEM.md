@@ -195,7 +195,7 @@ Tokens live in `mapPins` (`design-system.ts`). `CATEGORY_COLOUR` in `app/content
 
 **Transport pins** are square, never round, so a station or charge point can't be mistaken for a provider. The plate is 18px carbon with the snow hairline glyph from `TransportIcons.tsx` inset at 12px. The plate is fixed rather than theme-flipped, because the basemap is light in both themes. They're drawn beneath the provider circles and hidden below zoom 5. The sidebar key swatch is the same plate. Tokens: `mapTransport`.
 
-**Map cursor.** Over the map the system pointer is replaced by a 22px rust dot reading `LATITUDE` (4 dp) to its left, `LONGITUDE` (4 dp) to its right and `ZOOM` (2 dp) beneath. It's set in Archivo Narrow caps with tabular figures, in fixed carbon ink. Over a pin the dot grows 1.4×. It's hidden on devices without hover. Tokens: `mapCursor`.
+**Map cursor.** Over the map the system pointer is replaced by an 8px rust dot reading `LATITUDE` (4 dp) to its left, `LONGITUDE` (4 dp) to its right and `ZOOM` (2 dp) beneath. It's set in Archivo Narrow caps with tabular figures, in carbon at 60 % (the muted rung, fixed rather than theme-flipped). Over a pin the dot grows 1.2× to 9.6px, still smaller than the smallest pin (10px at world zoom). It's hidden on devices without hover. Tokens: `mapCursor`.
 
 ## Anatomy
 

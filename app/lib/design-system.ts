@@ -241,15 +241,18 @@ export const mapTransport = {
 
 // Map cursor — replaces the system pointer over the map with a rust dot
 // that reads out where it is: latitude to its left, longitude to its
-// right, zoom beneath. Ink is fixed carbon, like the transport plate,
-// because the basemap is light in both themes. Over a pin the dot grows
-// by hoverScale, which stands in for the pointer hand.
+// right, zoom beneath. Ink is fixed carbon at the muted rung (60 %, as
+// --ink-muted in the light theme), not --ink, because the basemap is light
+// in both themes; greyed so the readout sits back behind the dot. Over a pin the dot grows
+// by hoverScale, which stands in for the pointer hand. Even grown it stays
+// smaller than the smallest pin (mapPins.radius at world zoom: 5px, so
+// 10px across): 8px → 9.6px.
 export const mapCursor = {
   dot:        colors.rust.hex,
-  ink:        colors.carbon.hex,
-  px:         22,    // dot diameter
+  ink:        `rgb(${colors.carbon.rgb} / 0.6)`,
+  px:         8,     // dot diameter
   gap:        10,    // dot edge → readout
-  hoverScale: 1.4,
+  hoverScale: 1.2,
   decimals:   { coord: 4, zoom: 2 },
 } as const;
 
