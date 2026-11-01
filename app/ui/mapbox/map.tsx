@@ -10,6 +10,11 @@ import {
   CATEGORY_LABEL,
   type MapCategory,
 } from "@/app/content/map/types";
+import {
+  DEFAULT_REGION,
+  regionByKey,
+  type RegionKey,
+} from "@/app/content/map/regions";
 import { mapPins } from "@/app/lib/design-system";
 import MapMenuSidebar, { type MapFilters } from "./MapMenuSidebar";
 import MapPreviewSidebar, { type PreviewContent } from "./MapPreviewSidebar";
@@ -60,6 +65,11 @@ export default function Map({
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewCategory, setPreviewCategory] = useState<MapCategory | null>(null);
   const [previewContent, setPreviewContent] = useState<PreviewContent | undefined>();
+
+  // Active region drives the sidebar's region picker and the camera. Each
+  // region in the content layer carries its own centre + zoom; selecting a
+  // region flies the camera there and updates the h3 in the sidebar.
+  const [activeRegion, setActiveRegion] = useState<RegionKey>(DEFAULT_REGION);
 
   const mapboxToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN || "";
   mapboxgl.accessToken = mapboxToken;
@@ -202,10 +212,21 @@ export default function Map({
     });
   }, [filters, allFeatures]);
 
-  // Fly back to the Scotland centroid.
+  // Fly back to the world centroid and reset the region picker to the
+  // default (worldwide). The sidebar's active-row state follows.
   const handleReset = () => {
     if (!mapRef.current) return;
     mapRef.current.flyTo({ center: INITIAL_CENTER, zoom: INITIAL_ZOOM });
+    setActiveRegion(DEFAULT_REGION);
+  };
+
+  // Region picker — fly the camera to the selected region's preset and
+  // keep the sidebar h3 in sync via activeRegion.
+  const handleSelectRegion = (key: RegionKey) => {
+    setActiveRegion(key);
+    if (!mapRef.current) return;
+    const region = regionByKey(key);
+    mapRef.current.flyTo({ center: region.centre, zoom: region.zoom });
   };
 
   const handleToggleCategory = (c: MapCategory) =>
@@ -230,12 +251,14 @@ export default function Map({
     <div className="relative overflow-hidden" style={{ height: "calc(100dvh - 56px)" }}>
       <div id="map-container" ref={mapContainerRef} className="h-full w-full" />
 
-      {/* Left rail — map symbols + provider filters */}
+      {/* Left rail — map symbols + provider filters + region picker */}
       <MapMenuSidebar
         filters={filters}
         counts={counts}
         onToggle={handleToggleCategory}
         onToggleAll={handleToggleAll}
+        activeRegion={activeRegion}
+        onSelectRegion={handleSelectRegion}
       />
 
       {/* Reset view — bottom-right overlay, out of the way of the panel */}

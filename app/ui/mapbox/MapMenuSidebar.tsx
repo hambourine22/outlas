@@ -6,18 +6,31 @@ import {
   CATEGORY_LABEL,
   type MapCategory,
 } from "@/app/content/map/types";
+import { REGIONS, regionByKey, type RegionKey } from "@/app/content/map/regions";
+import {
+  TRANSPORT_LABEL,
+  TRANSPORT_NOTE,
+  TRANSPORT_COUNTS,
+  type TransportKind,
+} from "@/app/content/map/transport";
+import { TrainStation, ChargePoint } from "@/app/ui/icons/TransportIcons";
 
 // Overlay-mode map menu sidebar — the left rail on the map route. Follows
-// the HUX Phase 1+2 architecture captured in docs/MAP_MENU_ARCHITECTURE.md:
+// the HUX Phase 1+2 architecture captured in docs/MAP_MENU_ARCHITECTURE.md,
+// amended 2026-10-31 (regions-current-card brief): Regions is primary
+// context, not a future group, so it leads the panel as a full-width card.
 //
-//   MAP SYMBOLS            (sidebar name)
-//   ├── PROVIDERS   ▾      (live data — pin key + filter, dual-purpose)
-//   ├── FEATURES    ▸      (future — "coming" state)
-//   ├── TRANSPORT   ▸      (future — "coming" state)
-//   └── REGIONS     ▸      (future — "shown by default" state)
+//   MAP SYMBOLS                  (sidebar name)
 //   ──────────────
-//     5 of 16 pins visible      (view summary — live count)
-//     Hide/Show all             (quick toggle)
+//   REGION
+//   All of Scotland              (eyebrow + h3 — current region)
+//   ──────────────
+//   PROVIDERS   ▾                (live data — pin key + filter, dual-purpose)
+//   ├── FEATURES    ▸            (future — "coming" state)
+//   └── TRANSPORT   ▸            (future — "coming" state)
+//   ──────────────
+//     5 of 16 pins visible       (view summary — live count)
+//     Hide/Show all              (quick toggle)
 //
 // The pin key is NOT a separate overlay anywhere on the map. Every colour
 // the map uses is labelled on an active row here. Legacy MapLegend retired.
@@ -29,6 +42,8 @@ type Props = {
   counts: Record<MapCategory, number>;
   onToggle: (category: MapCategory) => void;
   onToggleAll: (visible: boolean) => void;
+  activeRegion: RegionKey;
+  onSelectRegion: (region: RegionKey) => void;
 };
 
 const CATEGORY_ORDER: MapCategory[] = ["resorts", "rentals", "repairs", "guides"];
@@ -55,21 +70,17 @@ const FUTURE_GROUPS: FutureGroup[] = [
     hint: "✦ Winter 25/26",
     body: "Ski, hike, bike trails and more — stitched in as data lands.",
   },
-  {
-    key: "transport",
-    label: "Transport",
-    hint: "✦ Spring 26",
-    body: "EV charge points, trains and sail routes — the lines connecting the dots.",
-  },
-  {
-    key: "regions",
-    label: "Regions",
-    hint: "All of Scotland",
-    body: "Highlands, Cairngorms, Trossachs, Borders, Islands — filter the map by region.",
-  },
 ];
 
-export default function MapMenuSidebar({ filters, counts, onToggle, onToggleAll }: Props) {
+
+export default function MapMenuSidebar({
+  filters,
+  counts,
+  onToggle,
+  onToggleAll,
+  activeRegion,
+  onSelectRegion,
+}: Props) {
   const [open, setOpen] = useState(true);
   const allOn = CATEGORY_ORDER.every((c) => filters[c]);
   const totalPins = CATEGORY_ORDER.reduce((n, c) => n + counts[c], 0);
@@ -132,6 +143,12 @@ export default function MapMenuSidebar({ filters, counts, onToggle, onToggleAll 
       </header>
 
       <div className="overflow-y-auto">
+        {/* Current region + region picker — full-width card leads the
+            panel. The question "where am I viewing?" is the single most
+            useful piece of context, so it reads before any filter row.
+            Each row flies the map camera to that region's preset. */}
+        <RegionSection active={activeRegion} onSelect={onSelectRegion} />
+
         {/* Live layer — Providers */}
         <ProviderGroup
           categories={CATEGORY_ORDER}
@@ -145,6 +162,12 @@ export default function MapMenuSidebar({ filters, counts, onToggle, onToggleAll 
         {FUTURE_GROUPS.map((g) => (
           <FutureGroupSection key={g.key} group={g} />
         ))}
+
+        {/* Transport — pulled out of FUTURE_GROUPS because it has a defined
+            icon system and seeded data in the content layer, even though
+            the live map pins land in Spring 26. The expanded body shows
+            the icon key against counts. */}
+        <TransportSection />
 
         {/* Footer stack — view summary + utility actions */}
         <footer className="border-t border-rule px-4 py-3">
@@ -165,6 +188,82 @@ export default function MapMenuSidebar({ filters, counts, onToggle, onToggleAll 
         </footer>
       </div>
     </aside>
+  );
+}
+
+/* -------------------------------------------------------------------------
+ * RegionSection — full-width card at the top of the open panel body.
+ * Shows the current region as an eyebrow + Vollkorn h3 + one-line Nikolai
+ * context, then a list of region rows below. Each row flies the camera
+ * to that region's preset (centre + zoom) via onSelect.
+ * ---------------------------------------------------------------------- */
+function RegionSection({
+  active,
+  onSelect,
+}: {
+  active: RegionKey;
+  onSelect: (key: RegionKey) => void;
+}) {
+  const current = regionByKey(active);
+  return (
+    <section aria-label="Region" className="border-b border-rule">
+      <div className="px-4 pb-4 pt-5">
+        <p className="label text-ink-faint">Region</p>
+        <h3 className="mt-1.5 font-serif text-title leading-tight text-ink">
+          {current.label}
+        </h3>
+        <p className="mt-2 font-ui text-xs leading-relaxed text-ink-muted">
+          {current.oneLine}
+        </p>
+      </div>
+      <ul className="border-t border-rule/60 pb-2 pt-1" aria-label="Region list">
+        {REGIONS.map((r) => (
+          <RegionRow
+            key={r.key}
+            label={r.label}
+            active={r.key === active}
+            onSelect={() => onSelect(r.key)}
+          />
+        ))}
+      </ul>
+    </section>
+  );
+}
+
+function RegionRow({
+  label,
+  active,
+  onSelect,
+}: {
+  label: string;
+  active: boolean;
+  onSelect: () => void;
+}) {
+  return (
+    <li>
+      <button
+        type="button"
+        onClick={onSelect}
+        aria-pressed={active}
+        aria-current={active ? "true" : undefined}
+        className={[
+          "flex w-full items-center justify-between px-4 py-2 text-left font-ui text-sm transition-colors",
+          active
+            ? "bg-[var(--row-active)] text-ink"
+            : "text-ink-muted hover:bg-[var(--row-hover)] hover:text-ink",
+        ].join(" ")}
+      >
+        <span>{label}</span>
+        {active && (
+          <span
+            aria-hidden
+            className="font-mono text-[10px] uppercase tracking-wide text-ink-faint"
+          >
+            viewing
+          </span>
+        )}
+      </button>
+    </li>
   );
 }
 
@@ -253,6 +352,74 @@ function ProviderRow({
         </span>
       </button>
     </li>
+  );
+}
+
+/* -------------------------------------------------------------------------
+ * TransportSection — collapsible, matches the FutureGroupSection header
+ * language (label-caps + hint chip + chevron) but when expanded reveals
+ * the icon key: one row per transport kind with its hairline SVG, label,
+ * palette note and count. The pins themselves land in Spring 26; this
+ * surface locks in the vocabulary now.
+ * ---------------------------------------------------------------------- */
+function TransportSection() {
+  const [open, setOpen] = useState(false);
+  const panelId = "map-menu-group-transport";
+  const items: Array<{
+    kind: TransportKind;
+    Icon: typeof TrainStation;
+    count: number;
+  }> = [
+    { kind: "station", Icon: TrainStation, count: TRANSPORT_COUNTS.station },
+    { kind: "charge",  Icon: ChargePoint,  count: TRANSPORT_COUNTS.charge },
+  ];
+  return (
+    <section className="border-t border-rule/60">
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        aria-expanded={open}
+        aria-controls={panelId}
+        className="label flex w-full items-center justify-between px-4 py-3 text-ink-faint transition-colors hover:bg-[var(--row-hover)] hover:text-ink"
+      >
+        <span>Transport</span>
+        <span className="flex items-center gap-2">
+          <span className="font-mono text-[10px] uppercase tracking-wide text-ink-faint">
+            ✦ Spring 26
+          </span>
+          <ChevronDown open={open} />
+        </span>
+      </button>
+      {open && (
+        <div id={panelId} className="pb-3 pt-1">
+          <p className="px-4 pb-3 font-ui text-xs leading-relaxed text-ink-muted">
+            Train stations and EV charge points within useful range of the five
+            Scottish resorts. Pins arrive in Spring 26 — the key reads now.
+          </p>
+          <ul>
+            {items.map(({ kind, Icon, count }) => (
+              <li key={kind}>
+                <div className="flex items-center gap-3 px-4 py-2 font-ui text-sm text-ink">
+                  <span
+                    aria-hidden
+                    className="flex h-5 w-5 shrink-0 items-center justify-center text-ink"
+                  >
+                    <Icon />
+                  </span>
+                  <span>{TRANSPORT_LABEL[kind]}</span>
+                  <span className="ml-auto flex items-center gap-2">
+                    <span className="font-mono text-xs text-ink-faint">{count}</span>
+                    <span className="font-mono text-[10px] uppercase tracking-wide text-ink-faint">
+                      · {TRANSPORT_NOTE[kind]}
+                    </span>
+                  </span>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </section>
   );
 }
 
