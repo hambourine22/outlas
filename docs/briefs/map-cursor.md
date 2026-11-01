@@ -1,0 +1,27 @@
+# Map cursor — dot with a lat · long · zoom readout
+
+**Slug:** `map-cursor` · **Owner:** Hamish · **Opened:** 2026-11-01 · **Size:** S
+
+## Problem
+Over the map the pointer is the system arrow and hand. It tells you nothing about where you are, and the map has no coordinate readout anywhere.
+
+## Asked for
+Hamish, with a reference image: *"Create a custom mouse feature please with latitude, longitude and zoom on the appropriate sides."* The reference shows a solid round dot, `LATITUDE: 57.1220` to its left, `LONGITUDE: -4.2050` to its right and `ZOOM: 6.56` centred beneath, in condensed caps.
+
+## Success signal
+Moving over the map shows the dot in place of the system pointer, with latitude (4 dp) left, longitude (4 dp) right and zoom (2 dp) below. All three update while moving, panning, zooming and flying to a region preset. The dot hides when the pointer leaves the map (onto the sidebar, the Reset button or off the page). It grows over a pin, standing in for the pointer hand.
+
+## In scope
+- `app/ui/mapbox/MapCursor.tsx` (new) and its wiring in `app/ui/mapbox/map.tsx`.
+- `mapCursor` tokens in `design-system.ts`.
+
+## Out of scope
+- Touch devices: no pointer to replace, so the cursor is hidden without `(hover: hover)`.
+- Copy-to-clipboard of coordinates, or a pinned readout.
+
+## UI note (2026-11-01)
+- **Colour:** the reference dot is a pink-red that isn't in the palette, so the dot uses **rust**, the nearest brand red. The readout ink is fixed **carbon**, not `--ink`, because the basemap is light in both themes. White text in dark mode would disappear.
+- **Type:** `font-ui` (Archivo Narrow) on the `text-label` rung, uppercase, `tracking-wide`, `tabular-nums` so the digits don't jitter as they change.
+- **Size:** 22px dot, 10px gap to each readout. That's smaller than the reference proportion, so the dot doesn't hide the pins it points at. Over a pin it scales to 1.4× in 150 ms.
+- **Mechanics:** `map.tsx` drives the cursor imperatively (`show` / `read` / `hover` / `hide` through `useImperativeHandle`) from Mapbox's `mousemove`, `move` and `mouseout`. Moving the pointer never re-renders React. On `move` (pan, zoom, flyTo) the readout re-reads `map.unproject` at the last pointer position, so it stays true when the map moves under a still pointer. The canvas's native cursor is set to `none`; the old pin hover `cursor: pointer` became `hover(true)`.
+- **Verified:** localhost:3200, dark and light. The readout reads at All of Scotland (6.50) and Cairngorms (9.00), the dot grows over a resort pin and a transport plate, and it hides over the sidebar.

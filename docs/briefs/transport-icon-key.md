@@ -76,3 +76,30 @@ None. The icons use `currentColor` so they flip with `--ink` per theme. Row layo
 - Content pass: tighten coordinates against the OS 1:50k and the ChargePlace Scotland API, add connector detail per charge point, add Sail routes if the Spring 26 data lands with ferries.
 
 Next: `/review-qa` on `transport-icon-key`. Release still **held** behind `next-upgrade-15`.
+
+## Pins on the map — 2026-11-01
+
+Asked for: Hamish — "I want these train stations and EV points added to the map." That moves the out-of-scope line "No live pins on the map yet" into scope ahead of Spring 26. Point geometry only; routes (lines), timetables and Sail stay Spring 26.
+
+### Structure chosen
+- **Layer:** a `transport` GeoJSON source and a `symbol` layer in [app/ui/mapbox/map.tsx](../../app/ui/mapbox/map.tsx), drawn **beneath** the provider circles (`beforeId: "locations"`) so a charge point at a resort's base car park never covers the resort pin. Hidden below zoom 5. At the Worldwide preset only providers show; at All of Scotland (6.5) the transport points appear.
+- **Plate:** an 18px square, carbon fill, with the snow hairline glyph inset at 12px. It's square so it never reads as a provider circle. The basemap is light in both site themes, so the plate is fixed rather than theme-flipped. Icon size steps 0.75 → 1 between zoom 5 and 9. Mapbox's collision pass hides overlapping plates at low zoom (Aviemore station / Aviemore Village) and shows both closer in.
+- **One geometry source:** [app/ui/icons/TransportIcons.tsx](../../app/ui/icons/TransportIcons.tsx) now holds each glyph as data (`GLYPHS`). The React components draw it for the sidebar key, and `glyphMarkup` serialises it for the map's bitmaps (rasterised at 2× in `loadTransportImages`). The key and the map can't drift.
+- **Sidebar:** `TransportSection` is live. The "✦ Spring 26" chip is gone, the section is open by default, and each row is a toggle (`aria-pressed`, line-through + 25 % plate when off), the same pattern as `ProviderRow`. The key swatch is the map's plate. "X of Y pins visible" and Hide/Show all now include transport.
+- **Hover card:** name, then `TRANSPORT_LABEL · near {nearest}`. A Mapbox popup restyled in `globals.css` (`.transport-card`: `--canvas`, `--rule`, square, no tip, no shadow). Click opens it too, because touch has no hover. A click anywhere else closes it.
+
+### Tokens added
+`mapTransport` in `design-system.ts`: plate, glyph, px, glyphPx, stroke, minZoom, size.
+
+### Copy — against `docs/COPY_STYLE.md`
+- Section line: *"ScotRail stations and ChargePlace Scotland points near the five Scottish resorts. They show once you zoom to Scotland. Positions are approximate, so check the operator before you rely on one."* It names the networks, says where the pins appear, and admits the coordinates are approximate.
+- `TRANSPORT_NOTE.charge`: "ChargePlace Scotland" → "ChargePlace". The full name wrapped the 288px row onto two lines, and the paragraph above already says it in full.
+
+### Verification done
+- `tsc --noEmit` clean; `next lint` clean on the changed files; `qa-gate.sh` (see the commit).
+- Browser (localhost:3200, dark and light): at All of Scotland, plates render beneath the circles with legible glyphs. At Cairngorms (zoom 9), plates are at full size. Hovering Spittal of Glenshee shows "Charge point · near Glenshee". Toggling Charge point off removes its 13 plates and reads 204 of 217; toggling it back restores them. The light-theme key plate matches the map. Console clean (apart from the existing basemap `landform` expression warning and the local Postgres env errors, both pre-existing).
+- Not run: an independent `/review-qa` seat.
+
+### Still open
+- Content pass: tighten coordinates against OS 1:50k and the ChargePlace Scotland API; add connector detail to the hover card.
+- The data covers the five Scottish resorts only. The 100 world resorts have no transport points yet.

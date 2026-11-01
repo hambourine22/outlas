@@ -193,6 +193,10 @@ One circle per record, **fill only — no outline**. The fill is the category co
 
 Tokens live in `mapPins` (`design-system.ts`). `CATEGORY_COLOUR` in `app/content/map/types.ts` derives from it, the `locations` circle layer in `app/ui/mapbox/map.tsx` draws it, and the sidebar pin key, provider table and token-less placeholder reuse the same fill so key and map never drift. In the sidebar key a filtered-out category shows its fill at 30 % rather than a hollow ring.
 
+**Transport pins** are square, never round, so a station or charge point can't be mistaken for a provider. The plate is 18px carbon with the snow hairline glyph from `TransportIcons.tsx` inset at 12px. The plate is fixed rather than theme-flipped, because the basemap is light in both themes. They're drawn beneath the provider circles and hidden below zoom 5. The sidebar key swatch is the same plate. Tokens: `mapTransport`.
+
+**Map cursor.** Over the map the system pointer is replaced by a 22px rust dot reading `LATITUDE` (4 dp) to its left, `LONGITUDE` (4 dp) to its right and `ZOOM` (2 dp) beneath. It's set in Archivo Narrow caps with tabular figures, in fixed carbon ink. Over a pin the dot grows 1.4×. It's hidden on devices without hover. Tokens: `mapCursor`.
+
 ## Anatomy
 
 One contoured shape per resort that brings its numbers together — drawn the same way for every resort, with fixed domains, so two glyphs anywhere on the site compare at a glance. The form follows the kind of place: **mountains rise above the line; seas drop below it.** Mountain and surf are built; the others are reserved with their encodings so the family grows without a redesign.
