@@ -70,3 +70,11 @@ Surf built as the reflected mountain: `anatomy.surf` token (5000 m × 5 km, cont
 
 **Change:** contours redrawn as oblique rings (`anatomy.ring`, `rings()` / `ringArc()` / `shoreRungsOnRing()` in `anatomy.ts`); SVG primitive and canvas share it; ground raised to y 976 on the frame to make room for the ground ring; scale bar and terrain bracket sit below it. Surf rungs now sit on the near rim of the waterline ring.
 **Why:** the flat stripes made every resort a striped triangle; rings give the form depth and character while every encoding keeps its meaning (ring extremes are on the outline, ring count is the band, ring width is the terrain).
+
+---
+
+# Review — two scales + the square preview · 2026-11-01
+
+**Change:** `anatomy.ladder` + `fill` tokens; `snapDomain()` / `boxWith()` in `anatomy.ts`; `ResortAnatomy` gains `aspect="wide|square"` and `scale="fixed|fit"` with an adaptive tick / bar legend and, in square mode, a printed scale note; the resort preview sidebar now shows the square, fitted glyph above the StatStrip for any resort with mountain stats; chapter 17 adds an "At preview size" row and the comparison rows are pinned to `scale="fixed"`.
+**Why:** the fixed 400 km frame is right for comparison and wrong for a glyph alone in a small square — a Scottish hill became a needle. Every glyph now carries its scale bar, so fitting the frame costs nothing in honesty.
+**Verified:** phone width (375) — three square glyphs at ~100 px each are legible, Cairngorm on 500 m / 10 km, Zermatt and Whistler on 1 000 m / 100 km; tsc ✓ lint ✓ tokens ✓.

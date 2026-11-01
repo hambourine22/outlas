@@ -234,3 +234,20 @@ export function shoreRungsOnRing(s: SurfStats, box: Box): Pt[] {
   }
   return pts;
 }
+
+/* -------------------------------------------------------------------------
+ * Scales. A box can be built on the fixed comparability frame or on a rung
+ * of the ladder that fits the value — the tick / bar drawn with the glyph
+ * carries the scale either way.
+ * ---------------------------------------------------------------------- */
+
+export type Rung = { domain: number; step: number };
+
+export function snapDomain(value: number, ladder: readonly Rung[]): Rung {
+  for (const r of ladder) if (value <= r.domain * anatomy.fill) return r;
+  return ladder[ladder.length - 1];
+}
+
+export function boxWith(width: number, height: number, cx: number, ground: number, domainM: number, domainKm: number, dir: 1 | -1 = 1): Box {
+  return { cx, ground, pxPerM: height / domainM, pxPerKm: width / domainKm, dir };
+}

@@ -1036,6 +1036,7 @@ function AnatomySpec() {
         {trio.map((r) => (
           <ResortAnatomy
             key={r.slug}
+            scale="fixed"
             name={r.name}
             country={r.country}
             stats={{
@@ -1050,6 +1051,32 @@ function AnatomySpec() {
       </div>
 
       <div>
+        <h3 className="label text-ink-muted">At preview size — fitted scale, 1 : 1</h3>
+        <p className="mt-3 max-w-2xl font-ui text-sm leading-relaxed text-ink-muted">
+          The row above draws every resort on one frame, so they compare — and a Scottish hill on the Alps&apos; frame is a needle. Alone in a resort preview it has to be legible, so the square version snaps each axis to the smallest rung of a ladder that holds the value ({anatomy.ladder.altitude.map((r) => r.domain).join(" · ")} m; {anatomy.ladder.terrain.map((r) => r.domain).join(" · ")} km). The tick and the bar drawn on every glyph say which scale it is — a map always carries its scale bar.
+        </p>
+        <div className="mt-6 grid max-w-md grid-cols-3 gap-4">
+          {trio.map((r) => (
+            <ResortAnatomy
+              key={`sq-${r.slug}`}
+              kind="mountain"
+              aspect="square"
+              scale="fit"
+              readouts={false}
+              name={r.name}
+              stats={{
+                peak: r.peak_m as number,
+                base: Math.max(0, (r.peak_m as number) - (r.vertical_m ?? 0)),
+                terrain: r.terrain_km as number,
+                lifts: r.lifts ?? 0,
+                snowfall: r.snowfall_cm,
+              }}
+            />
+          ))}
+        </div>
+      </div>
+
+      <div>
         <h3 className="label text-ink-muted">Surf — the same shape, below the line</h3>
         <p className="mt-3 max-w-2xl font-ui text-sm leading-relaxed text-ink-muted">
           The waterline is the ground. The trough is the water offshore that shapes the break — a canyon, a gouf, a channel — with contours every {anatomy.surf.contour} m; the width is the surfable coast; the rungs stand on the shore, one per {anatomy.surf.rung.toLocaleString()} people in the town. Figures are curated and approximate.
@@ -1059,6 +1086,7 @@ function AnatomySpec() {
             <ResortAnatomy
               key={s.slug}
               kind="surf"
+              scale="fixed"
               name={s.name}
               country={s.country}
               stats={{ depth: s.depth_m, coast: s.coast_km, population: s.population }}

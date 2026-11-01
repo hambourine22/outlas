@@ -373,6 +373,30 @@ export const anatomy = {
   // the ring's vertical radius as a share of its horizontal one; `back` is
   // the opacity of the far half relative to the near half.
   ring: { squash: 0.24, back: 0.35, samples: 36 },
+  // Two scales. "fixed" draws on the comparability frame (`domain` /
+  // `surf.domain`) so glyphs compare side by side. "fit" snaps each axis to
+  // the smallest rung of its ladder that holds the value at ≤ `fill`, so a
+  // resort alone in a small square stays legible, resorts of the same class
+  // share a rung, and the tick + bar drawn on every glyph say which scale it
+  // is — a map always carries its scale bar. `step` is the tick (m) or bar (km).
+  fill: 0.9,
+  ladder: {
+    altitude: [
+      { domain: 1000, step: 250 }, { domain: 1500, step: 500 }, { domain: 2000, step: 500 },
+      { domain: 3000, step: 1000 }, { domain: 4000, step: 1000 },
+    ],
+    terrain: [
+      { domain: 20, step: 5 }, { domain: 40, step: 10 }, { domain: 60, step: 20 }, { domain: 100, step: 25 },
+      { domain: 150, step: 50 }, { domain: 200, step: 50 }, { domain: 300, step: 100 }, { domain: 400, step: 100 },
+    ],
+    depth: [
+      { domain: 100, step: 25 }, { domain: 500, step: 100 }, { domain: 1000, step: 250 },
+      { domain: 2000, step: 500 }, { domain: 5000, step: 1000 },
+    ],
+    coast: [
+      { domain: 1, step: 0.25 }, { domain: 2, step: 0.5 }, { domain: 3, step: 1 }, { domain: 5, step: 1 },
+    ],
+  },
   // Surf is the mountain reflected below the line: the waterline is the
   // ground, the trough is the water depth, the rungs stand on the shore.
   surf: {

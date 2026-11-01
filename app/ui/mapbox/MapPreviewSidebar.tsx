@@ -8,6 +8,7 @@ import type {
   OperationalStatus,
 } from "@/app/definitions/mapboxDefinitions";
 import type { Guides } from "@/app/content/map/types";
+import { ResortAnatomy } from "@/app/ui/ResortAnatomy";
 import {
   CATEGORY_COLOUR,
   CATEGORY_LABEL,
@@ -219,10 +220,34 @@ function ResortMeta({
     !!resort.season_from &&
     !!resort.season_to;
   const hasActivities = Array.isArray(resort.activities) && resort.activities.length > 0;
+  // The anatomy glyph needs the mountain trio; a snowdome or a cable park
+  // keeps the strip and waits for its own form.
+  const hasMountain =
+    typeof resort.peak_m === "number" &&
+    typeof resort.vertical_m === "number" &&
+    typeof resort.terrain_km === "number";
   if (!hasStats && !hasSeason && !hasActivities) return null;
 
   return (
     <div className="px-6 pt-5">
+      {hasMountain && (
+        <div className="mb-5">
+          <ResortAnatomy
+            kind="mountain"
+            aspect="square"
+            scale="fit"
+            readouts={false}
+            name={resort.name}
+            stats={{
+              peak: resort.peak_m as number,
+              base: Math.max(0, (resort.peak_m as number) - (resort.vertical_m as number)),
+              terrain: resort.terrain_km as number,
+              lifts: resort.lifts ?? 0,
+              snowfall: resort.snowfall_cm,
+            }}
+          />
+        </div>
+      )}
       {hasStats && <StatStrip stats={stats} />}
       {hasSeason && (
         <div className={hasStats ? "mt-5" : ""}>
