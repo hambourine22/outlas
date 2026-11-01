@@ -54,6 +54,7 @@ EXCLUDE = {
     "node/354498113": "Felskinn — Metro Alpin funicular",
     "node/13306669016": "Zermatt GGB — Gornergrat rack railway (Zermatt MGB is the mainline)",
     "node/2861486050": "Crans-Montana Gare — SMC funicular",
+    "node/13831420041": "Bluche — SMC funicular intermediate stop",
     "node/984712525": "S-chanf Marathon — Engadin ski marathon event halt",
     "node/8194246641": "Pionerskaya (Russia) — across the Georgian border from Gudauri",
     "node/13674888712": "Quinta (Chile) — across the Andes from Las Leñas",
@@ -116,7 +117,7 @@ def is_mainline_station(tags):
     for mode in ("subway", "light_rail", "tram", "monorail", "funicular"):
         if tags.get(mode) == "yes" and tags.get("train") != "yes":
             return False
-    if tags.get("train") == "no":
+    if tags.get("train") == "no" or tags.get("funicular") == "yes":
         return False
     return True
 
@@ -134,9 +135,9 @@ def is_public_car_charger(tags):
     return True
 
 
-# Lift companies whose underground metros and funiculars OSM tags as plain
-# stations.
-LIFT_OPERATORS = {"STBAG", "SMC"}
+# Lift companies whose underground metros, funiculars and top stations OSM
+# tags as plain stations (Saas-Fee, Crans-Montana, St-Luc).
+LIFT_OPERATORS = {"STBAG", "SMC", "LSF", "FLC"}
 
 # In North America nearly every railway=station without a passenger
 # operator is a heritage or tourist line (Heber Valley, Georgetown Loop,
@@ -155,10 +156,10 @@ def in_north_america(lat, lon):
 def is_rideable_station(tags, lat, lon):
     if not is_mainline_station(tags):
         return False
-    operator = " ".join(tags.get(k, "") for k in ("operator", "network"))
-    if any(op in LIFT_OPERATORS for op in re.split(r"[;,]\s*", operator)):
+    operators = [part.strip() for k in ("operator", "network") for part in re.split(r"[;,]", tags.get(k, ""))]
+    if any(op in LIFT_OPERATORS for op in operators):
         return False
-    if in_north_america(lat, lon) and not NA_PASSENGER_OPERATORS.search(operator):
+    if in_north_america(lat, lon) and not NA_PASSENGER_OPERATORS.search(" ".join(operators)):
         return False
     return True
 
