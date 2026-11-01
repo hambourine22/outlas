@@ -103,3 +103,6 @@ Asked for: Hamish — "I want these train stations and EV points added to the ma
 ### Still open
 - Content pass: tighten coordinates against OS 1:50k and the ChargePlace Scotland API; add connector detail to the hover card.
 - The data covers the five Scottish resorts only. The 100 world resorts have no transport points yet.
+
+### Outlines, not plates — 2026-11-01, later
+Asked for (Hamish): *"transport icons on the map just as vector outlines not boxes please."* The carbon plate is gone. The map now draws the bare 16px glyph: carbon hairline (1.6) with a 1px snow halo under every stroke, and under the wheels as a ring, so it stays legible where it crosses a road or river. On open basemap the halo is invisible. The sidebar key went back to the bare outline in `--ink`, which matches the map's mark (fixed carbon there, because the basemap is light). Tokens: `mapTransport` drops `plate` and `glyphPx`, and gains `halo` and `haloPx`; `px` is now the glyph edge, 16.

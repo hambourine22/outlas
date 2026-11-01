@@ -13,7 +13,6 @@ import {
   TRANSPORT_COUNTS,
   type TransportKind,
 } from "@/app/content/map/transport";
-import { mapTransport } from "@/app/lib/design-system";
 import { TrainStation, ChargePoint } from "@/app/ui/icons/TransportIcons";
 
 // Overlay-mode map menu sidebar — the left rail on the map route. Follows
@@ -28,7 +27,7 @@ import { TrainStation, ChargePoint } from "@/app/ui/icons/TransportIcons";
 //   ──────────────
 //   PROVIDERS   ▾                (live data — pin key + filter, dual-purpose)
 //   ├── FEATURES    ▸            (future — "coming" state)
-//   └── TRANSPORT   ▾            (live data — plate key + filter)
+//   └── TRANSPORT   ▾            (live data — outline key + filter)
 //   ──────────────
 //     5 of 16 pins visible       (view summary — live count, transport included)
 //     Hide/Show all              (quick toggle, transport included)
@@ -100,22 +99,28 @@ export default function MapMenuSidebar({
     TRANSPORT_ORDER.reduce((n, k) => n + (transport[k] ? TRANSPORT_COUNTS[k] : 0), 0);
 
   if (!open) {
+    // Collapsed rail — a 40px pill on the 4px ladder. The open button is a
+    // 32px circle inset 4px, so it sits concentric with the top cap; 15px of
+    // bottom padding puts the last pip's centre exactly as far from the
+    // bottom (21px with the border) as the chevron's is from the top, so
+    // both ends read the same. Pips are 10px on an 18px pitch, with 4px
+    // more above the first to set the control apart from the key.
     return (
       <aside
         aria-label="Map filters (collapsed)"
         className="pointer-events-auto absolute left-3 top-3 z-20 md:left-4 md:top-4"
       >
-        <div className="flex flex-col items-center gap-2 border border-rule bg-canvas p-2 shadow-sm">
+        <div className="flex w-10 flex-col items-center rounded-full border border-rule bg-canvas p-1 pb-[15px] shadow-sm">
           <button
             type="button"
             onClick={() => setOpen(true)}
             aria-label="Open map filters"
-            className="flex h-8 w-8 items-center justify-center text-ink transition-colors hover:bg-[var(--row-hover)]"
+            className="flex h-8 w-8 items-center justify-center rounded-full text-ink transition-colors hover:bg-[var(--row-hover)]"
           >
             <ChevronRight />
           </button>
           {/* Pip legend — four colour pips still read as the key when collapsed */}
-          <ul className="flex flex-col items-center gap-1.5 py-1" aria-label="Pin key">
+          <ul className="mt-1 flex flex-col items-center gap-2" aria-label="Pin key">
             {CATEGORY_ORDER.map((c) => (
               <li
                 key={c}
@@ -173,7 +178,7 @@ export default function MapMenuSidebar({
           <FutureGroupSection key={g.key} group={g} />
         ))}
 
-        {/* Live layer — Transport. Each row is the plate the map draws
+        {/* Live layer — Transport. Each row is the outline the map draws
             plus a filter, same dual purpose as the Providers rows. */}
         <TransportSection transport={transport} onToggle={onToggleTransport} />
 
@@ -365,9 +370,9 @@ function ProviderRow({
 
 /* -------------------------------------------------------------------------
  * TransportSection — collapsible, same header language as ProviderGroup.
- * Expanded, one row per transport kind: the square plate the map draws
- * (carbon plate, snow glyph, from mapTransport), label, count and palette
- * note. Each row toggles its kind on the map, like a ProviderRow.
+ * Expanded, one row per transport kind: the hairline outline the map draws
+ * (in --ink here; fixed carbon on the light basemap), label, count and
+ * palette note. Each row toggles its kind on the map, like a ProviderRow.
  * ---------------------------------------------------------------------- */
 const TRANSPORT_ICON: Record<TransportKind, typeof TrainStation> = {
   station: TrainStation,
@@ -443,14 +448,10 @@ function TransportRow({
       >
         <span
           aria-hidden
-          className="flex h-4 w-4 shrink-0 items-center justify-center transition-opacity"
-          style={{
-            backgroundColor: mapTransport.plate,
-            color: mapTransport.glyph,
-            opacity: active ? 1 : 0.25,
-          }}
+          className="flex h-4 w-4 shrink-0 items-center justify-center text-ink transition-opacity"
+          style={{ opacity: active ? 1 : 0.25 }}
         >
-          <Icon size={11} />
+          <Icon />
         </span>
         <span className={["whitespace-nowrap", active ? "" : "line-through decoration-ink/40"].join(" ")}>
           {TRANSPORT_LABEL[kind]}

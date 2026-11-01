@@ -69,26 +69,32 @@ function transportData(visible: TransportFilters) {
   };
 }
 
-// Rasterise each transport glyph onto its plate once — at 2× so it stays
-// sharp on retina — and register it with the map as `transport-<kind>`.
-// Mapbox symbol layers draw bitmaps, not components.
+// Rasterise each transport glyph once — at 2× so it stays sharp on retina
+// — and register it with the map as `transport-<kind>`. Mapbox symbol
+// layers draw bitmaps, not components. Two passes of the same geometry:
+// the halo (wider snow stroke; dots inherit it as a ring), then the carbon
+// outline on top. The canvas is padded by the halo so nothing clips.
 function loadTransportImages(map: mapboxgl.Map) {
-  const { plate, glyph, px, glyphPx, stroke } = mapTransport;
+  const { glyph, halo, px, stroke, haloPx } = mapTransport;
   const ratio = 2;
-  const inset = (px - glyphPx) / 2;
+  const edge = px + haloPx * 2;
+  const scale = px / 16;
   const kinds = Object.keys(TRANSPORT_LABEL) as TransportKind[];
   return Promise.all(
     kinds.map(
       (kind) =>
         new Promise<void>((resolve) => {
           const id = `transport-${kind}`;
+          const pass = (attrs: string, colour: string) =>
+            `<g transform="translate(${haloPx} ${haloPx}) scale(${scale})" ${attrs} stroke-linecap="round" stroke-linejoin="round">` +
+            glyphMarkup(kind, colour) +
+            `</g>`;
           const svg =
-            `<svg xmlns="http://www.w3.org/2000/svg" width="${px * ratio}" height="${px * ratio}" viewBox="0 0 ${px} ${px}">` +
-            `<rect width="${px}" height="${px}" fill="${plate}"/>` +
-            `<g transform="translate(${inset} ${inset}) scale(${glyphPx / 16})" stroke-width="${stroke}" stroke-linecap="round" stroke-linejoin="round">` +
-            glyphMarkup(kind, glyph) +
-            `</g></svg>`;
-          const img = new Image(px * ratio, px * ratio);
+            `<svg xmlns="http://www.w3.org/2000/svg" width="${edge * ratio}" height="${edge * ratio}" viewBox="0 0 ${edge} ${edge}">` +
+            pass(`stroke="${halo}" stroke-width="${stroke + (haloPx * 2) / scale}"`, halo) +
+            pass(`stroke-width="${stroke}"`, glyph) +
+            `</svg>`;
+          const img = new Image(edge * ratio, edge * ratio);
           img.onload = () => {
             if (!map.hasImage(id)) map.addImage(id, img, { pixelRatio: ratio });
             resolve();
@@ -277,7 +283,7 @@ export default function Map({
         cursorRef.current?.hide();
       });
 
-      // Transport — square plates beneath the provider circles, so a charge
+      // Transport — outline glyphs beneath the provider circles, so a charge
       // point at a resort's base never covers the resort pin. Images first,
       // then the source, layer and hover card.
       loadTransportImages(map).then(() => {

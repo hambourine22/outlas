@@ -217,21 +217,22 @@ export const mapPins = {
 
 export type MapPinCategory = keyof typeof mapPins.categories;
 
-// Transport pins — train stations and EV charge points. Square plates, so
-// a transport point never reads as a provider circle: carbon plate, snow
-// hairline glyph from app/ui/icons/TransportIcons.tsx. The basemap is light
-// in both site themes, so the plate is fixed rather than theme-flipped.
-// Hidden below minZoom (the world view stays providers-only; the Scotland
-// preset is 6.5). Drawn by the `transport` symbol layer in
-// app/ui/mapbox/map.tsx, beneath the provider circles so a charge point at
-// a resort's base never covers the resort pin. The sidebar key uses the
-// same plate.
+// Transport pins — train stations and EV charge points, drawn as the bare
+// hairline glyph from app/ui/icons/TransportIcons.tsx: no plate, so the
+// outline itself is the mark, and a line drawing never reads as a provider
+// circle. Ink is fixed carbon because the basemap is light in both site
+// themes. A thin snow halo under each stroke keeps the outline legible where
+// it crosses a road or a river; on open basemap it disappears. Hidden below
+// minZoom (the world view stays providers-only; the Scotland preset is 6.5).
+// Drawn by the `transport` symbol layer in app/ui/mapbox/map.tsx, beneath
+// the provider circles so a charge point at a resort's base never covers
+// the resort pin.
 export const mapTransport = {
-  plate:   colors.carbon.hex,
-  glyph:   colors.snow.hex,
-  px:      18,    // plate edge at icon-size 1
-  glyphPx: 12,    // glyph box inside the plate
+  glyph:   colors.carbon.hex,
+  halo:    colors.snow.hex,
+  px:      16,    // glyph edge at icon-size 1, same as the sidebar key
   stroke:  1.6,   // hairline, in the glyph's 16-unit viewBox
+  haloPx:  1,     // halo beyond each side of the stroke
   minZoom: 5,
   size: [
     { zoom: 5, scale: 0.75 },
