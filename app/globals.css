@@ -220,6 +220,17 @@ body {
   background-color: var(--canvas);
 }
 
+/* Transport hover card — the Mapbox popup on the panel's tokens: square,
+ * hairline rule, no shadow, no tip. Content classes are set in map.tsx. */
+.transport-card .mapboxgl-popup-content {
+  background-color: var(--canvas);
+  border: 1px solid var(--rule);
+  border-radius: 0;
+  box-shadow: none;
+  padding: 6px 8px;
+}
+.transport-card .mapboxgl-popup-tip { display: none; }
+
 .sidebar {
   background-color: rgb(35 55 75 / 90%);
   color: #fff;

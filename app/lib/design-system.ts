@@ -217,6 +217,42 @@ export const mapPins = {
 
 export type MapPinCategory = keyof typeof mapPins.categories;
 
+// Transport pins — train stations and EV charge points. Square plates, so
+// a transport point never reads as a provider circle: carbon plate, snow
+// hairline glyph from app/ui/icons/TransportIcons.tsx. The basemap is light
+// in both site themes, so the plate is fixed rather than theme-flipped.
+// Hidden below minZoom (the world view stays providers-only; the Scotland
+// preset is 6.5). Drawn by the `transport` symbol layer in
+// app/ui/mapbox/map.tsx, beneath the provider circles so a charge point at
+// a resort's base never covers the resort pin. The sidebar key uses the
+// same plate.
+export const mapTransport = {
+  plate:   colors.carbon.hex,
+  glyph:   colors.snow.hex,
+  px:      18,    // plate edge at icon-size 1
+  glyphPx: 12,    // glyph box inside the plate
+  stroke:  1.6,   // hairline, in the glyph's 16-unit viewBox
+  minZoom: 5,
+  size: [
+    { zoom: 5, scale: 0.75 },
+    { zoom: 9, scale: 1 },
+  ],
+} as const;
+
+// Map cursor — replaces the system pointer over the map with a rust dot
+// that reads out where it is: latitude to its left, longitude to its
+// right, zoom beneath. Ink is fixed carbon, like the transport plate,
+// because the basemap is light in both themes. Over a pin the dot grows
+// by hoverScale, which stands in for the pointer hand.
+export const mapCursor = {
+  dot:        colors.rust.hex,
+  ink:        colors.carbon.hex,
+  px:         22,    // dot diameter
+  gap:        10,    // dot edge → readout
+  hoverScale: 1.4,
+  decimals:   { coord: 4, zoom: 2 },
+} as const;
+
 // Map legend — categories drawn on the Scotland (and future) map views.
 export const mapLegend = {
   transport: [

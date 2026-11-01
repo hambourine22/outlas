@@ -15,9 +15,16 @@ import {
   regionByKey,
   type RegionKey,
 } from "@/app/content/map/regions";
-import { mapPins } from "@/app/lib/design-system";
-import MapMenuSidebar, { type MapFilters } from "./MapMenuSidebar";
+import {
+  ALL_TRANSPORT,
+  TRANSPORT_LABEL,
+  type TransportKind,
+} from "@/app/content/map/transport";
+import { mapCursor, mapPins, mapTransport } from "@/app/lib/design-system";
+import { glyphMarkup } from "@/app/ui/icons/TransportIcons";
+import MapMenuSidebar, { type MapFilters, type TransportFilters } from "./MapMenuSidebar";
 import MapPreviewSidebar, { type PreviewContent } from "./MapPreviewSidebar";
+import MapCursor, { type MapCursorHandle } from "./MapCursor";
 
 // Note: the legacy MapLegend overlay was retired on 2026-10-31. The pin
 // key now lives in MapMenuSidebar — see docs/MAP_MENU_ARCHITECTURE.md.
@@ -40,6 +47,59 @@ throws an error.
 const INITIAL_CENTER: [number, number] = [0, 45];
 const INITIAL_ZOOM = 1.0;
 
+// Transport points as GeoJSON — static content, so derived once per module.
+const TRANSPORT_FEATURES = ALL_TRANSPORT.map((t) => ({
+  geometry: {
+    coordinates: [t.long, t.lat],
+    type: "Point" as const,
+  },
+  properties: {
+    name: t.name,
+    id: t.slug,
+    kind: t.kind,
+    nearest: t.nearest,
+  },
+  type: "Feature" as const,
+}));
+
+function transportData(visible: TransportFilters) {
+  return {
+    type: "FeatureCollection" as const,
+    features: TRANSPORT_FEATURES.filter((f) => visible[f.properties.kind]),
+  };
+}
+
+// Rasterise each transport glyph onto its plate once — at 2× so it stays
+// sharp on retina — and register it with the map as `transport-<kind>`.
+// Mapbox symbol layers draw bitmaps, not components.
+function loadTransportImages(map: mapboxgl.Map) {
+  const { plate, glyph, px, glyphPx, stroke } = mapTransport;
+  const ratio = 2;
+  const inset = (px - glyphPx) / 2;
+  const kinds = Object.keys(TRANSPORT_LABEL) as TransportKind[];
+  return Promise.all(
+    kinds.map(
+      (kind) =>
+        new Promise<void>((resolve) => {
+          const id = `transport-${kind}`;
+          const svg =
+            `<svg xmlns="http://www.w3.org/2000/svg" width="${px * ratio}" height="${px * ratio}" viewBox="0 0 ${px} ${px}">` +
+            `<rect width="${px}" height="${px}" fill="${plate}"/>` +
+            `<g transform="translate(${inset} ${inset}) scale(${glyphPx / 16})" stroke-width="${stroke}" stroke-linecap="round" stroke-linejoin="round">` +
+            glyphMarkup(kind, glyph) +
+            `</g></svg>`;
+          const img = new Image(px * ratio, px * ratio);
+          img.onload = () => {
+            if (!map.hasImage(id)) map.addImage(id, img, { pixelRatio: ratio });
+            resolve();
+          };
+          img.onerror = () => resolve();
+          img.src = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
+        }),
+    ),
+  );
+}
+
 export default function Map({
   resorts,
   rentals,
@@ -61,6 +121,18 @@ export default function Map({
     repairs: true,
     guides: true,
   });
+
+  // Transport is its own axis, not a provider category, so it keeps its
+  // own filter state. The layer is added after its images load, which can
+  // land after a toggle — the ref hands it the latest state when it does.
+  const [transport, setTransport] = useState<TransportFilters>({
+    station: true,
+    charge: true,
+  });
+  const transportRef = useRef(transport);
+  transportRef.current = transport;
+
+  const cursorRef = useRef<MapCursorHandle>(null);
 
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewCategory, setPreviewCategory] = useState<MapCategory | null>(null);
@@ -163,15 +235,14 @@ export default function Map({
         },
       });
 
-      // Pointer cursor + click → open the right-rail preview with the full
-      // record for the pin that was clicked (looked up by slug).
+      // Hovering a pin grows the map cursor (it stands in for the pointer
+      // hand); click → open the right-rail preview with the full record
+      // for the pin that was clicked (looked up by slug).
       mapRef.current.on("mouseenter", "locations", () => {
-        if (!mapRef.current) return;
-        mapRef.current.getCanvas().style.cursor = "pointer";
+        cursorRef.current?.hover(true);
       });
       mapRef.current.on("mouseleave", "locations", () => {
-        if (!mapRef.current) return;
-        mapRef.current.getCanvas().style.cursor = "";
+        cursorRef.current?.hover(false);
       });
       mapRef.current.on("click", "locations", (e: MapMouseEvent) => {
         if (!e.features || e.features.length === 0) return;
@@ -183,6 +254,96 @@ export default function Map({
         setPreviewCategory(dataType);
         setPreviewContent(record);
         setPreviewOpen(true);
+      });
+
+      const map = mapRef.current;
+
+      // Map cursor — follows the pointer over the canvas and hides when it
+      // leaves (onto the sidebar, off the page). On pan, zoom and flyTo the
+      // pointer may not move, so the readout re-reads from its last spot.
+      let pointer: { x: number; y: number } | null = null;
+      map.getCanvas().style.cursor = "none";
+      map.on("mousemove", (e: MapMouseEvent) => {
+        pointer = e.point;
+        cursorRef.current?.show(e.point);
+        cursorRef.current?.read(e.lngLat, map.getZoom());
+      });
+      map.on("move", () => {
+        if (!pointer) return;
+        cursorRef.current?.read(map.unproject([pointer.x, pointer.y]), map.getZoom());
+      });
+      map.on("mouseout", () => {
+        pointer = null;
+        cursorRef.current?.hide();
+      });
+
+      // Transport — square plates beneath the provider circles, so a charge
+      // point at a resort's base never covers the resort pin. Images first,
+      // then the source, layer and hover card.
+      loadTransportImages(map).then(() => {
+        if (!mapLoaded.current) return; // unmounted while the images loaded
+        map.addSource("transport", {
+          type: "geojson",
+          data: transportData(transportRef.current),
+        });
+        map.addLayer(
+          {
+            id: "transport",
+            type: "symbol",
+            source: "transport",
+            minzoom: mapTransport.minZoom,
+            layout: {
+              "icon-image": ["concat", "transport-", ["get", "kind"]],
+              "icon-size": [
+                "interpolate", ["linear"], ["zoom"],
+                ...mapTransport.size.flatMap((s) => [s.zoom, s.scale]),
+              ],
+              "icon-padding": 1,
+            },
+          },
+          "locations",
+        );
+
+        // Hover card — name, kind and the resort it serves. Click opens it
+        // too, because touch has no hover; a click anywhere else closes it.
+        const card = new mapboxgl.Popup({
+          closeButton: false,
+          closeOnClick: false,
+          className: "transport-card",
+          offset: mapCursor.px / 2 + mapCursor.gap,
+        });
+        const showCard = (e: MapMouseEvent) => {
+          const f = e.features?.[0];
+          if (!f || f.geometry.type !== "Point") return;
+          const props = f.properties ?? {};
+          const kind = String(props.kind) as TransportKind;
+          const name = document.createElement("p");
+          name.className = "font-ui text-sm leading-tight text-ink";
+          name.textContent = String(props.name ?? "");
+          const meta = document.createElement("p");
+          meta.className = "mt-1 font-mono text-[10px] uppercase tracking-wide text-ink-faint";
+          meta.textContent = `${TRANSPORT_LABEL[kind]} · near ${props.nearest}`;
+          const body = document.createElement("div");
+          body.append(name, meta);
+          card
+            .setLngLat(f.geometry.coordinates as [number, number])
+            .setDOMContent(body)
+            .addTo(map);
+        };
+        map.on("mouseenter", "transport", (e: MapMouseEvent) => {
+          cursorRef.current?.hover(true);
+          showCard(e);
+        });
+        map.on("mouseleave", "transport", () => {
+          cursorRef.current?.hover(false);
+          card.remove();
+        });
+        map.on("click", "transport", showCard);
+        map.on("click", (e: MapMouseEvent) => {
+          if (!map.queryRenderedFeatures(e.point, { layers: ["transport"] }).length) {
+            card.remove();
+          }
+        });
       });
 
       mapLoaded.current = true;
@@ -212,6 +373,17 @@ export default function Map({
     });
   }, [filters, allFeatures]);
 
+  // Same for transport. Before its images load there's no source yet; the
+  // layer reads transportRef when it's added.
+  useEffect(() => {
+    if (!mapRef.current || !mapLoaded.current) return;
+    const source = mapRef.current.getSource("transport") as
+      | mapboxgl.GeoJSONSource
+      | undefined;
+    if (!source) return;
+    source.setData(transportData(transport));
+  }, [transport]);
+
   // Fly back to the world centroid and reset the region picker to the
   // default (worldwide). The sidebar's active-row state follows.
   const handleReset = () => {
@@ -232,13 +404,19 @@ export default function Map({
   const handleToggleCategory = (c: MapCategory) =>
     setFilters((prev) => ({ ...prev, [c]: !prev[c] }));
 
-  const handleToggleAll = (visible: boolean) =>
+  const handleToggleTransport = (k: TransportKind) =>
+    setTransport((prev) => ({ ...prev, [k]: !prev[k] }));
+
+  // "Hide all pins" means every pin on the map, transport included.
+  const handleToggleAll = (visible: boolean) => {
     setFilters({
       resorts: visible,
       rentals: visible,
       repairs: visible,
       guides: visible,
     });
+    setTransport({ station: visible, charge: visible });
+  };
 
   // Token-less fallback — brand-aligned shell with pin counts and legend
   // so the home route still looks finished when NEXT_PUBLIC_MAPBOX_TOKEN
@@ -251,12 +429,17 @@ export default function Map({
     <div className="relative overflow-hidden" style={{ height: "calc(100dvh - 56px)" }}>
       <div id="map-container" ref={mapContainerRef} className="h-full w-full" />
 
-      {/* Left rail — map symbols + provider filters + region picker */}
+      {/* Pointer readout — dot + latitude / longitude / zoom */}
+      <MapCursor ref={cursorRef} />
+
+      {/* Left rail — map symbols + provider and transport filters + region picker */}
       <MapMenuSidebar
         filters={filters}
         counts={counts}
         onToggle={handleToggleCategory}
         onToggleAll={handleToggleAll}
+        transport={transport}
+        onToggleTransport={handleToggleTransport}
         activeRegion={activeRegion}
         onSelectRegion={handleSelectRegion}
       />

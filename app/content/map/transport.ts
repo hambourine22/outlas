@@ -2,8 +2,8 @@
 //
 // Scoped per the transport-icon-key brief: only points within reasonable
 // driving distance of one of the five live Scottish resorts. The `nearest`
-// field is a free-text resort name for now — a PostGIS-backed proximity
-// query lands with the Spring 26 live-pins work and replaces this field.
+// field is a free-text resort name for now (the map's hover card prints
+// it) — a PostGIS-backed proximity query replaces it when that lands.
 //
 // Coordinates are approximate centroids of each station / ChargePlace
 // Scotland site. Close enough for a Mapbox pin at zoom 8–11; a content
@@ -16,10 +16,12 @@ export const TRANSPORT_LABEL: Record<TransportKind, string> = {
   charge: "Charge point",
 };
 
-// Hairline note under each label in the sidebar — Nikolai-voice, one line.
+// Hairline note beside each label in the sidebar — Nikolai-voice, short
+// enough to share the 288px row with the label and count. The row's
+// paragraph names ChargePlace Scotland in full.
 export const TRANSPORT_NOTE: Record<TransportKind, string> = {
   station: "the useful stops",
-  charge: "ChargePlace Scotland",
+  charge: "ChargePlace",
 };
 
 export type TransportPoint = {

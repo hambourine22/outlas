@@ -13,6 +13,7 @@ import {
   TRANSPORT_COUNTS,
   type TransportKind,
 } from "@/app/content/map/transport";
+import { mapTransport } from "@/app/lib/design-system";
 import { TrainStation, ChargePoint } from "@/app/ui/icons/TransportIcons";
 
 // Overlay-mode map menu sidebar — the left rail on the map route. Follows
@@ -27,26 +28,30 @@ import { TrainStation, ChargePoint } from "@/app/ui/icons/TransportIcons";
 //   ──────────────
 //   PROVIDERS   ▾                (live data — pin key + filter, dual-purpose)
 //   ├── FEATURES    ▸            (future — "coming" state)
-//   └── TRANSPORT   ▸            (future — "coming" state)
+//   └── TRANSPORT   ▾            (live data — plate key + filter)
 //   ──────────────
-//     5 of 16 pins visible       (view summary — live count)
-//     Hide/Show all              (quick toggle)
+//     5 of 16 pins visible       (view summary — live count, transport included)
+//     Hide/Show all              (quick toggle, transport included)
 //
 // The pin key is NOT a separate overlay anywhere on the map. Every colour
 // the map uses is labelled on an active row here. Legacy MapLegend retired.
 
 export type MapFilters = Record<MapCategory, boolean>;
+export type TransportFilters = Record<TransportKind, boolean>;
 
 type Props = {
   filters: MapFilters;
   counts: Record<MapCategory, number>;
   onToggle: (category: MapCategory) => void;
   onToggleAll: (visible: boolean) => void;
+  transport: TransportFilters;
+  onToggleTransport: (kind: TransportKind) => void;
   activeRegion: RegionKey;
   onSelectRegion: (region: RegionKey) => void;
 };
 
 const CATEGORY_ORDER: MapCategory[] = ["resorts", "rentals", "repairs", "guides"];
+const TRANSPORT_ORDER: TransportKind[] = ["station", "charge"];
 const CATEGORY_NOTE: Record<MapCategory, string> = {
   resorts: "pine",
   rentals: "glacier",
@@ -78,16 +83,21 @@ export default function MapMenuSidebar({
   counts,
   onToggle,
   onToggleAll,
+  transport,
+  onToggleTransport,
   activeRegion,
   onSelectRegion,
 }: Props) {
   const [open, setOpen] = useState(true);
-  const allOn = CATEGORY_ORDER.every((c) => filters[c]);
-  const totalPins = CATEGORY_ORDER.reduce((n, c) => n + counts[c], 0);
-  const visiblePins = CATEGORY_ORDER.reduce(
-    (n, c) => n + (filters[c] ? counts[c] : 0),
-    0,
-  );
+  const allOn =
+    CATEGORY_ORDER.every((c) => filters[c]) &&
+    TRANSPORT_ORDER.every((k) => transport[k]);
+  const totalPins =
+    CATEGORY_ORDER.reduce((n, c) => n + counts[c], 0) +
+    TRANSPORT_ORDER.reduce((n, k) => n + TRANSPORT_COUNTS[k], 0);
+  const visiblePins =
+    CATEGORY_ORDER.reduce((n, c) => n + (filters[c] ? counts[c] : 0), 0) +
+    TRANSPORT_ORDER.reduce((n, k) => n + (transport[k] ? TRANSPORT_COUNTS[k] : 0), 0);
 
   if (!open) {
     return (
@@ -163,11 +173,9 @@ export default function MapMenuSidebar({
           <FutureGroupSection key={g.key} group={g} />
         ))}
 
-        {/* Transport — pulled out of FUTURE_GROUPS because it has a defined
-            icon system and seeded data in the content layer, even though
-            the live map pins land in Spring 26. The expanded body shows
-            the icon key against counts. */}
-        <TransportSection />
+        {/* Live layer — Transport. Each row is the plate the map draws
+            plus a filter, same dual purpose as the Providers rows. */}
+        <TransportSection transport={transport} onToggle={onToggleTransport} />
 
         {/* Footer stack — view summary + utility actions */}
         <footer className="border-t border-rule px-4 py-3">
@@ -356,23 +364,25 @@ function ProviderRow({
 }
 
 /* -------------------------------------------------------------------------
- * TransportSection — collapsible, matches the FutureGroupSection header
- * language (label-caps + hint chip + chevron) but when expanded reveals
- * the icon key: one row per transport kind with its hairline SVG, label,
- * palette note and count. The pins themselves land in Spring 26; this
- * surface locks in the vocabulary now.
+ * TransportSection — collapsible, same header language as ProviderGroup.
+ * Expanded, one row per transport kind: the square plate the map draws
+ * (carbon plate, snow glyph, from mapTransport), label, count and palette
+ * note. Each row toggles its kind on the map, like a ProviderRow.
  * ---------------------------------------------------------------------- */
-function TransportSection() {
-  const [open, setOpen] = useState(false);
+const TRANSPORT_ICON: Record<TransportKind, typeof TrainStation> = {
+  station: TrainStation,
+  charge: ChargePoint,
+};
+
+function TransportSection({
+  transport,
+  onToggle,
+}: {
+  transport: TransportFilters;
+  onToggle: (kind: TransportKind) => void;
+}) {
+  const [open, setOpen] = useState(true);
   const panelId = "map-menu-group-transport";
-  const items: Array<{
-    kind: TransportKind;
-    Icon: typeof TrainStation;
-    count: number;
-  }> = [
-    { kind: "station", Icon: TrainStation, count: TRANSPORT_COUNTS.station },
-    { kind: "charge",  Icon: ChargePoint,  count: TRANSPORT_COUNTS.charge },
-  ];
   return (
     <section className="border-t border-rule/60">
       <button
@@ -383,43 +393,76 @@ function TransportSection() {
         className="label flex w-full items-center justify-between px-4 py-3 text-ink-faint transition-colors hover:bg-[var(--row-hover)] hover:text-ink"
       >
         <span>Transport</span>
-        <span className="flex items-center gap-2">
-          <span className="font-mono text-[10px] uppercase tracking-wide text-ink-faint">
-            ✦ Spring 26
-          </span>
-          <ChevronDown open={open} />
-        </span>
+        <ChevronDown open={open} />
       </button>
       {open && (
-        <div id={panelId} className="pb-3 pt-1">
-          <p className="px-4 pb-3 font-ui text-xs leading-relaxed text-ink-muted">
-            Train stations and EV charge points within useful range of the five
-            Scottish resorts. Pins arrive in Spring 26 — the key reads now.
+        <div id={panelId} className="pb-2">
+          <p className="px-4 pb-2 font-ui text-xs leading-relaxed text-ink-muted">
+            ScotRail stations and ChargePlace Scotland points near the five
+            Scottish resorts. They show once you zoom to Scotland. Positions
+            are approximate, so check the operator before you rely on one.
           </p>
           <ul>
-            {items.map(({ kind, Icon, count }) => (
-              <li key={kind}>
-                <div className="flex items-center gap-3 px-4 py-2 font-ui text-sm text-ink">
-                  <span
-                    aria-hidden
-                    className="flex h-5 w-5 shrink-0 items-center justify-center text-ink"
-                  >
-                    <Icon />
-                  </span>
-                  <span>{TRANSPORT_LABEL[kind]}</span>
-                  <span className="ml-auto flex items-center gap-2">
-                    <span className="font-mono text-xs text-ink-faint">{count}</span>
-                    <span className="font-mono text-[10px] uppercase tracking-wide text-ink-faint">
-                      · {TRANSPORT_NOTE[kind]}
-                    </span>
-                  </span>
-                </div>
-              </li>
+            {TRANSPORT_ORDER.map((kind) => (
+              <TransportRow
+                key={kind}
+                kind={kind}
+                active={transport[kind]}
+                onToggle={() => onToggle(kind)}
+              />
             ))}
           </ul>
         </div>
       )}
     </section>
+  );
+}
+
+function TransportRow({
+  kind,
+  active,
+  onToggle,
+}: {
+  kind: TransportKind;
+  active: boolean;
+  onToggle: () => void;
+}) {
+  const Icon = TRANSPORT_ICON[kind];
+  return (
+    <li>
+      <button
+        type="button"
+        onClick={onToggle}
+        aria-pressed={active}
+        className={[
+          "flex w-full items-center gap-3 px-4 py-2 text-left font-ui text-sm transition-colors",
+          active
+            ? "text-ink hover:bg-[var(--row-hover)]"
+            : "text-ink-faint hover:bg-[var(--row-hover)] hover:text-ink-muted",
+        ].join(" ")}
+      >
+        <span
+          aria-hidden
+          className="flex h-4 w-4 shrink-0 items-center justify-center transition-opacity"
+          style={{
+            backgroundColor: mapTransport.plate,
+            color: mapTransport.glyph,
+            opacity: active ? 1 : 0.25,
+          }}
+        >
+          <Icon size={11} />
+        </span>
+        <span className={["whitespace-nowrap", active ? "" : "line-through decoration-ink/40"].join(" ")}>
+          {TRANSPORT_LABEL[kind]}
+        </span>
+        <span className="ml-auto flex items-center gap-2 whitespace-nowrap">
+          <span className="font-mono text-xs text-ink-faint">{TRANSPORT_COUNTS[kind]}</span>
+          <span className="font-mono text-[10px] uppercase tracking-wide text-ink-faint">
+            · {TRANSPORT_NOTE[kind]}
+          </span>
+        </span>
+      </button>
+    </li>
   );
 }
 
