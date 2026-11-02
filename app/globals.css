@@ -231,16 +231,11 @@ body {
 }
 .transport-card .mapboxgl-popup-tip { display: none; }
 
-/* Map cursor orbit — the hairline globe round the cursor dot over a pin
- * (MapCursor.tsx, tokens in mapCursor.orbit). Hidden and paused until
- * [data-on]. Each meridian turns about the vertical axis: scaleX traces its
- * projected width, 1 → −1 → 1 eased, which is a cosine near enough. The
- * second runs a quarter-turn behind, so the two read as a spinning sphere.
- * Depth: each meridian is two half-arcs whose opacity follows how near the
- * viewer they are (map-cursor-depth: 0.6 at the edge, 1 nearest, 0.2
- * farthest), and the equator's far half holds at 0.3, so the sphere reads
- * as solid. Durations, delays and the fade-in transition are set inline
- * from the tokens. */
+/* Map cursor globe — the canvas of feathered orbit trails round the cursor
+ * dot over a pin (MapCursor.tsx draws it; tokens in mapCursor.orbit).
+ * Hidden until [data-on], then fades and grows in; the transition timing is
+ * set inline from the tokens. Reduced motion: no grow, and the canvas draws
+ * one still frame. */
 .map-cursor-orbit {
   opacity: 0;
   transform: scale(0.6);
@@ -249,40 +244,8 @@ body {
   opacity: 1;
   transform: scale(1);
 }
-@keyframes map-cursor-meridian {
-  0%   { transform: scaleX(1); }
-  50%  { transform: scaleX(-1); }
-  100% { transform: scaleX(1); }
-}
-@keyframes map-cursor-depth {
-  0%   { opacity: 0.6; }
-  25%  { opacity: 1; }
-  50%  { opacity: 0.6; }
-  75%  { opacity: 0.2; }
-  100% { opacity: 0.6; }
-}
-.map-cursor-meridian,
-.map-cursor-arc {
-  animation-iteration-count: infinite;
-  animation-play-state: paused;
-}
-.map-cursor-meridian {
-  animation-name: map-cursor-meridian;
-  animation-timing-function: ease-in-out;
-}
-.map-cursor-arc {
-  animation-name: map-cursor-depth;
-  animation-timing-function: linear;
-}
-.map-cursor-arc--far { opacity: 0.3; }
-.map-cursor-orbit[data-on] .map-cursor-meridian,
-.map-cursor-orbit[data-on] .map-cursor-arc { animation-play-state: running; }
 @media (prefers-reduced-motion: reduce) {
   .map-cursor-orbit { transform: none; }
-  .map-cursor-meridian { animation: none; transform: scaleX(0.45); }
-  .map-cursor-arc { animation: none; opacity: 1; }
-  .map-cursor-arc--far { opacity: 0.3; }
-  .map-cursor-meridian--late { display: none; }
 }
 
 .sidebar {

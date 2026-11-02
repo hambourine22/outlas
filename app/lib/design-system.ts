@@ -276,18 +276,39 @@ export const mapTransport = {
 // in both themes; greyed so the readout sits back behind the dot. Over a
 // pin the dot grows by hoverScale, which stands in for the pointer hand.
 // Even grown it stays smaller than the smallest pin (mapPins.radius at
-// world zoom: 5px, so 10px across): 8px → 9.6px. Over a pin a hairline
-// globe also fades in round the dot — outline, equator, and two meridians
-// a quarter-turn apart turning once per orbit.periodMs — so the hover
-// reads as a sphere in motion. Keyframes live in globals.css
-// (.map-cursor-orbit); reduced motion gets one still meridian.
+// world zoom: 5px, so 10px across): 8px → 9.6px.
+//
+// Over a pin a globe of orbits fades in round the dot: three trails — the
+// equator and two tilted ±60° — flowing round it like comets, with no
+// outline, so the trails alone describe the sphere. Each trail is brightest and thickest at its head and
+// feathers out along its length to nothing (alpha = (1 − t)^feather, t = 0
+// at the head), and the far side of every orbit sits back by `depth`, so
+// the lines read as moving round a sphere. Drawn on a canvas in
+// MapCursor.tsx, only while it shows; reduced motion gets one still frame.
+// The readouts ease outward to clear it.
 export const mapCursor = {
   dot:        colors.rust.hex,
   ink:        `rgb(${colors.carbon.rgb} / 0.6)`,
   px:         8,     // dot diameter
   gap:        10,    // dot edge → readout
   hoverScale: 1.2,
-  orbit:      { px: 18, stroke: 1, periodMs: 2400, fadeMs: 280 },
+  orbit: {
+    px:         30,     // globe diameter
+    head:       1.4,    // stroke at the head, px
+    tail:       0.3,    // stroke at the tail
+    trail:      0.62,   // trail length, in turns
+    feather:    1.8,    // >1 weights the fade toward the head
+    depth:      0.45,   // far-side alpha, 0–1
+    periodMs:   2600,   // one turn
+    fadeMs:     280,    // globe in / out, on the panel ease
+    // Each orbit: tilt (degrees, from the horizontal), flattening (ry / rx,
+    // the inclination seen from a little above), and phase (turns).
+    orbits: [
+      { tilt: 0,   squash: 0.34, phase: 0 },
+      { tilt: 60,  squash: 0.34, phase: 0.33 },
+      { tilt: -60, squash: 0.34, phase: 0.66 },
+    ],
+  },
   decimals:   { coord: 4, zoom: 2 },
 } as const;
 
