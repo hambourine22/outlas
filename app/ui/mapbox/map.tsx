@@ -293,15 +293,24 @@ export default function Map({
         },
       });
 
-      // Hovering a pin grows the map cursor (it stands in for the pointer
-      // hand); click → open the right-rail preview with the full record
-      // for the pin that was clicked (looked up by slug).
-      mapRef.current.on("mouseenter", "locations", () => {
-        cursorRef.current?.hover(true);
-      });
-      mapRef.current.on("mouseleave", "locations", () => {
-        cursorRef.current?.hover(false);
-      });
+      // The map cursor's hover (it stands in for the pointer hand) is on
+      // while the pointer is over any pin or transport layer. Mapbox fires
+      // each layer's mouseenter and mouseleave on their own, in the order
+      // they were bound, so moving straight from a badge onto its pin fires
+      // the pin's enter and then the badge's leave — the layers under the
+      // pointer are tracked together and the cursor follows the set.
+      const hovered = new Set<string>();
+      const hoverLayer = (layer: string, on: boolean) => {
+        const was = hovered.size > 0;
+        if (on) hovered.add(layer);
+        else hovered.delete(layer);
+        if (hovered.size > 0 !== was) cursorRef.current?.hover(!was);
+      };
+
+      // Click a pin → open the right-rail preview with the full record for
+      // the pin that was clicked (looked up by slug).
+      mapRef.current.on("mouseenter", "locations", () => hoverLayer("locations", true));
+      mapRef.current.on("mouseleave", "locations", () => hoverLayer("locations", false));
       mapRef.current.on("click", "locations", (e: MapMouseEvent) => {
         if (!e.features || e.features.length === 0) return;
         const props = e.features[0].properties ?? {};
@@ -420,11 +429,11 @@ export default function Map({
         const transportLayers = ["transport", "transport-badges"];
         for (const layer of transportLayers) {
           map.on("mouseenter", layer, (e: MapMouseEvent) => {
-            cursorRef.current?.hover(true);
+            hoverLayer(layer, true);
             showCard(e);
           });
           map.on("mouseleave", layer, () => {
-            cursorRef.current?.hover(false);
+            hoverLayer(layer, false);
             card.remove();
           });
           map.on("click", layer, showCard);
