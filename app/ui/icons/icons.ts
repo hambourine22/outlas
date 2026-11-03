@@ -1,14 +1,19 @@
 // Oütlas icon registry — one geometry source for every UI glyph.
 //
-// Construction rules (mirrored in `iconography` in app/lib/design-system.ts):
-// - 24-unit grid, drawn inside a 3…21 safe area so a 1.6 stroke never clips.
-// - Hairline: stroke 1.6, round caps and joins, `currentColor` — the icon
-//   flips with --ink per theme and takes the surface's ink automatically.
-// - No fills. The only solid shapes are dots (wheels, heads, eyes), which
-//   are filled circles with no stroke.
-// - Orthogonals and simple curves; functional, not illustrative. Same
-//   vocabulary as the transport glyphs (which keep their own 16-grid because
-//   they also serialise to Mapbox bitmaps — see TransportIcons.tsx).
+// Construction — the HUX 1px icon spec (`iconography` in design-system.ts):
+// - 24 × 24 trim, 2-unit padding band, live area 2–22. Content stays in the
+//   live area, may reach into the padding, never past the trim.
+// - Keylines for proportion: portrait 4,2 16×20 · square 3,3 18×18 ·
+//   landscape 2,4 20×16 · circles r10 and r6 at 12,12. A glyph should fill
+//   its keyline, so a tall glyph and a round one read the same size.
+// - 1px line, round caps and joins, `currentColor` — the icon flips with
+//   --ink per theme and takes the surface's ink. Below 24px the renderer
+//   keeps the line at 1px (non-scaling stroke).
+// - No fills. The only solid shapes are dots (wheels, heads, eyes): filled
+//   circles with no stroke, r 1–1.5 so they read against a 1px line.
+// - Orthogonals and simple curves; functional, not illustrative. The
+//   transport map glyphs keep their own 16-grid and a heavier line because
+//   they serialise to Mapbox bitmaps (TransportIcons.tsx).
 //
 // Add an icon here, never inline an <svg> in a component. The design-system
 // Iconography chapter renders this registry, so a new entry documents itself.

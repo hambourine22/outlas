@@ -192,22 +192,35 @@ export const scoreBands = [
   { min: 4, max: 5, label: "Very good", surface: colors.carbon.hex, ink: colors.snow.hex   },
 ] as const;
 
-// Iconography — hairline glyphs on a 24-unit grid, drawn by app/ui/icons.
-// One registry (icons.ts), one renderer (Icon.tsx), these numbers. The
-// stroke matches the chevrons and the transport key so every glyph on a
-// screen shares a weight; sizes are rungs of the spacing ladder so an icon
-// sits on the same grid as the type beside it. No fills — the only solids
-// are dots. Transport glyphs keep a 16-grid of their own because they also
-// serialise to Mapbox bitmaps (see mapTransport).
+// Iconography — the HUX 1px icon spec (hux-design-system skill §4), drawn
+// by app/ui/icons. One registry (icons.ts), one renderer (Icon.tsx), these
+// numbers. 24 × 24 trim designed at 100 %; a 2-unit padding band, so the
+// live area is 2–22 — content stays in the live area, may reach into the
+// padding, never past the trim. Keylines (portrait · square · landscape ·
+// two circles) keep glyphs the same visual size. 1px line, round caps and
+// joins, currentColor; no fills but dots. 24 is the standard size — the
+// smaller rungs keep a 1px line (non-scaling stroke) rather than scaling
+// it down. Line weight may be adjusted optically inside a lozenge or a
+// diagram. Transport map glyphs keep a 16-grid and a heavier line because
+// they serialise to Mapbox bitmaps (see mapTransport) — flagged, not
+// aligned.
 export const iconography = {
-  grid:   24,
-  stroke: 1.6,
-  cap:    "round",
-  join:   "round",
-  colour: "currentColor",
-  sizes:  [12, 16, 20, 24],        // chrome · inline with 14–16px type · touch · hero
-  safe:   { min: 3, max: 21 },     // drawing area inside the grid, so strokes never clip
-  sets:   ["ui", "activity", "feature", "transport"],
+  trim:    24,
+  padding: 2,
+  live:    { min: 2, max: 22 },
+  stroke:  1,
+  cap:     "round",
+  join:    "round",
+  colour:  "currentColor",
+  sizes:   [12, 16, 20, 24],        // chrome · inline with 14–16px type · touch · standard
+  keylines: {
+    portrait:  { x: 4, y: 2, w: 16, h: 20 },
+    square:    { x: 3, y: 3, w: 18, h: 18 },
+    landscape: { x: 2, y: 4, w: 20, h: 16 },
+    outer:     { cx: 12, cy: 12, r: 10 },
+    inner:     { cx: 12, cy: 12, r: 6 },
+  },
+  sets:    ["ui", "activity", "feature", "transport"],
 } as const;
 
 // Map pins — one circle per record, fill only: no outline. The fill is the

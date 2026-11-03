@@ -21,7 +21,7 @@ import {
   iconography,
 } from "@/app/lib/design-system";
 import { Icon } from "@/app/ui/icons/Icon";
-import { ICONS, LEGEND_ICON, iconsInSet, type IconSet } from "@/app/ui/icons/icons";
+import { ICONS, LEGEND_ICON, iconsInSet, type IconDef, type IconName, type IconSet } from "@/app/ui/icons/icons";
 import { TrainStation, ChargePoint } from "@/app/ui/icons/TransportIcons";
 import { RESORTS, SURF } from "@/app/content/map";
 import { ResortAnatomy } from "@/app/ui/ResortAnatomy";
@@ -77,7 +77,7 @@ export default function DesignSystemPage() {
           <Chapter slug="type" n="07" title="Type" intro="Vollkorn for editorial display and body — it carries the storytelling. Archivo Narrow for UI labels, meta, and navigation chrome.">
             <TypeScale />
           </Chapter>
-          <Chapter slug="icons" n="18" title="Iconography" intro="Hairline glyphs on a 24-unit grid — one stroke weight shared with the chevrons and the transport key, currentColor so they take the surface's ink, no fills but dots. One registry, one renderer; nothing drawn inline.">
+          <Chapter slug="icons" n="18" title="Iconography" intro="The HUX 1px icon spec — 24 trim, 2 padding, a 2–22 live area and keylines for proportion; 1px line held at every size, currentColor so glyphs take the surface's ink, no fills but dots. One registry, one renderer; nothing drawn inline.">
             <Iconography />
           </Chapter>
           <Chapter slug="space" n="08" title="Space & Outline" intro="One ladder each. Every rung is a multiple of 4px. Depth comes from outline weight, never drop shadow.">
@@ -967,14 +967,40 @@ const ICON_SETS: { key: IconSet; label: string; note: string }[] = [
 ];
 
 function Iconography() {
+  const { trim, padding, live, keylines: kl } = iconography;
   const rules = [
-    { k: "Grid",   v: `${iconography.grid} units · safe ${iconography.safe.min}–${iconography.safe.max}` },
-    { k: "Stroke", v: `${iconography.stroke}px · ${iconography.cap} caps · ${iconography.join} joins` },
+    { k: "Trim",   v: `${trim} × ${trim}, designed at 100 %` },
+    { k: "Live",   v: `${live.min}–${live.max} · ${padding}-unit padding band — content may reach the padding, never the trim` },
+    { k: "Stroke", v: `${iconography.stroke}px · ${iconography.cap} caps · ${iconography.join} joins · held at 1px below ${trim}` },
     { k: "Colour", v: `${iconography.colour} — flips with --ink, takes the surface's ink` },
     { k: "Fills",  v: "none; dots only (wheels, heads, eyes)" },
-    { k: "Sizes",  v: iconography.sizes.map((s) => `${s}`).join(" · ") + " px — ladder rungs" },
-    { k: "Source", v: "app/ui/icons/icons.ts → <Icon name=… />" },
+    { k: "Sizes",  v: iconography.sizes.map((s) => `${s}`).join(" · ") + ` px — ${trim} is standard` },
+    { k: "Source", v: "app/ui/icons/icons.ts → <Icon name=… />  (HUX icon spec §4)" },
   ];
+  // Construction specimen — trim, padding band, live area and the five
+  // keylines, with a glyph of each proportion sat on its keyline.
+  const Construction = ({ glyph, keyline }: { glyph: IconName; keyline: "portrait" | "square" | "landscape" | "circle" }) => (
+    <svg viewBox={`0 0 ${trim} ${trim}`} width={144} height={144} aria-hidden className="text-ink">
+      <rect x={0.5} y={0.5} width={trim - 1} height={trim - 1} fill="none" stroke="var(--rule-strong)" strokeWidth={0.25} />
+      <rect x={padding} y={padding} width={trim - padding * 2} height={trim - padding * 2} fill="var(--row-hover)" stroke="none" />
+      {keyline === "portrait"  && <rect x={kl.portrait.x}  y={kl.portrait.y}  width={kl.portrait.w}  height={kl.portrait.h}  fill="none" stroke="var(--accent)" strokeWidth={0.25} strokeDasharray="0.75 0.5" />}
+      {keyline === "square"    && <rect x={kl.square.x}    y={kl.square.y}    width={kl.square.w}    height={kl.square.h}    fill="none" stroke="var(--accent)" strokeWidth={0.25} strokeDasharray="0.75 0.5" />}
+      {keyline === "landscape" && <rect x={kl.landscape.x} y={kl.landscape.y} width={kl.landscape.w} height={kl.landscape.h} fill="none" stroke="var(--accent)" strokeWidth={0.25} strokeDasharray="0.75 0.5" />}
+      {keyline === "circle" && (
+        <>
+          <circle cx={kl.outer.cx} cy={kl.outer.cy} r={kl.outer.r} fill="none" stroke="var(--accent)" strokeWidth={0.25} strokeDasharray="0.75 0.5" />
+          <circle cx={kl.inner.cx} cy={kl.inner.cy} r={kl.inner.r} fill="none" stroke="var(--accent)" strokeWidth={0.25} strokeDasharray="0.75 0.5" />
+        </>
+      )}
+      <g fill="none" stroke="currentColor" strokeWidth={iconography.stroke} strokeLinecap={iconography.cap} strokeLinejoin={iconography.join}>
+        {(ICONS[glyph] as IconDef).parts.map((p, i) =>
+          p.el === "path" ? <path key={i} d={p.d} />
+          : p.el === "circle" ? (p.dot ? <circle key={i} cx={p.cx} cy={p.cy} r={p.r} fill="currentColor" stroke="none" /> : <circle key={i} cx={p.cx} cy={p.cy} r={p.r} />)
+          : <rect key={i} x={p.x} y={p.y} width={p.width} height={p.height} rx={p.rx} transform={p.transform} />
+        )}
+      </g>
+    </svg>
+  );
   return (
     <div className="space-y-12">
       <dl className="grid grid-cols-1 gap-x-10 gap-y-4 border-y border-rule py-6 font-ui text-sm sm:grid-cols-2 lg:grid-cols-3">
@@ -985,6 +1011,21 @@ function Iconography() {
           </div>
         ))}
       </dl>
+
+      <div>
+        <h3 className="label text-ink-muted">Construction</h3>
+        <p className="mt-3 max-w-2xl font-ui text-sm leading-relaxed text-ink-muted">
+          Trim (outline), padding band (tinted), and one keyline per proportion — portrait {kl.portrait.w}×{kl.portrait.h}, square {kl.square.w}×{kl.square.h}, landscape {kl.landscape.w}×{kl.landscape.h}, circles r{kl.outer.r} and r{kl.inner.r}. A glyph fills its keyline so tall, square, wide and round icons read the same size.
+        </p>
+        <ul className="mt-6 flex flex-wrap gap-6">
+          {([["file", "portrait"], ["monitor", "square"], ["kayak", "landscape"], ["sun", "circle"]] as const).map(([g, k]) => (
+            <li key={k} className="flex flex-col items-center gap-3 border border-rule p-4">
+              <Construction glyph={g} keyline={k} />
+              <span className="micro text-ink-faint">{k}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
 
       {/* Size ladder — the same glyph at each rung, beside the type it sits with */}
       <div>
