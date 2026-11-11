@@ -2,12 +2,12 @@
 // Values match the Oütlas brand book (v1.3).
 
 export const colors = {
-  sand:    { hex: "#FFF6C3", rgb: "255 246 195", cmyk: "1 1 29 0",   name: "Sand",    swatch: "Yellow" },
+  sand:    { hex: "#FFEF9E", rgb: "255 239 158", cmyk: "0 6 38 0",   name: "Sand",    swatch: "Yellow" },
   carbon:  { hex: "#1E1E1E", rgb: "30 30 30",    cmyk: "72 66 65 75", name: "Carbon",  swatch: "Black" },
   snow:    { hex: "#FFFFFF", rgb: "255 255 255", cmyk: "0 0 0 0",    name: "Snow",    swatch: "White" },
-  rust:    { hex: "#B04B50", rgb: "176 75 80",   cmyk: "24 82 64 10", name: "Rust",    swatch: "Red" },
-  pine:    { hex: "#2F5349", rgb: "47 83 73",    cmyk: "79 47 66 37", name: "Pine",    swatch: "Green" },
-  glacier: { hex: "#ADCFD3", rgb: "173 207 211", cmyk: "32 8 15 0",  name: "Glacier", swatch: "Blue" },
+  rust:    { hex: "#C55045", rgb: "197 80 69",   cmyk: "11 75 75 0", name: "Rust",    swatch: "Red" },
+  pine:    { hex: "#22604A", rgb: "34 96 74",    cmyk: "78 35 68 31", name: "Pine",    swatch: "Green" },
+  glacier: { hex: "#94D1D9", rgb: "148 209 217", cmyk: "41 0 11 0",  name: "Glacier", swatch: "Blue" },
 } as const;
 
 export type ColorKey = keyof typeof colors;
@@ -37,7 +37,7 @@ export const themes = {
     inkMuted:      "rgb(30 30 30 / 0.6)",   // carbon @ 60%
     inkFaint:      "rgb(30 30 30 / 0.35)",  // carbon @ 35%
     rule:          "rgb(30 30 30 / 0.15)",  // carbon @ 15%
-    accent:        colors.pine.hex,       // #2F5349
+    accent:        colors.pine.hex,       // #22604A
     rowHover:      "rgb(30 30 30 / 0.07)",  // sidebar / list hover wash
     rowActive:     "rgb(30 30 30 / 0.10)",  // current item wash
     chromeBg:      "rgb(255 255 255 / 0.9)", // sticky TopBar fill (snow @ 90%)
@@ -50,7 +50,7 @@ export const themes = {
     inkMuted:      "rgb(255 255 255 / 0.6)",   // snow @ 60%
     inkFaint:      "rgb(255 255 255 / 0.35)",  // snow @ 35%
     rule:          "rgb(255 255 255 / 0.15)",  // snow @ 15%
-    accent:        colors.glacier.hex,    // #ADCFD3 (pine is too dark on carbon)
+    accent:        colors.glacier.hex,    // #94D1D9 (pine is too dark on carbon)
     rowHover:      "rgb(255 255 255 / 0.08)",
     rowActive:     "rgb(255 255 255 / 0.12)",
     chromeBg:      "rgb(30 30 30 / 0.9)",   // carbon @ 90%

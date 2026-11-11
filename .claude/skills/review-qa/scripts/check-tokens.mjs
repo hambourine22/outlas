@@ -27,7 +27,7 @@ const STRICT = process.argv.includes("--strict");
 
 // ---- Contract -------------------------------------------------------------
 
-const BRAND_HEX = new Set(["FFF6C3", "1E1E1E", "FFFFFF", "B04B50", "2F5349", "ADCFD3"]);
+const BRAND_HEX = new Set(["FFEF9E", "1E1E1E", "FFFFFF", "C55045", "22604A", "94D1D9"]);
 
 // Files that pre-date the design system and carry known off-brand values.
 // Burn these down, then delete the entry. New files never go here.

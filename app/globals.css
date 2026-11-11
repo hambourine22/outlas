@@ -14,12 +14,12 @@
 
 :root {
   /* Brand palette — rgb triplets. Theme-independent. */
-  --brand-sand:    255 246 195; /* #FFF6C3 */
+  --brand-sand:    255 239 158; /* #FFEF9E */
   --brand-carbon:   30  30  30; /* #1E1E1E */
   --brand-snow:    255 255 255; /* #FFFFFF */
-  --brand-rust:    176  75  80; /* #B04B50 */
-  --brand-pine:     47  83  73; /* #2F5349 */
-  --brand-glacier: 173 207 211; /* #ADCFD3 */
+  --brand-rust:    197  80  69; /* #C55045 */
+  --brand-pine:     34  96  74; /* #22604A */
+  --brand-glacier: 148 209 217; /* #94D1D9 */
 
   /* Semantic — light mode defaults. Strictly brand colours. */
   --canvas:        #FFFFFF;              /* snow */
@@ -29,7 +29,7 @@
   --ink-faint:     rgb(30 30 30 / 0.35); /* carbon @ 35% */
   --rule:          rgb(30 30 30 / 0.15); /* carbon @ 15% */
   --rule-strong:   rgb(30 30 30 / 0.4);  /* carbon @ 40% */
-  --accent:        #2F5349;              /* pine */
+  --accent:        #22604A;              /* pine */
 
   /* Row-tint tokens — picked up by sidebar hover/active and anywhere
    * else a quiet "selected" wash is needed. Theme-aware so the tint is
@@ -57,7 +57,7 @@
   --ink-faint:     rgb(255 255 255 / 0.35);
   --rule:          rgb(255 255 255 / 0.15);
   --rule-strong:   rgb(255 255 255 / 0.4);
-  --accent:        #ADCFD3;              /* glacier (pine is too dark on carbon) */
+  --accent:        #94D1D9;              /* glacier (pine is too dark on carbon) */
   --row-hover:     rgb(255 255 255 / 0.08);
   --row-active:    rgb(255 255 255 / 0.12);
   --chrome-bg:     rgb(30 30 30 / 0.9);      /* carbon @ 90% */
@@ -74,7 +74,7 @@
     --ink-faint:     rgb(255 255 255 / 0.35);
     --rule:          rgb(255 255 255 / 0.15);
     --rule-strong:   rgb(255 255 255 / 0.4);
-    --accent:        #ADCFD3;
+    --accent:        #94D1D9;
     --row-hover:     rgb(255 255 255 / 0.08);
     --row-active:    rgb(255 255 255 / 0.12);
     --chrome-bg:     rgb(30 30 30 / 0.9);

@@ -16,12 +16,12 @@ A value present in one file and absent from another is a bug: the page will docu
 
 | Token | Hex | RGB triplet | CSS var | Role |
 |---|---|---|---|---|
-| sand | `#FFF6C3` | `255 246 195` | `--brand-sand` | Rental surfaces, warm paper |
+| sand | `#FFEF9E` | `255 239 158` | `--brand-sand` | Rental surfaces, warm paper |
 | carbon | `#1E1E1E` | `30 30 30` | `--brand-carbon` | Primary ink, dark canvas, footer |
 | snow | `#FFFFFF` | `255 255 255` | `--brand-snow` | Light canvas, ink on dark |
-| rust | `#B04B50` | `176 75 80` | `--brand-rust` | Repair surfaces, warnings, low scores |
-| pine | `#2F5349` | `47 83 73` | `--brand-pine` | Light accent, CTAs, map strokes |
-| glacier | `#ADCFD3` | `173 207 211` | `--brand-glacier` | Story surfaces, dark accent |
+| rust | `#C55045` | `197 80 69` | `--brand-rust` | Repair surfaces, warnings, low scores |
+| pine | `#22604A` | `34 96 74` | `--brand-pine` | Light accent, CTAs, map strokes |
+| glacier | `#94D1D9` | `148 209 217` | `--brand-glacier` | Story surfaces, dark accent |
 
 Components never use `--brand-*` directly except to derive an alpha tint when no semantic token exists (`rgb(var(--brand-carbon) / 0.07)`), and even then the preferred move is to add a semantic token.
 
@@ -36,7 +36,7 @@ Components never use `--brand-*` directly except to derive an alpha tint when no
 | `--ink-faint` | carbon @ 35% | snow @ 35% | Tertiary, disabled, inactive nav |
 | `--rule` | carbon @ 15% | snow @ 15% | Hairlines, card edges |
 | `--rule-strong` | carbon @ 40% | snow @ 40% | Emphasised dividers |
-| `--accent` | `#2F5349` pine | `#ADCFD3` glacier | Pine is illegible on carbon |
+| `--accent` | `#22604A` pine | `#94D1D9` glacier | Pine is illegible on carbon |
 | `--row-hover` | carbon @ 7% | snow @ 8% | Sidebar / list hover wash |
 | `--row-active` | carbon @ 10% | snow @ 12% | Current item wash |
 | `--background`, `--foreground` | → canvas / ink | | Legacy aliases for the Mapbox sidebar |
@@ -112,7 +112,7 @@ Use the surface or semantic token, not the hex:
 </section>
 
 // ✗ never
-<section className="bg-[#ADCFD3] text-[#1E1E1E]">
+<section className="bg-[#94D1D9] text-[#1E1E1E]">
 ```
 
 ## Theme-block checklist (for review)

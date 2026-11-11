@@ -13,7 +13,7 @@ Before you touch code, read the spec (`docs/specs/<slug>.md`) if one exists. If 
 
 Six colours. Two faces. One ladder. Three theme states. Every rule below has been broken on this repo at least once, which is why it's here.
 
-**Colour.** Sand `#FFF6C3` · Carbon `#1E1E1E` · Snow `#FFFFFF` · Rust `#B04B50` · Pine `#2F5349` · Glacier `#ADCFD3`. Nothing else, ever — not a grey, not a 50% black, not a Tailwind `gray-200`. Tints come from alpha on a brand colour (`rgb(30 30 30 / 0.07)`), never from a seventh hex. Components reach for **semantic** tokens (`--canvas`, `--ink`, `--ink-muted`, `--ink-faint`, `--rule`, `--rule-strong`, `--accent`, `--row-hover`, `--row-active`), never raw brand triplets — semantic tokens flip per theme; brand triplets don't.
+**Colour.** Sand `#FFEF9E` · Carbon `#1E1E1E` · Snow `#FFFFFF` · Rust `#C55045` · Pine `#22604A` · Glacier `#94D1D9`. Nothing else, ever — not a grey, not a 50% black, not a Tailwind `gray-200`. Tints come from alpha on a brand colour (`rgb(30 30 30 / 0.07)`), never from a seventh hex. Components reach for **semantic** tokens (`--canvas`, `--ink`, `--ink-muted`, `--ink-faint`, `--rule`, `--rule-strong`, `--accent`, `--row-hover`, `--row-active`), never raw brand triplets — semantic tokens flip per theme; brand triplets don't.
 
 **Themes.** `<html data-theme="light|dark">`, absent = system. Every semantic token is defined three times in `globals.css`: in `:root`, in `:root[data-theme="dark"]`, and inside `@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) … }`. Miss the third and System mode on a dark OS breaks while your Light/Dark toggle tests pass. Dark canvas is Carbon, never `#000`. Dark accent is Glacier (Pine vanishes on Carbon).
 
